@@ -1,0 +1,42 @@
+\set QUIET on
+\timing on
+-- Format of prompt allowing for easy reconnection from psql:
+-- postgresql://user@host:port/bd
+-- => or =# (super user) + a '*' if we currently are in a transaction
+\set PROMPT1 '%[%033[31m%]%[%033[32m%]postgresql:%[%033[1;36m%]//%n%[%033[34m%]@%[%033[36m%]%M:%>%[%033[33m%]/%/ %[%033[K%]%[%033[0m%](%p) \n%[%033[1;33m%]%R%#%x%[%033[0m%] '
+\set PROMPT2 '%[%033[1;33m%]%R%#%x%[%033[0m%] '
+
+-- history
+\set HISTSIZE 1000000
+\set HISTFILE ~/.local/state/.psql_history-:DBNAME
+
+-- extend the row display if the line is too big
+\x auto
+\pset columns 220
+\pset format wrapped
+-- stop at first error instead of blindly continuing script
+\set ON_ERROR_STOP on
+-- on interactive mode, rollback failed query instead of requiring me to rollback the entire transaction to do anything
+\set ON_ERROR_ROLLBACK interactive
+
+-- display stuff nicely plz
+\pset null '¤'
+\pset pager always
+\pset linestyle 'unicode'
+\pset unicode_border_linestyle single
+\pset unicode_column_linestyle single
+\pset unicode_header_linestyle double
+
+-- human readable date interval
+set intervalstyle = 'postgres_verbose';
+
+-- less options, in order:
+-- - ignore case in search
+-- - display more info in status bar
+-- - less autoquit if output fits in one screen
+-- - don't clear the screen on output
+-- - set tab stop at 4 char
+\setenv LESS '-iMFXx4R'
+\setenv EDITOR 'nvim'
+\setenv PAGER pspg
+\unset QUIET

@@ -1,0 +1,92 @@
+scan_timeout = 30
+command_timeout = 1000
+
+[jobs]
+symbol = ''
+number_threshold = 4
+disabled = false
+
+[time]
+disabled = false
+time_format = '%r'
+
+[battery]
+full_symbol = '󰁹'
+charging_symbol = '󰂄'
+discharging_symbol = '󰂌'
+unknown_symbol = '󰂑'
+empty_symbol = '󰂎'
+
+[character]
+success_symbol = '[󰘳](bold green)'
+error_symbol = '[󰘳](bold red)'
+vimcmd_symbol = '[](bold green)'
+vimcmd_visual_symbol = '[](bold yellow)'
+vimcmd_replace_symbol = '[](bold purple)'
+vimcmd_replace_one_symbol = '[](bold purple)'
+
+[directory]
+home_symbol = '󰋞'
+
+[docker_context]
+symbol = ' '
+only_with_files = true
+disabled = false
+
+[direnv]
+disabled = false
+format = '[$symbol$allowed]($style) '
+symbol = ''
+allowed_msg = " "
+denied_msg = " "
+
+[aws]
+symbol = ' '
+
+[gcloud]
+symbol = ' '
+style = 'bright-cyan'
+
+[git_commit]
+tag_disabled = false
+
+[git_branch]
+symbol = ' '
+
+[git_status]
+format = '[󰄽 $all_status$ahead_behind 󰄾]($style) '
+
+[golang]
+symbol = ' '
+
+[dotnet]
+symbol = ' '
+
+[terraform]
+symbol = ' '
+
+[python]
+disabled = false
+
+[custom.git_user]
+command = 'git config user.email'
+format = 'as [$symbol ($output)]($style) '
+ignore_timeout = true
+symbol = ''
+when = true
+
+[env_var.HSDK_ENV_ID]
+variable = 'HSDK_ENV_ID'
+format = '[$symbol  $env_value]($style) '
+style = 'yellow bold'
+symbol = ""
+
+[env_var.HSDK_ENV_ALIAS]
+variable = 'HSDK_ENV_ALIAS'
+format = '[$env_value]($style) '
+style = 'yellow inverted'
+
+[env_var.TF_VAR_dns_name]
+variable = 'TF_VAR_dns_name'
+format = 'in [$env_value]($style) '
+style = 'bright-blue bold'

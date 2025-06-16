@@ -1,0 +1,120 @@
+#/* vim: set ft=cfg : */
+[core]
+pager = delta
+excludesfile = ~/.gitignore
+symlinks = true
+[interactive]
+diffFilter = delta --color-only --features=interactive
+[apply]
+whitespace = fix
+[color "branch"]
+current = yellow reverse
+local = yellow
+remote = green
+[color "diff"]
+meta = yellow bold
+frag = magenta bold # line infoold = red # deletionsnew = green # additions[color "status"]
+added = yellow
+changed = green
+untracked = cyan
+# Detect whitespace errors when applying a patch
+[github]
+user = iamralch
+[color]
+diff = auto
+status = auto
+branch = auto
+interactive = auto
+[pack]
+windowMemory = 100m
+packSizeLimit = 100m
+deltaCacheSize = 512m
+threads = 1
+[init]
+defaultBranch = main
+[pull]
+rebase = true
+[push]
+default = current
+[merge]
+tool = nvim
+conflictstyle = diff3
+[gpg]
+format = ssh
+[commit]
+gpgsign = true
+[mergetool]
+[mergetool "vimdiff"]
+cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+prompt = true
+[difftool]
+prompt = false
+[diff]
+tool = nvim
+colorMoved = default
+[tag]
+forceSignAnnotated = true
+[help]
+[url "git@github.com:"]
+insteadOf = https://github.com/
+autocorrect = 2
+[format]
+signoff = true
+[delta]
+syntax-theme = Nord
+zero-style = syntax
+file-style = omit
+file-decoration-style = none
+line-numbers-right-style = white
+hunk-header-decoration-style = "#4C566A" ul
+hunk-header-style = file line-number syntax
+dark = true
+navigate = false
+hyperlinks = true
+side-by-side = true
+line-numbers = true
+line-numbers-left-format = "{nm:>4} . "
+line-numbers-left-style = "#ddb26d"
+line-numbers-minus-style = "#ee6272"
+line-numbers-plus-style = "#85b96e"
+line-numbers-right-format = "{np:>4} "
+line-numbers-zero-style = "#cccccc "
+hunk-header-file-style = "#ddb26d"
+hunk-header-line-number-style = "#cccccc"
+keep-plus-minus-markers = true
+[alias]
+poh = push origin HEAD
+pom = push origin master
+st = status
+di = diff
+co = checkout
+ci = commit --verbose --signoff
+br = branch
+sta = stash
+llog = log --date=local
+flog = log --pretty=fuller --decorate
+lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative
+lol = log --graph --decorate --oneline
+lola = log --graph --decorate --oneline --all
+blog = log origin/master... --left-right
+ds = diff --staged
+fixup = commit --fixup --signoff
+squash = commit --squash --signoff
+unstage = reset HEAD
+rum = rebase master@{u} --signoff
+dci = commit --signoff
+drv = revert --signoff
+dmg = merge --signoff
+drb = rebase -i --exec 'git commit --amend'
+cw = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
+[include]
+path = ~/.config/git/config_oss.toml
+[includeIf "hasconfig:remote.*.url:git@github.com:iamralch/**"]
+path = ~/.config/git/config_prv.toml
+[includeIf "hasconfig:remote.*.url:git@github.com:hellohippo/**"]
+path = ~/.config/git/config_wrk.toml
+[filter "lfs"]
+smudge = git-lfs smudge -- %f
+process = git-lfs filter-process
+clean = git-lfs clean -- %f
+required = true

@@ -1,0 +1,8 @@
+# enable git colors
+set git-colors = yes
+
+# custom area colors
+color cursor        default 000
+color title-focus   default 008
+color title-blur    default 008
+color search-result 006     000

@@ -1,0 +1,32 @@
+# shell confiruation
+command = "/bin/zsh --login --interactive -c 'tmux new-session -A -s main'"
+
+# theme configuration
+theme = dark:catppuccin-mocha,light:catppuccin-latte
+
+# window configuration
+window-theme = dark
+window-padding-x = 4
+window-padding-y = 4
+window-padding-balance = true
+window-inherit-font-size = false
+
+# font configuration
+font-family = "JetBrainsMono Nerd Font"
+font-style = "semibold"
+font-size = 16.0
+
+# cursor configuration
+cursor-style-blink = false
+
+# mouse configuration
+mouse-hide-while-typing = true
+
+# macos configuration
+macos-titlebar-style = "hidden"
+macos-titlebar-proxy-icon = "hidden"
+
+# behavior configuration
+confirm-close-surface = false
+clipboard-paste-protection = false
+quit-after-last-window-closed = true
