@@ -180,14 +180,14 @@
               "name" : "GoToMeeting v10.20.0"
             },
             {
-              "bundleIdentifier" : "com.tinyspeck.slackmacgap",
-              "iconPath" : "/Applications/Slack.app/Contents/Resources/electron.icns",
-              "name" : "Slack"
-            },
-            {
               "bundleIdentifier" : "com.hnc.Discord",
               "iconPath" : "/Applications/Discord.app/Contents/Resources/electron.icns",
               "name" : "Discord"
+            },
+            {
+              "bundleIdentifier" : "com.tinyspeck.slackmacgap",
+              "iconPath" : "/Applications/Slack.app/Contents/Resources/electron.icns",
+              "name" : "Slack"
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+s",
@@ -292,7 +292,7 @@
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+d",
-          "display" : "DELL U2723QE (1)",
+          "display" : "DELL U2723QE (2)",
           "id" : "B69CAB67-82CC-44DE-A0B4-C62D8146CEE0",
           "name" : "Desktop",
           "shortcut" : "ctrl+opt+shift+d",
@@ -312,7 +312,7 @@
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+b",
-          "display" : "DELL U2723QE (1)",
+          "display" : "DELL U2723QE (2)",
           "id" : "979318AC-4BD5-4925-A12F-DB5ACA89CFAF",
           "name" : "Browser",
           "shortcut" : "ctrl+opt+shift+b",
@@ -356,14 +356,14 @@
               "name" : "Postico"
             },
             {
-              "bundleIdentifier" : "com.mitchellh.ghostty",
-              "iconPath" : "/Applications/Ghostty.app/Contents/Resources/AppIcon.icns",
-              "name" : "Ghostty"
-            },
-            {
               "bundleIdentifier" : "dev.zed.Zed",
               "iconPath" : "/Applications/Zed.app/Contents/Resources/Zed.icns",
               "name" : "Zed"
+            },
+            {
+              "bundleIdentifier" : "com.mitchellh.ghostty",
+              "iconPath" : "/Applications/Ghostty.app/Contents/Resources/AppIcon.icns",
+              "name" : "Ghostty"
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+t",
@@ -401,13 +401,18 @@
               "name" : "GoToMeeting v10.20.0"
             },
             {
+              "bundleIdentifier" : "com.spotify.client",
+              "iconPath" : "/Applications/Spotify.app/Contents/Resources/Icon.icns",
+              "name" : "Spotify"
+            },
+            {
               "bundleIdentifier" : "com.tinyspeck.slackmacgap",
               "iconPath" : "/Applications/Slack.app/Contents/Resources/electron.icns",
               "name" : "Slack"
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+s",
-          "display" : "Built-in Retina Display",
+          "display" : "DELL U2723QE (1)",
           "id" : "B8E63AA1-5056-4AEE-BFA0-D5DA4ED0C8C6",
           "name" : "Social",
           "shortcut" : "ctrl+opt+shift+s",
@@ -429,15 +434,10 @@
               "bundleIdentifier" : "com.apple.TV",
               "iconPath" : "/System/Applications/TV.app/Contents/Resources/AppIcon.icns",
               "name" : "TV"
-            },
-            {
-              "bundleIdentifier" : "com.spotify.client",
-              "iconPath" : "/Applications/Spotify.app/Contents/Resources/Icon.icns",
-              "name" : "Spotify"
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+m",
-          "display" : "Built-in Retina Display",
+          "display" : "DELL U2723QE (1)",
           "id" : "38D9319D-BEA5-4DD7-B10D-2294D6731A9E",
           "name" : "Media",
           "shortcut" : "ctrl+opt+shift+m",
