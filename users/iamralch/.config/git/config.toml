@@ -60,28 +60,10 @@ insteadOf = https://github.com/
 autocorrect = 2
 [format]
 signoff = true
+[include]
+path = ~/.config/git/themes/catppuccin.toml
 [delta]
-syntax-theme = Nord
-zero-style = syntax
-file-style = omit
-file-decoration-style = none
-line-numbers-right-style = white
-hunk-header-decoration-style = "#4C566A" ul
-hunk-header-style = file line-number syntax
-dark = true
-navigate = false
-hyperlinks = true
-side-by-side = true
-line-numbers = true
-line-numbers-left-format = "{nm:>4} . "
-line-numbers-left-style = "#ddb26d"
-line-numbers-minus-style = "#ee6272"
-line-numbers-plus-style = "#85b96e"
-line-numbers-right-format = "{np:>4} "
-line-numbers-zero-style = "#cccccc "
-hunk-header-file-style = "#ddb26d"
-hunk-header-line-number-style = "#cccccc"
-keep-plus-minus-markers = true
+features = catppuccin-mocha
 [alias]
 poh = push origin HEAD
 pom = push origin master
