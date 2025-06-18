@@ -3,12 +3,42 @@
 ssh-auth() {
   # Vault Information
   VAULT_NAME="Private"
-  VAULT_ACCOUNT="my.1password.com"
-  VAULT_ITEM_ID="vxzzdak7qtvnts2rjwwvpcall4"
+  VAULT_ACCOUNT=""
+  VAULT_ITEM_ID=""
+
+  KEY_EXPIRATION="${1:-"1h"}"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+    -p | --profile)
+      case "$2" in
+      work)
+        VAULT_ACCOUNT="team-em.1password.com"
+        VAULT_ITEM_ID="6iyzh6xbx3aq3bdgph6jxyz2t4"
+        ;;
+      self)
+        VAULT_ACCOUNT="my.1password.com"
+        VAULT_ITEM_ID="vxzzdak7qtvnts2rjwwvpcall4"
+        ;;
+      *)
+        echo "Provided profile is not found"
+        exti 1
+        ;;
+      esac
+      shift 2
+      ;;
+    -e | --expiration)
+      KEY_EXPIRATION="$2"
+      shift 2
+      ;;
+    *)
+      shift
+      ;;
+    esac
+  done
 
   # Key Information
   KEY_DATA=$(op item get "$VAULT_ITEM_ID" --account "$VAULT_ACCOUNT" --vault "$VAULT_NAME" --field "private key" --reveal | sed 's/^"//; s/"$//' | sed '/^[[:space:]]*$/d')
-  KEY_EXPIRATION="${1:-"1h"}"
 
   if [[ -z "$KEY_DATA" ]]; then
     echo "Failed to retrieve SSH key from 1Password"
@@ -21,7 +51,7 @@ ssh-auth() {
   chmod 600 "$KEY_PATH"
 
   # Add the key with a timeout and delete all others first
-  ssh-add -D
+  # ssh-add -D
   ssh-add -t "${KEY_EXPIRATION}" "$KEY_PATH"
 
   # Cleanup
