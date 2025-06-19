@@ -11,6 +11,8 @@ format:
 ifeq ($(OS_TYPE),Linux)
 	nix --experimental-features "nix-command flakes" \
 		run github:nix-community/disko/latest -- --mode destroy,format,mount ./systems/nixos/partitions.nix
+  # generate the configuration
+	nixos-generate-config --root /mnt
 else
 	$(call not_supported)
 endif
@@ -19,7 +21,7 @@ endif
 # install the machine
 install:
 ifeq ($(OS_TYPE),Linux)
-	nixos-install --flake .#$(OS_HOST)
+	nixos-install
 else ifeq ($(OS_TYPE),Darwin)
 	curl -fsSL https://install.determinate.systems/nix | bash -s -- install --determinate
 	curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
