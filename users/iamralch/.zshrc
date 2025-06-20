@@ -7,8 +7,6 @@ export LC_CTYPE="en_US.UTF-8"
 
 # Configure the editor
 export EDITOR="nvim"
-# Configure the man viewer
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 # Set the configuration directories
 export XDG_CONFIG_HOME="${HOME}/.config"
 # Set the directory we want to store zinit and plugins
@@ -80,6 +78,7 @@ eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
+eval "$(batman --export-env)"
 
 # key bindings
 bindkey -v

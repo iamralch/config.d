@@ -7,7 +7,9 @@
     atlas
     atuin
     awscli2
+    entr
     bat
+    bat-extras.core
     bottom
     buf
     bun
