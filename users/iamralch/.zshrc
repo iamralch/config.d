@@ -34,10 +34,6 @@ export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.pyenv/bin"
 export PATH="$PATH:$HOME/.orbstack/bin"
 
-# configure libraries
-export LDFLAGS="-L$HOMEBREW_PREFIX/opt/ruby/lib"
-export CPPFLAGS="-I$HOMEBREW_PREFIX/opt/ruby/include"
-
 # limit how much of history to download
 zinit ice depth=1
 
