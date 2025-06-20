@@ -40,3 +40,8 @@ else ifeq ($(OS_TYPE),Darwin)
 else
 	$(call not_supported)
 endif
+
+.PONY: stow
+# update the machine
+stow:
+	stow -v -t $(HOME) -d users/$(USER) --ignore=.*\.nix .

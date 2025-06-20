@@ -80,6 +80,11 @@ eval "$(starship init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(batman --export-env)"
 
+# Set up MacOS tools
+if [ "$(uname)" = "Darwin" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
+fi
+
 # key bindings
 bindkey -v
 
