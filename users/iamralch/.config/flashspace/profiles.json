@@ -127,14 +127,14 @@
               "name" : "Parallels Desktop"
             },
             {
-              "bundleIdentifier" : "com.mitchellh.ghostty",
-              "iconPath" : "/Applications/Ghostty.app/Contents/Resources/AppIcon.icns",
-              "name" : "Ghostty"
-            },
-            {
               "bundleIdentifier" : "com.parallels.macvm",
               "iconPath" : "/Applications/Parallels Desktop.app/Contents/MacOS/Parallels Mac VM.app/Contents/Resources/AppIcon.icns",
               "name" : "macOS VM"
+            },
+            {
+              "bundleIdentifier" : "com.mitchellh.ghostty",
+              "iconPath" : "/Applications/Ghostty.app/Contents/Resources/AppIcon.icns",
+              "name" : "Ghostty"
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+t",
@@ -401,11 +401,6 @@
               "name" : "GoToMeeting v10.20.0"
             },
             {
-              "bundleIdentifier" : "com.spotify.client",
-              "iconPath" : "/Applications/Spotify.app/Contents/Resources/Icon.icns",
-              "name" : "Spotify"
-            },
-            {
               "bundleIdentifier" : "com.tinyspeck.slackmacgap",
               "iconPath" : "/Applications/Slack.app/Contents/Resources/electron.icns",
               "name" : "Slack"
@@ -434,6 +429,11 @@
               "bundleIdentifier" : "com.apple.TV",
               "iconPath" : "/System/Applications/TV.app/Contents/Resources/AppIcon.icns",
               "name" : "TV"
+            },
+            {
+              "bundleIdentifier" : "com.spotify.client",
+              "iconPath" : "/Applications/Spotify.app/Contents/Resources/Icon.icns",
+              "name" : "Spotify"
             }
           ],
           "assignAppShortcut" : "cmd+ctrl+opt+shift+m",
