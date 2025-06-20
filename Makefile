@@ -21,7 +21,7 @@ endif
 # install the machine
 install:
 ifeq ($(OS_TYPE),Linux)
-	nixos-install
+	curl -fsSL https://nixos.org/nix/install | bash -s -- --daemon 
 else ifeq ($(OS_TYPE),Darwin)
 	curl -fsSL https://install.determinate.systems/nix | bash -s -- install --determinate
 	curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
