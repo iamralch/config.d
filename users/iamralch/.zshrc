@@ -1,6 +1,3 @@
-# shellcheck disable=2148
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
 # Configure the language
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
