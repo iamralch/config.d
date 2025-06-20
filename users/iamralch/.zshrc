@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Configure the language
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -16,11 +18,6 @@ export ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 export GOPATH="$HOME/.local/share/go"
 export PSQLRC="$HOME/.config/pspg/psqlrc"
 export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
-
-# seutp git-duet
-export GIT_DUET_GLOBAL=true
-export GIT_DUET_SET_GIT_USER_CONFIG=1
-export GIT_DUET_AUTHORS_FILE="$XDG_CONFIG_HOME/git/ralch.duet.yaml"
 
 # Set the application configuration files
 export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
