@@ -3,8 +3,8 @@
 ssh-auth() {
   # Vault Information
   VAULT_NAME="Private"
-  VAULT_ACCOUNT=""
-  VAULT_ITEM_ID=""
+  VAULT_ACCOUNT="my.1password.com"
+  VAULT_ITEM_ID="vxzzdak7qtvnts2rjwwvpcall4"
 
   KEY_EXPIRATION="${1:-"1h"}"
 
@@ -15,10 +15,6 @@ ssh-auth() {
       work)
         VAULT_ACCOUNT="team-em.1password.com"
         VAULT_ITEM_ID="6iyzh6xbx3aq3bdgph6jxyz2t4"
-        ;;
-      self)
-        VAULT_ACCOUNT="my.1password.com"
-        VAULT_ITEM_ID="vxzzdak7qtvnts2rjwwvpcall4"
         ;;
       *)
         echo "Provided profile is not found"
