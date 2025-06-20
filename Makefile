@@ -41,7 +41,7 @@ else
 	$(call not_supported)
 endif
 
-.PONY: stow
-# update the machine
-stow:
+.PONY: home
+# update the home
+home:
 	stow -v -t $(HOME) -d users/$(USER) --ignore=.*\.nix .
