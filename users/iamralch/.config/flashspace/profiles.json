@@ -127,11 +127,6 @@
               "name" : "Parallels Desktop"
             },
             {
-              "bundleIdentifier" : "com.parallels.macvm",
-              "iconPath" : "/Applications/Parallels Desktop.app/Contents/MacOS/Parallels Mac VM.app/Contents/Resources/AppIcon.icns",
-              "name" : "macOS VM"
-            },
-            {
               "bundleIdentifier" : "com.mitchellh.ghostty",
               "iconPath" : "/Applications/Ghostty.app/Contents/Resources/AppIcon.icns",
               "name" : "Ghostty"
@@ -173,11 +168,6 @@
               "bundleIdentifier" : "com.apple.FaceTime",
               "iconPath" : "/System/Applications/FaceTime.app/Contents/Resources/AppIcon.icns",
               "name" : "FaceTime"
-            },
-            {
-              "bundleIdentifier" : "com.logmein.GoToMeeting",
-              "iconPath" : "/Applications/GoToMeeting.app/Contents/Resources/AppIcon.icns",
-              "name" : "GoToMeeting v10.20.0"
             },
             {
               "bundleIdentifier" : "com.hnc.Discord",
