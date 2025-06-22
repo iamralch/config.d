@@ -3,6 +3,6 @@
   system.stateVersion = "25.05";
 
   # Network Config
-  networking.hostName = "vm-intel-nixos-prl";
+  networking.hostName = "vm-aarch64-nixos-prl";
   networking.domain = "ralch.local";
 }

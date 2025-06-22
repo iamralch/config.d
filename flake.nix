@@ -24,7 +24,7 @@
       inherit overlays nixpkgs inputs;
     };
   in {
-    nixosConfigurations.vm-intel-nixos-prl = mkSystem "vm-intel-nixos-prl" {
+    nixosConfigurations.vm-aarch64-nixos-prl = mkSystem "vm-aarch64-nixos-prl" {
       system = "x86_64-linux";
       user   = "iamralch";
     };
