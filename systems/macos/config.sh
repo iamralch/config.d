@@ -444,9 +444,14 @@ defaults write com.google.Chrome PMPrintingExpandedStateForPrint2 -bool true
 defaults write com.google.Chrome.canary PMPrintingExpandedStateForPrint2 -bool true
 
 ###############################################################################
-# microsoft Visual Studio Code                                                #
+# Microsoft Visual Studio Code                                                #
 ###############################################################################
 defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+
+###############################################################################
+# Hammerspoon
+###############################################################################
+defaults write org.hammerspoon.Hammerspoon MJConfigFile "$HOME/.config/hammerspoon/init.lua"
 
 ###############################################################################
 # Kill/restart affected applications                                          #
