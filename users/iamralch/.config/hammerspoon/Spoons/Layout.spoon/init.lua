@@ -99,21 +99,21 @@ function obj.set_window_frame(window, position)
     margin.w = obj.margin.x + obj.margin.x / 2
     margin.h = obj.margin.y + obj.margin.y / 2
   elseif position == obj.positions.top_right then
-    margin.h = obj.margin.y + obj.margin.y / 2
     margin.x = obj.margin.x - obj.margin.x / 2
     margin.w = obj.margin.x + obj.margin.x / 2
+    margin.h = obj.margin.y + obj.margin.y / 2
   elseif position == obj.positions.bottom then
     margin.y = obj.margin.y / 2
     margin.h = obj.margin.y + obj.margin.y / 2
   elseif position == obj.positions.bottom_left then
-    margin.y = obj.margin.y / 2
     margin.w = obj.margin.x + obj.margin.x / 2
+    margin.y = obj.margin.y / 2
     margin.h = obj.margin.y + obj.margin.y / 2
   elseif position == obj.positions.bottom_right then
-    margin.y = obj.margin.y / 2
-    margin.h = obj.margin.y + obj.margin.y / 2
     margin.x = obj.margin.x - obj.margin.x / 2
     margin.w = obj.margin.x + obj.margin.x / 2
+    margin.y = obj.margin.y / 2
+    margin.h = obj.margin.y + obj.margin.y / 2
   end
 
   -- Apply margins
