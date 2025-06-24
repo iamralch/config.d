@@ -133,7 +133,7 @@ hs.hotkey.bind({ "alt", "ctrl" }, "Right", function()
 end)
 
 -- Show Window Hints
-hs.hotkey.bind({ "ctrl", "alt", "shift" }, "return", function()
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "space", function()
   hs.hints.windowHints(nil, mouse.focus, false)
 end)
 
