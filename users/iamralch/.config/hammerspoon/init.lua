@@ -1,5 +1,10 @@
 local mouse = require("mouse")
+local power = require("power")
 local layout = require("window")
+
+hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "A", function()
+  power.caffeinate()
+end)
 
 -- Layout
 hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "/", function()
