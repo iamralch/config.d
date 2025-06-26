@@ -11,12 +11,12 @@ function M.caffeinate()
       hs.caffeinate.declareUserActivity(M.id)
     end)
 
-    local image = hs.image.imageFromName("NSQuickLookTemplate")
+    local image = hs.image.imageFromName("NSTouchBarAlarmTemplate")
     -- create the menu item
     M.menu = hs.menubar.new()
     M.menu:setIcon(image)
     -- show an alert
-    hs.alert.show("Keep Awake")
+    hs.alert.show("System awake mode is ON")
   else
     -- stop the timer
     M.timer:stop()
@@ -25,7 +25,7 @@ function M.caffeinate()
     M.menu:delete()
     M.menu = nil
     -- show an alert
-    hs.alert.show("Auto Sleep")
+    hs.alert.show("System awake mode is OFF")
   end
 end
 
