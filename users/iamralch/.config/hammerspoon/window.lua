@@ -23,8 +23,8 @@ M.positions = {
 
 -- Margin
 M.margin = {
-  x = 12,
-  y = 12,
+  x = 18,
+  y = 18,
 }
 
 -- Animation
