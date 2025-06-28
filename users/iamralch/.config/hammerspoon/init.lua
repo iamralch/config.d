@@ -2,10 +2,6 @@ local mouse = require("mouse")
 local power = require("power")
 local layout = require("window")
 
-hs.hotkey.bind({ "cmd", "alt", "ctrl", "shift" }, "C", function()
-  power.caffeinate()
-end)
-
 -- Layout
 hs.hotkey.bind({ "cmd", "alt", "ctrl" }, "/", function()
   layout.snapback()
@@ -142,6 +138,11 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "space", function()
   hs.hints.windowHints(nil, mouse.focus, false)
 end)
 
+-- Keep Awake
+hs.hotkey.bind({ "cmd", "alt", "ctrl", "shift" }, "C", function()
+  power.caffeinate()
+end)
+
 -- Applications
 hs.hotkey.bind({ "ctrl", "alt", "shift" }, "f", function()
   -- start the app
@@ -180,6 +181,13 @@ end)
 hs.hotkey.bind({ "ctrl", "alt", "shift" }, "g", function()
   -- start the app
   hs.application.launchOrFocus("Ghostty")
+  -- update the mouse position
+  mouse.focus()
+end)
+
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "z", function()
+  -- start the app
+  hs.application.launchOrFocus("Zed")
   -- update the mouse position
   mouse.focus()
 end)
