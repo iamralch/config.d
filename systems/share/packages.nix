@@ -12,6 +12,7 @@
     entr
     bat
     bat-extras.core
+    codespell
     bottom
     buf
     bun
