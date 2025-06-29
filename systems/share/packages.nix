@@ -12,6 +12,7 @@
     entr
     bat
     bat-extras.core
+    quartoMinimal
     bottom
     buf
     bun

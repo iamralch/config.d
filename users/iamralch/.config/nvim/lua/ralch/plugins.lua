@@ -18,6 +18,7 @@ return {
   { import = "astrocommunity.pack.swift" },
   { import = "astrocommunity.pack.harper" },
   { import = "astrocommunity.pack.python" },
+  { import = "astrocommunity.pack.quarto" },
   { import = "astrocommunity.pack.docker" },
   { import = "astrocommunity.pack.ansible" },
   { import = "astrocommunity.pack.terraform" },
