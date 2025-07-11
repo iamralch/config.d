@@ -164,6 +164,13 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "k", function()
   mouse.focus()
 end)
 
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "r", function()
+  -- start the app
+  hs.application.launchOrFocus("Discord")
+  -- update the mouse position
+  mouse.focus()
+end)
+
 hs.hotkey.bind({ "ctrl", "alt", "shift" }, "s", function()
   -- start the app
   hs.application.launchOrFocus("Spotify")
