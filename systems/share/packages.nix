@@ -67,7 +67,6 @@
     (python3.withPackages (ps: with ps; [
       pip
       pynvim
-      jupytext
     ]))
     readline
     ripgrep
