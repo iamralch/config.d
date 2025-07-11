@@ -64,10 +64,11 @@
     pspg
     pstree
     pwgen
-    (python3.withPackages (ps: with ps; [ pip ]))
-    python3Packages.pip
-    python3Packages.pynvim
-    python3Packages.jupytext
+    (python3.withPackages (ps: with ps; [
+      pip
+      pynvim
+      jupytext
+    ]))
     readline
     ripgrep
     ruby

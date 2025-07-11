@@ -11,6 +11,25 @@ require("lazy").setup({
       update_notifications = true, -- Enable/disable notification about running `:Lazy update` twice to update pinned plugins
     },
   },
+  {
+    "AstroNvim/astroui",
+    ---@type AstroUIOpts
+    opts = {
+      -- change colorscheme
+      colorscheme = "catppuccin",
+    },
+  },
+  {
+    "AstroNvim/astrocore",
+    ---@type AstroCoreOpts
+    opts = {
+      options = {
+        g = {
+          python3_host_prog = "/run/current-system/sw/bin/python3",
+        },
+      },
+    },
+  },
   { import = "ralch.mason" },
   { import = "ralch.plugins" },
   { import = "ralch.settings" },
