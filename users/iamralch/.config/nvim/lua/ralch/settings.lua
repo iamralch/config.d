@@ -43,8 +43,4 @@ return {
       }
     end,
   },
-  {
-    "nvim-contrib/nvim-jupytext",
-    opts = {},
-  },
 }
