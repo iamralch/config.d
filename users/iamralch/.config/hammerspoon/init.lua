@@ -198,3 +198,10 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "z", function()
   -- update the mouse position
   mouse.focus()
 end)
+
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "t", function()
+  -- start the app
+  hs.application.launchOrFocus("TradingView")
+  -- update the mouse position
+  mouse.focus()
+end)
