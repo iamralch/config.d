@@ -1,6 +1,6 @@
 {
   "AstroNvim": { "branch": "main", "commit": "9417da143b971e65b159089c3de5a0ee37edb1fd" },
-  "CopilotChat.nvim": { "branch": "main", "commit": "4944b11123ef7c8f9f6ddd0c85de5e4d20b45690" },
+  "CopilotChat.nvim": { "branch": "main", "commit": "bdb270dac270a0e27b23bf2ef40482405b3c984d" },
   "LuaSnip": { "branch": "master", "commit": "458560534a73f7f8d7a11a146c801db00b081df0" },
   "aerial.nvim": { "branch": "master", "commit": "3284a2cb858ba009c79da87d5e010ccee3c99c4d" },
   "ansible-vim": { "branch": "master", "commit": "3329367d2e5f90d203c8d340c53fa83c60a1ad41" },
@@ -51,7 +51,7 @@
   "nvim-autopairs": { "branch": "master", "commit": "23320e75953ac82e559c610bec5a90d9c6dfa743" },
   "nvim-coverage": { "branch": "main", "commit": "a939e425e363319d952a6c35fb3f38b34041ded2" },
   "nvim-dap": { "branch": "master", "commit": "14fe46ae16eb272629144a93f7738f5279665a4f" },
-  "nvim-dap-go": { "branch": "main", "commit": "8763ced35b19c8dc526e04a70ab07c34e11ad064" },
+  "nvim-dap-go": { "branch": "main", "commit": "b4421153ead5d726603b02743ea40cf26a51ed5f" },
   "nvim-dap-python": { "branch": "master", "commit": "261ce649d05bc455a29f9636dc03f8cdaa7e0e2c" },
   "nvim-dap-ui": { "branch": "master", "commit": "73a26abf4941aa27da59820fd6b028ebcdbcf932" },
   "nvim-highlight-colors": { "branch": "main", "commit": "b42a5ccec7457b44e89f7ed3b3afb1b375bb2093" },
