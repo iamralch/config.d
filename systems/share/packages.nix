@@ -35,6 +35,7 @@
     ghostscript
     git
     git-lfs
+    jjui
     jujutsu
     gnumake
     gnused

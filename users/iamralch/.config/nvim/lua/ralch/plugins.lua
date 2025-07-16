@@ -10,6 +10,7 @@ return {
   { import = "astrocommunity.pack.json" },
   { import = "astrocommunity.pack.yaml" },
   { import = "astrocommunity.pack.toml" },
+  { import = "astrocommunity.pack.jj" },
   { import = "astrocommunity.pack.go" },
   { import = "astrocommunity.pack.sql" },
   { import = "astrocommunity.pack.zig" },
