@@ -49,7 +49,6 @@
     jdk
     jq
     lazyjj
-    gemini-cli
     julia-bin
     lazygit
     lua51Packages.lua
