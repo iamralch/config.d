@@ -26,6 +26,7 @@ return {
   { import = "astrocommunity.pack.typescript" },
   { import = "astrocommunity.completion.copilot-cmp" },
   { import = "astrocommunity.editing-support.copilotchat-nvim" },
+  { import = "astrocommunity.editing-support.codecompanion-nvim" },
   { import = "astrocommunity.code-runner.overseer-nvim" },
   { import = "astrocommunity.test.neotest" },
   { import = "astrocommunity.test.nvim-coverage" },
