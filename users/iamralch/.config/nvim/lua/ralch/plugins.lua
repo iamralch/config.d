@@ -17,6 +17,7 @@ return {
   { import = "astrocommunity.diagnostics.trouble-nvim" },
 
   -- Editing Support
+  { import = "astrocommunity.editing-support.mcphub-nvim" },
   { import = "astrocommunity.editing-support.vector-code-nvim" },
   { import = "astrocommunity.editing-support.codecompanion-nvim" },
 
