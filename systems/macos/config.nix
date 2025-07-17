@@ -1,4 +1,4 @@
-{ ... }: 
+_:
 let
   setup = ./config.sh;
 in {

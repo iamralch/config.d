@@ -1,4 +1,4 @@
-{ ... }: {
+_: {
   # nix configuration requires flakes
   nix = {
     settings.auto-optimise-store = true;
