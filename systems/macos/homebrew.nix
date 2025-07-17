@@ -7,6 +7,7 @@ _: {
     casks = [
       "1password"
       "1password-cli"
+      "amazon-q"
       "appcleaner"
       "brave-browser"
       "devpod"

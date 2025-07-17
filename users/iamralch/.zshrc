@@ -75,17 +75,19 @@ zstyle ':fzf-tab:complete:cd:*' fzf-command fzf-tmux
 # shellcheck disable=2016
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always --icons $realpath'
 
+# Set up MacOS tools
+if [ "$(uname)" = "Darwin" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
+fi
+
+eval "$(q init zsh pre --rcfile zshrc)"
 eval "$(fzf --zsh)"
 eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(batman --export-env)"
-
-# Set up MacOS tools
-if [ "$(uname)" = "Darwin" ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
-fi
+eval "$(q init zsh post --rcfile zshrc)"
 
 # key bindings
 bindkey -v

@@ -49,8 +49,8 @@
     jdk
     jq
     lazyjj
-    julia-bin
     lazygit
+    julia-bin
     lua51Packages.lua
     lua51Packages.luarocks
     mermaid-cli
