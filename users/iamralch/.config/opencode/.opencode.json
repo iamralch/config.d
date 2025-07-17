@@ -1,0 +1,26 @@
+{
+  "data": {
+    "directory": ".opencode"
+  },
+  "agents": {
+    "coder": {
+      "model": "claude-3.7-sonnet",
+      "maxTokens": 5000
+    },
+    "task": {
+      "model": "claude-3.7-sonnet",
+      "maxTokens": 5000
+    },
+    "title": {
+      "model": "claude-3.7-sonnet",
+      "maxTokens": 80
+    }
+  },
+  "shell": {
+    "path": "/bin/zsh",
+    "args": ["-l"]
+  },
+  "debug": false,
+  "debugLSP": false,
+  "autoCompact": true
+}

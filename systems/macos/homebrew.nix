@@ -1,7 +1,10 @@
 _: {
   homebrew = {
     enable = true;
-    casks = [ 
+    brews = [
+      "opencode-ai/tap/opencode"
+    ];
+    casks = [
       "1password"
       "1password-cli"
       "appcleaner"
