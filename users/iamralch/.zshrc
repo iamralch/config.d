@@ -16,6 +16,7 @@ export ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 export GOPATH="$HOME/.local/share/go"
 export PSQLRC="$HOME/.config/pspg/psqlrc"
 export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
+export GOOGLE_CLOUD_PROJECT="gen-lang-client-0936563388"
 
 # Set the application configuration files
 export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
