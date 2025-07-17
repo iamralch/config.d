@@ -3,7 +3,8 @@ return {
   "AstroNvim/astrocommunity",
   --
   -- Completion
-  { import = "astrocommunity.completion.copilot-cmp" },
+  { import = "astrocommunity.completion.copilot-lua" },
+  { import = "astrocommunity.completion.minuet-ai-nvim" },
 
   -- Code Runner
   { import = "astrocommunity.code-runner.overseer-nvim" },
@@ -16,7 +17,6 @@ return {
 
   -- Editing Support
   { import = "astrocommunity.editing-support.vector-code-nvim" },
-  { import = "astrocommunity.editing-support.copilotchat-nvim" },
   { import = "astrocommunity.editing-support.codecompanion-nvim" },
 
   -- Git
