@@ -2,6 +2,7 @@
   environment.systemPackages = with pkgs; [
     gh
     usql
+
     stow
     nixd
     deadnix
@@ -37,6 +38,7 @@
     git-lfs
     jjui
     jujutsu
+    vectorcode
     gnumake
     gnused
     go

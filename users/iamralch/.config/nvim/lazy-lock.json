@@ -2,6 +2,7 @@
   "AstroNvim": { "branch": "main", "commit": "9417da143b971e65b159089c3de5a0ee37edb1fd" },
   "CopilotChat.nvim": { "branch": "main", "commit": "bdb270dac270a0e27b23bf2ef40482405b3c984d" },
   "LuaSnip": { "branch": "master", "commit": "458560534a73f7f8d7a11a146c801db00b081df0" },
+  "VectorCode": { "branch": "main", "commit": "f73a66144ab84993c98ca75aab8cc1cbb6b7ca14" },
   "aerial.nvim": { "branch": "master", "commit": "3284a2cb858ba009c79da87d5e010ccee3c99c4d" },
   "ansible-vim": { "branch": "master", "commit": "3329367d2e5f90d203c8d340c53fa83c60a1ad41" },
   "astrocommunity": { "branch": "main", "commit": "5f74d5fb8d8dc9b8e2904846809121068d7afaca" },
