@@ -41,6 +41,7 @@ return {
   { import = "astrocommunity.pack.docker" },
   { import = "astrocommunity.pack.fish" },
   { import = "astrocommunity.pack.go" },
+  { import = "astrocommunity.pack.jj" },
   { import = "astrocommunity.pack.harper" },
   { import = "astrocommunity.pack.hurl" },
   { import = "astrocommunity.pack.html-css" },

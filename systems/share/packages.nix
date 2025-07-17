@@ -48,6 +48,7 @@
     imagemagick
     jdk
     jq
+    lazyjj
     julia-bin
     lazygit
     lua51Packages.lua
