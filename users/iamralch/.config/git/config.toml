@@ -89,8 +89,10 @@ drv = revert --signoff
 dmg = merge --signoff
 drb = rebase -i --exec 'git commit --amend'
 cw = "!f() { VAR=$1; OLD=$2; NEW=$3; shift 3; git filter-branch --env-filter \"if [[ \\\"$`echo $VAR`\\\" = '$OLD' ]]; then export $VAR='$NEW'; fi\" $@; }; f"
-[include]
-path = ~/.config/git/config_oss.toml
+[user]
+name = Svetlin Ralchev
+email = iamralch@users.noreply.github.com
+signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGrf/V6NTFuHFXwiuGtA6cZVKOHV1kqnKWEYcc5H5NWu
 [includeIf "hasconfig:remote.*.url:git@github.com:iamralch/**"]
 path = ~/.config/git/config_prv.toml
 [includeIf "hasconfig:remote.*.url:git@github.com:hellohippo/**"]
