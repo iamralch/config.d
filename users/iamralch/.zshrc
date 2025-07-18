@@ -25,7 +25,7 @@ export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
 export GOOGLE_CLOUD_PROJECT="gen-lang-client-0936563388"
 
 if ssh-add -l >/dev/null 2>&1; then
-# shellcheck disable=SC2155
+  # shellcheck disable=SC2155
   export GH_TOKEN="$(gh auth token)"
 fi
 
