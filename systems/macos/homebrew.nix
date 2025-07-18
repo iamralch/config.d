@@ -2,7 +2,7 @@ _: {
   homebrew = {
     enable = true;
     brews = [
-      "opencode-ai/tap/opencode"
+      "gemini-cli"
     ];
     casks = [
       "1password"
