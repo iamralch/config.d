@@ -80,14 +80,12 @@ if [ "$(uname)" = "Darwin" ]; then
   eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
 fi
 
-eval "$(q init zsh pre --rcfile zshrc)"
 eval "$(fzf --zsh)"
 eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(batman --export-env)"
-eval "$(q init zsh post --rcfile zshrc)"
 
 # key bindings
 bindkey -v
