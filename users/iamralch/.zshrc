@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# Set up MacOS tools
+if [ "$(uname)" = "Darwin" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
+fi
+
 
 # Configure the language
 export LANG="en_US.UTF-8"
@@ -17,6 +23,11 @@ export GOPATH="$HOME/.local/share/go"
 export PSQLRC="$HOME/.config/pspg/psqlrc"
 export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
 export GOOGLE_CLOUD_PROJECT="gen-lang-client-0936563388"
+
+if ssh-add -l >/dev/null 2>&1; then
+# shellcheck disable=SC2155
+  export GH_TOKEN="$(gh auth token)"
+fi
 
 # Set the application configuration files
 export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
@@ -74,11 +85,6 @@ zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 zstyle ':fzf-tab:complete:cd:*' fzf-command fzf-tmux
 # shellcheck disable=2016
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always --icons $realpath'
-
-# Set up MacOS tools
-if [ "$(uname)" = "Darwin" ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
-fi
 
 eval "$(fzf --zsh)"
 eval "$(atuin init zsh)"
