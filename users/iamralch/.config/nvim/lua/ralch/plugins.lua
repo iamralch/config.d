@@ -14,7 +14,7 @@ return {
   -- Code Runner
   { import = "astrocommunity.code-runner.overseer-nvim" },
 
-  -- Colorscheme
+  -- Color Scheme
   { import = "astrocommunity.colorscheme.catppuccin" },
 
   -- Diagnostics
