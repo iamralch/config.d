@@ -1,8 +1,8 @@
 { pkgs, ... }: {
   environment.systemPackages = with pkgs; [
     gh
+    sd
     usql
-
     stow
     nixd
     deadnix
