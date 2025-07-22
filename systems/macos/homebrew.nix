@@ -2,6 +2,7 @@ _: {
   homebrew = {
     enable = true;
     brews = [
+      "codex"
       "gemini-cli"
     ];
     casks = [
