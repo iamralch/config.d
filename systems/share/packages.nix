@@ -6,6 +6,7 @@
     stow
     nixd
     deadnix
+    exiftool
     statix
     atlas
     atuin
