@@ -27,9 +27,6 @@ require("lazy").setup({
         g = {
           python3_host_prog = "/run/current-system/sw/bin/python3",
         },
-        b = {
-          copilot_suggestion_hidden = true,
-        },
       },
     },
   },
