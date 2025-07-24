@@ -3,8 +3,8 @@ return {
   "AstroNvim/astrocommunity",
 
   -- Completion
+  { import = "astrocommunity.completion.copilot-cmp" },
   { import = "astrocommunity.completion.blink-cmp-git" },
-  { import = "astrocommunity.completion.copilot-lua-cmp" },
 
   -- Editing Support
   { import = "astrocommunity.editing-support.codecompanion-nvim" },
