@@ -2,14 +2,13 @@
   "base_keymap": "VSCode",
   "vim_mode": true,
   "vim": {
-    "enable_vim_sneak": true
+    "toggle_relative_line_numbers": true
   },
   "theme": {
     "mode": "dark",
     "dark": "Catppuccin Mocha",
     "light": "Catppuccin Latte"
   },
-  "icon_theme": "Catppuccin Mocha",
   "ui_font_size": 18,
   "buffer_font_size": 15,
   "buffer_font_family": "JetBrainsMono Nerd Font",
@@ -42,14 +41,13 @@
     "button": "never"
   },
   "features": {
-    "copilot": true
+    "edit_prediction_provider": "copilot"
   },
   "agent": {
     "default_model": {
       "provider": "google",
       "model": "gemini-2.5-flash"
-    },
-    "version": "2"
+    }
   },
   "telemetry": {
     "diagnostics": false,
@@ -75,22 +73,12 @@
           "name": "ruff"
         }
       },
-      "language_servers": [
-        "pyright",
-        "ruff"
-      ]
+      "language_servers": ["pyright", "ruff"]
     }
   },
   "file_types": {
-    "Dockerfile": [
-      "Dockerfile",
-      "Dockerfile.*"
-    ],
-    "JSON": [
-      "json",
-      "jsonc",
-      "*.code-snippets"
-    ]
+    "Dockerfile": ["Dockerfile", "Dockerfile.*"],
+    "JSON": ["json", "jsonc", "*.code-snippets"]
   },
   "project_panel": {
     "button": false
