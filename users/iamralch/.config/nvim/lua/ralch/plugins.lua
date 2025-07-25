@@ -8,7 +8,6 @@ return {
 
   -- Editing Support
   { import = "astrocommunity.editing-support.mcphub-nvim" },
-  { import = "astrocommunity.editing-support.comment-box-nvim" },
   { import = "astrocommunity.editing-support.vector-code-nvim" },
   { import = "astrocommunity.editing-support.codecompanion-nvim" },
 
