@@ -1,11 +1,5 @@
 #!/bin/bash
 #
-# Set up MacOS tools
-if [ "$(uname)" = "Darwin" ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
-fi
-
-
 # Configure the language
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -34,6 +28,11 @@ export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.toml"
 
+# Set up MacOS tools
+if [ "$(uname)" = "Darwin" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
+fi
+
 # configure languages
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:$HOME/.npm/bin"
@@ -41,6 +40,11 @@ export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.pyenv/bin"
 export PATH="$PATH:$HOME/.orbstack/bin"
+
+# Set up MacOS tools
+if [ "$(uname)" = "Darwin" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
+fi
 
 # limit how much of history to download
 zinit ice depth=1
