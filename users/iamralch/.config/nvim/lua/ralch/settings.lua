@@ -35,4 +35,29 @@ return {
       }
     end,
   },
+  {
+    "olimorris/codecompanion.nvim",
+    opts = {
+      strategies = {
+        chat = {
+          adapter = {
+            name = "copilot",
+            model = "claude-opus-4",
+          },
+        },
+        inline = {
+          adapter = {
+            name = "copilot",
+            model = "claude-sonnet-4",
+          },
+        },
+        cmd = {
+          adapter = {
+            name = "copilot",
+            model = "claude-sonnet-3-7-latest",
+          },
+        },
+      },
+    },
+  },
 }
