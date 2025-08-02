@@ -15,6 +15,7 @@ return {
         "shellcheck",
         "superhtml",
         "harper-ls",
+        "gofumpt",
         "gopls",
         "zls",
 
