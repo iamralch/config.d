@@ -5,17 +5,18 @@ set -g default-shell "/bin/zsh"
 # set terminal options
 set -g default-terminal "tmux-256color"
 # set the terminal-overrides
-set-option -sa terminal-overrides ",tmux-256color:RGB"
+# set -sa terminal-overrides ",tmux-256color:RGB"
+set -ga terminal-features '*:RGB:hyperlinks:usstyle'
 
 # set the titles dynamically
-set-option -g set-titles on
-set-option -g focus-events on
+set -g set-titles on
+set -g focus-events on
 
 # sound and indicators
-set-option -g bell-action none
-set-option -g visual-bell off
-set-option -g visual-activity off
-set-option -g visual-silence off
+set -g bell-action none
+set -g visual-bell off
+set -g visual-activity off
+set -g visual-silence off
 
 # status line
 set -g status-justify left
