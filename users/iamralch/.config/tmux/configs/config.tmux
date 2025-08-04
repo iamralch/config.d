@@ -11,7 +11,7 @@ set -ga terminal-features '*:RGB:hyperlinks:usstyle'
 # set the titles dynamically
 set -g set-titles on
 set -g focus-events on
-
+set -g allow-rename on
 # sound and indicators
 set -g bell-action none
 set -g visual-bell off
