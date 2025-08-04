@@ -1,17 +1,16 @@
 # vim:ft=tmux
 
-# shell options
-set -g default-shell "/bin/zsh"
 # set terminal options
 set -g default-terminal "tmux-256color"
 # set the terminal-overrides
-# set -sa terminal-overrides ",tmux-256color:RGB"
+set -sa terminal-overrides ",tmux-256color:RGB"
 set -ga terminal-features '*:RGB:hyperlinks:usstyle'
 
 # set the titles dynamically
 set -g set-titles on
 set -g focus-events on
 set -g allow-rename on
+
 # sound and indicators
 set -g bell-action none
 set -g visual-bell off
