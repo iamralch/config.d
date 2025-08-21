@@ -223,3 +223,10 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "t", function()
 	-- update the mouse position
 	mouse.focus()
 end)
+
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "o", function()
+	-- start the app
+	hs.application.launchOrFocus("Books")
+	-- update the mouse position
+	mouse.focus()
+end)
