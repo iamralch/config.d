@@ -31,9 +31,6 @@ return {
   { import = "astrocommunity.motion.mini-surround" },
   { import = "astrocommunity.motion.portal-nvim" },
 
-  -- Git
-  { import = "astrocommunity.git.mini-diff" },
-
   -- Language Packs
   { import = "astrocommunity.pack.ansible" },
   { import = "astrocommunity.pack.bash" },
