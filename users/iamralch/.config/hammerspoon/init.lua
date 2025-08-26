@@ -230,3 +230,10 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "o", function()
 	-- update the mouse position
 	mouse.focus()
 end)
+
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "l", function()
+	-- start the app
+	hs.application.launchOrFocus("Amazon Kindle")
+	-- update the mouse position
+	mouse.focus()
+end)
