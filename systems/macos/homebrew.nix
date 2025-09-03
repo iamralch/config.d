@@ -2,13 +2,11 @@ _: {
   homebrew = {
     enable = true;
     brews = [
-      "codex"
       "gemini-cli"
     ];
     casks = [
       "1password"
       "1password-cli"
-      "amazon-q"
       "appcleaner"
       "brave-browser"
       "devpod"
@@ -25,7 +23,7 @@ _: {
       "postico"
       "raindropio"
       "raycast"
-      "shortcat"
+      "shortcut"
       "slack"
       "spotify"
       "superkey"
