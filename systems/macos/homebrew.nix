@@ -23,7 +23,7 @@ _: {
       "postico"
       "raindropio"
       "raycast"
-      "shortcut"
+      "shortcat"
       "slack"
       "spotify"
       "superkey"
