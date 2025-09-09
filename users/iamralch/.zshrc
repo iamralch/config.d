@@ -57,6 +57,7 @@ zinit light jeffreytse/zsh-vi-mode
 zinit light Aloxaf/fzf-tab
 # Add personal plugins
 zinit load zsh-contrib/zsh-fzf
+zinit load zsh-contrib/zsh-tmux
 
 if [[ "$TERM" != "xterm-ghossty" ]]; then
   zinit load zsh-contrib/zsh-vivid
