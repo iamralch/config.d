@@ -88,7 +88,7 @@
   "toggleterm.nvim": { "branch": "main", "commit": "50ea089fc548917cc3cc16b46a8211833b9e3c7c" },
   "trouble.nvim": { "branch": "main", "commit": "85bedb7eb7fa331a2ccbecb9202d8abba64d37b3" },
   "tsc.nvim": { "branch": "main", "commit": "8c1b4ec6a48d038a79ced8674cb15e7db6dd8ef0" },
-  "venv-selector.nvim": { "branch": "main", "commit": "b82a820194405f04344532a17fce8cc724627ffe" },
+  "venv-selector.nvim": { "branch": "main", "commit": "fdc7f48b069fff88c9f280abd9acdb48b7fc683a" },
   "vim-illuminate": { "branch": "master", "commit": "0d1e93684da00ab7c057410fecfc24f434698898" },
   "vim-jjdescription": { "branch": "main", "commit": "c99bff42e7afff356514ae5b3f225665bf10b57c" },
   "which-key.nvim": { "branch": "main", "commit": "fcbf4eea17cb299c02557d576f0d568878e354a4" }
