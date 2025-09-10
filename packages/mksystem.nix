@@ -36,10 +36,12 @@ in system-manager {
     ../users/${user}/${system-name}.nix
     # home-manager configuration
     home-manager.home-manager {
-      home-manager.useGlobalPkgs = true;
-      home-manager.useUserPackages = true;
-      home-manager.users.${user} = import ../users/${user}/home.nix {
-        inputs = inputs;
+      home-manager = {
+        useGlobalPkgs = true;
+        useUserPackages = true;
+        users.${user} = import ../users/${user}/home.nix {
+          inherit inputs;
+        };
       };
     }
   ];
