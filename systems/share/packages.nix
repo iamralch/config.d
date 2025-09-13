@@ -18,7 +18,6 @@
     bottom
     buf
     bun
-    cargo
     cfssl
     curl
     delta

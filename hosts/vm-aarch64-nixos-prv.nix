@@ -3,9 +3,9 @@
   system.stateVersion = "25.05";
 
   # Network Config
-  networking.hostName = "vm-aarch64-nixos-dkr";
+  networking.hostName = "vm-docker-nixos-prv";
   networking.domain = "ralch.docker";
 
-  # Container Config
+  # Boot Configuration
   boot.isContainer = true;
 }

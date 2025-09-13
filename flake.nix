@@ -29,9 +29,6 @@
       inherit overlays nixpkgs inputs;
     };
 
-    mkDocker = import ./packages/mkdocker.nix {
-      inherit overlays nixpkgs inputs;
-    };
   in {
     darwinConfigurations.bm-macbook-pro-m1-prv = mkSystem "bm-macbook-pro-m1-prv" {
       system = "aarch64-darwin";
@@ -40,11 +37,6 @@
 
     darwinConfigurations.bm-macbook-pro-m1-wrk = mkSystem "bm-macbook-pro-m1-wrk" {
       system = "aarch64-darwin";
-      user   = "iamralch";
-    };
-
-    dockerConfigurations.vm-aarch64-nixos-dkr = mkDocker "vm-aarch64-nixos-dkr" {
-      system = "aarch64-linux";
       user   = "iamralch";
     };
   };
