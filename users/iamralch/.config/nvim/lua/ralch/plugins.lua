@@ -62,7 +62,6 @@ return {
 
   -- Scrolling
   { import = "astrocommunity.scrolling.neoscroll-nvim" },
-  { import = "astrocommunity.scrolling.satellite-nvim" },
 
   -- Testing
   { import = "astrocommunity.test.neotest" },
