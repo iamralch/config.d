@@ -9,6 +9,7 @@ _: {
       "1password-cli"
       "appcleaner"
       "brave-browser"
+      "firefox@developer-edition"
       "devpod"
       "discord"
       "free-ruler"
