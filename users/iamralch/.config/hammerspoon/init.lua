@@ -203,6 +203,13 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "b", function()
 	mouse.focus()
 end)
 
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "x", function()
+	-- start the app
+	hs.application.launchOrFocus("Firefox Developer Edition")
+	-- update the mouse position
+	mouse.focus()
+end)
+
 hs.hotkey.bind({ "ctrl", "alt", "shift" }, "g", function()
 	-- start the app
 	hs.application.launchOrFocus("Ghostty")
