@@ -5,5 +5,6 @@
     devpod
     ghostty
     zed-editor
+    firefox-devedition
   ];
 }
