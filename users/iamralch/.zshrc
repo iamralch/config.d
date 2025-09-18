@@ -99,7 +99,7 @@ eval "$(zoxide init --cmd cd zsh)"
 eval "$(batman --export-env)"
 
 # key bindings
-bindkey -v
+bindkey -e
 
 # we have to bind the history search to the same keys as the vi-mode
 zle -N history-incremental-search-backward  _atuin_search_viins
