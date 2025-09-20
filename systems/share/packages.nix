@@ -5,6 +5,7 @@
     usql
     stow
     nixd
+    nixfmt-rfc-style
     deadnix
     exiftool
     statix
