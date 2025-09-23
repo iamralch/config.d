@@ -1,7 +1,9 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     gh
     sd
+    sshfs
     usql
     stow
     nixd
@@ -70,11 +72,13 @@
     pspg
     pstree
     pwgen
-    (python3.withPackages (ps: with ps; [
-      pip
-      pipx
-      pynvim
-    ]))
+    (python3.withPackages (
+      ps: with ps; [
+        pip
+        pipx
+        pynvim
+      ]
+    ))
     readline
     ripgrep
     ruby
