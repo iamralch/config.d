@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   # Be careful updating this.
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];

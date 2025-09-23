@@ -1,7 +1,11 @@
 # This function creates a NixOS system based on our VM setup for a
 # particular architecture.
 
-{ nixpkgs, overlays, inputs }:
+{
+  nixpkgs,
+  overlays,
+  inputs,
+}:
 
 name:
 {
@@ -16,9 +20,11 @@ let
   system-manager = if isDarwin then inputs.nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
   system-name = if isDarwin then "macos" else "nixos";
   # Home Manager
-  home-manager = if isDarwin then inputs.home-manager.darwinModules else inputs.home-manager.nixosModules;
+  home-manager =
+    if isDarwin then inputs.home-manager.darwinModules else inputs.home-manager.nixosModules;
   host-name = name;
-in system-manager {
+in
+system-manager {
   inherit system;
 
   modules = [
@@ -35,7 +41,8 @@ in system-manager {
     # user configuration
     ../users/${user}/${system-name}.nix
     # home-manager configuration
-    home-manager.home-manager {
+    home-manager.home-manager
+    {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;

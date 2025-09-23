@@ -1,4 +1,5 @@
-{ ... }: {
+{ ... }:
+{
   # NixOS release from which default
   system.stateVersion = 6;
 

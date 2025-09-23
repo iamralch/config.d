@@ -1,6 +1,7 @@
 { ... }:
 
-{ ... }: {
+{ ... }:
+{
   # Support
   xdg.enable = true;
 
@@ -8,5 +9,5 @@
   home.stateVersion = "25.05";
 
   # User Packages
-  home.packages = [];
+  home.packages = [ ];
 }

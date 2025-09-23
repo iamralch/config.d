@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   system.primaryUser = "iamralch";
   # user configuration
   users.users.iamralch = {
