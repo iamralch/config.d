@@ -92,14 +92,16 @@ zstyle ':fzf-tab:complete:cd:*' fzf-command fzf-tmux
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always --icons $realpath'
 
 eval "$(fzf --zsh)"
-eval "$(atuin init zsh)"
 eval "$(direnv hook zsh)"
 eval "$(starship init zsh)"
 eval "$(zoxide init --cmd cd zsh)"
 eval "$(batman --export-env)"
+eval "$(atuin init zsh)"
 
 # key bindings
-bindkey -e
+bindkey -v
 
-# we have to bind the history search to the same keys as the vi-mode
-zle -N history-incremental-search-backward  _atuin_search_viins
+function zvm_after_init() {
+  zvm_bindkey viins '^R' atuin-search
+  zvm_bindkey vicmd '^R' atuin-search
+}
