@@ -1,13 +1,13 @@
-{ ... }:
+_:
 
-{ ... }:
-{
+_: {
   # Support
   xdg.enable = true;
 
-  # Home Manager
-  home.stateVersion = "25.05";
-
-  # User Packages
-  home.packages = [ ];
+  home = {
+    # Home Manager
+    stateVersion = "25.05";
+    # User Packages
+    packages = [ ];
+  };
 }

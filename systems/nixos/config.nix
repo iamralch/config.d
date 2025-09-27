@@ -10,6 +10,10 @@ _: {
   };
 
   # We use proprietary software on this machine
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.allowUnsupportedSystem = true;
+  nixpkgs = {
+    config = {
+      allowUnfree = true;
+      allowUnsupportedSystem = true;
+    };
+  };
 }

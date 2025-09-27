@@ -1,7 +1,11 @@
 { pkgs, ... }:
 {
-  programs.zsh.enable = true;
-  programs.zsh.shellInit = ''
-    source ${pkgs.zinit}/share/zinit/zinit.zsh
-  '';
+  programs = {
+    zsh = {
+      enable = true;
+      shellInit = ''
+        source ${pkgs.zinit}/share/zinit/zinit.zsh
+      '';
+    };
+  };
 }
