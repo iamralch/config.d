@@ -98,9 +98,6 @@ eval "$(zoxide init --cmd cd zsh)"
 eval "$(batman --export-env)"
 eval "$(atuin init zsh)"
 
-# key bindings
-bindkey -v
-
 function zvm_after_init() {
   zvm_bindkey viins '^R' atuin-search
   zvm_bindkey vicmd '^R' atuin-search
