@@ -1,9 +1,6 @@
 _: {
   homebrew = {
     enable = true;
-    brews = [
-      "gemini-cli"
-    ];
     casks = [
       "1password"
       "1password-cli"
