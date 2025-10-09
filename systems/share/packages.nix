@@ -76,6 +76,7 @@
       ps: with ps; [
         pip
         pipx
+        conda
         pynvim
       ]
     ))
