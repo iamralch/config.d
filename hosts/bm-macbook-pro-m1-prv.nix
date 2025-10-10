@@ -8,4 +8,11 @@ _: {
     hostName = "macbook";
     domain = "ralch.local";
   };
+
+  homebrew = {
+    casks = [
+      "discord"
+      "plex-media-server"
+    ];
+  };
 }
