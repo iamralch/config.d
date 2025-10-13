@@ -1,6 +1,12 @@
 _: {
   homebrew = {
     enable = true;
+
+    onActivation = {
+      upgrade = true;
+      cleanup = "uninstall";
+    };
+
     casks = [
       "1password"
       "1password-cli"
