@@ -59,6 +59,9 @@
     mermaid-cli
     neovim
     nmap
+    bun
+    pnpm
+    yarn
     nodePackages.neovim
     nodePackages.npm
     nodePackages.pnpm
