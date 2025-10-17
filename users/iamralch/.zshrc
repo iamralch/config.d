@@ -8,9 +8,9 @@ export LC_CTYPE="en_US.UTF-8"
 # Configure the editor
 export EDITOR="nvim"
 # Set the configuration directories
-export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_CONFIG_HOME="$HOME/.config"
 # Set the directory we want to store zinit and plugins
-export ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 
 # shellcheck disable=SC2155
 export GOPATH="$HOME/.local/share/go"
@@ -27,6 +27,7 @@ fi
 export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.toml"
+export MATPLOTLIBRC="$XDG_CONFIG_HOME/matplotlib"
 
 # Set up MacOS tools
 if [ "$(uname)" = "Darwin" ]; then
