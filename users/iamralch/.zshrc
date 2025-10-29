@@ -14,6 +14,7 @@ export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 
 # shellcheck disable=SC2155
 export GOPATH="$HOME/.local/share/go"
+export NPMPATH="$HOME/.local/share/npm"
 export PSQLRC="$HOME/.config/pspg/psqlrc"
 export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
 export GOOGLE_CLOUD_PROJECT="gen-lang-client-0936563388"
@@ -27,6 +28,7 @@ fi
 export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.toml"
+export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
 export MATPLOTLIBRC="$XDG_CONFIG_HOME/matplotlib"
 
 # Set up MacOS tools
@@ -36,7 +38,7 @@ fi
 
 # configure languages
 export PATH="$PATH:$GOPATH/bin"
-export PATH="$PATH:$HOME/.npm/bin"
+export PATH="$PATH:$NPMPATH/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.pyenv/bin"
