@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, upkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
     gh
@@ -75,7 +75,7 @@
     pspg
     pstree
     pwgen
-    (python3.withPackages (
+    (upkgs.python3.withPackages (
       ps: with ps; [
         pip
         pipx

@@ -10,13 +10,4 @@ _: {
       ];
     };
   };
-
-  # We use proprietary software on this machine
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowBroken = true;
-      allowUnsupportedSystem = true;
-    };
-  };
 }

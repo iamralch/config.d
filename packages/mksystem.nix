@@ -3,6 +3,7 @@
 
 {
   nixpkgs,
+  nixpkgs-unstable,
   overlays,
   inputs,
 }:
@@ -17,15 +18,33 @@ let
   isDarwin = nixpkgs.lib.hasSuffix "darwin" system;
 
   # System Modules
-  system-manager = if isDarwin then inputs.nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
   system-name = if isDarwin then "macos" else "nixos";
+  system-manager = if isDarwin then inputs.nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
   # Home Manager
+  host-name = name;
   home-manager =
     if isDarwin then inputs.home-manager.darwinModules else inputs.home-manager.nixosModules;
-  host-name = name;
+
+  pkgs = import nixpkgs {
+    inherit system;
+    config = {
+      allowUnfree = true;
+      allowBroken = true;
+      allowUnsupportedSystem = true;
+    };
+  };
+
+  upkgs = import nixpkgs-unstable {
+    inherit system;
+    inherit (pkgs) config;
+  };
 in
 system-manager {
   inherit system;
+
+  specialArgs = {
+    inherit inputs pkgs upkgs;
+  };
 
   modules = [
     # Apply our overlays. Overlays are keyed by system type so we have
@@ -46,8 +65,9 @@ system-manager {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
+        extraSpecialArgs = { inherit inputs upkgs; };
         users.${user} = import ../users/${user}/home.nix {
-          inherit inputs;
+          inherit inputs upkgs;
         };
       };
     }

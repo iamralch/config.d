@@ -8,12 +8,4 @@ _: {
       options = "--delete-older-than 10d";
     };
   };
-
-  # We use proprietary software on this machine
-  nixpkgs = {
-    config = {
-      allowUnfree = true;
-      allowUnsupportedSystem = true;
-    };
-  };
 }

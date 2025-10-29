@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
@@ -16,13 +17,18 @@
   };
 
   outputs =
-    { nixpkgs, ... }@inputs:
+    { nixpkgs, nixpkgs-unstable, ... }@inputs:
     let
       # Overlays is the list of overlays we want to apply from flake inputs.
       overlays = [ ];
 
       mkSystem = import ./packages/mksystem.nix {
-        inherit overlays nixpkgs inputs;
+        inherit
+          overlays
+          nixpkgs
+          nixpkgs-unstable
+          inputs
+          ;
       };
 
     in
