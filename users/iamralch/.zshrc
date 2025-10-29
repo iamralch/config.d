@@ -43,6 +43,7 @@ export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.pyenv/bin"
 export PATH="$PATH:$HOME/.orbstack/bin"
+export PATH="$PATH:$HOME/.opencode/bin"
 
 # Set up MacOS tools
 if [ "$(uname)" = "Darwin" ]; then
