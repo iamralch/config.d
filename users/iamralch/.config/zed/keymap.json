@@ -48,7 +48,7 @@
       "shift-q": "pane::CloseActiveItem",
       "ctrl-q": "pane::CloseActiveItem",
       "space b d": "pane::CloseActiveItem",
-      "space b o": "pane::CloseInactiveItems",
+      "space b o": "pane::CloseOtherItems",
       "ctrl-s": "workspace::Save",
       "space space": "file_finder::Toggle",
       "space /": "pane::DeploySearch",
@@ -143,14 +143,8 @@
   {
     "context": "vim_mode == normal || vim_mode == visual",
     "bindings": {
-      "s": [
-        "vim::PushSneak",
-        {}
-      ],
-      "S": [
-        "vim::PushSneakBackward",
-        {}
-      ]
+      "s": ["vim::PushSneak", {}],
+      "S": ["vim::PushSneakBackward", {}]
     }
   }
 ]
