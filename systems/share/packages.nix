@@ -1,6 +1,6 @@
-{ upkgs, ... }:
+{ pkgs, upkgs, ... }:
 {
-  environment.systemPackages = with upkgs; [
+  environment.systemPackages = with pkgs; [
     gh
     sd
     sshfs
@@ -75,7 +75,7 @@
     pspg
     pstree
     pwgen
-    (python3.withPackages (
+    (upkgs.python3.withPackages (
       ps: with ps; [
         pip
         pipx
@@ -109,7 +109,7 @@
     zsh
   ];
 
-  fonts.packages = with upkgs; [
+  fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
   ];
 }
