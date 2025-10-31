@@ -1,6 +1,7 @@
 {
   pkgs,
-  extras,
+  upkgs,
+  epkgs,
   ...
 }:
 {
@@ -79,7 +80,7 @@
     pspg
     pstree
     pwgen
-    (extras.unstable.python3.withPackages (
+    (upkgs.python3.withPackages (
       ps: with ps; [
         pip
         pipx
@@ -111,7 +112,8 @@
     zip
     zoxide
     zsh
-    extras.ai.opencode
+    epkgs.ai.spec-kit
+    epkgs.ai.opencode
   ];
 
   fonts.packages = with pkgs; [
