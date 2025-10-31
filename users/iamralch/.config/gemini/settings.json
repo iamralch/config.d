@@ -1,0 +1,35 @@
+{
+  "ui": {
+    "theme": "Atom One",
+    "hideBanner": true,
+    "hideTips": true,
+    "useFullWidth": true,
+    "showMemoryUsage": true,
+    "showLineNumbers": true,
+    "enablePromptCompletion": true
+  },
+  "general": {
+    "vimMode": true,
+    "preferredEditor": "neovim"
+  },
+  "privacy": {
+    "usageStatisticsEnabled": false
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "tools": {
+    "shell": {
+      "showColor": true
+    }
+  },
+  "context": {
+    "fileName": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "GEMINI.md"
+    ]
+  }
+}

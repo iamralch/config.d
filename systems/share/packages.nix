@@ -114,6 +114,8 @@
     zsh
     epkgs.ai.spec-kit
     epkgs.ai.opencode
+    epkgs.ai.gemini-cli
+    epkgs.ai.copilot-cli
   ];
 
   fonts.packages = with pkgs; [

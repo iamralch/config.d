@@ -17,7 +17,6 @@ export GOPATH="$HOME/.local/share/go"
 export NPMPATH="$HOME/.local/share/npm"
 export PSQLRC="$HOME/.config/pspg/psqlrc"
 export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
-export GOOGLE_CLOUD_PROJECT="gen-lang-client-0936563388"
 
 if ssh-add -l >/dev/null 2>&1; then
   # shellcheck disable=SC2155
