@@ -5,6 +5,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
+
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -17,7 +19,12 @@
   };
 
   outputs =
-    { nixpkgs, nixpkgs-unstable, ... }@inputs:
+    {
+      nixpkgs,
+      nixpkgs-unstable,
+      nix-ai-tools,
+      ...
+    }@inputs:
     let
       # Overlays is the list of overlays we want to apply from flake inputs.
       overlays = [ ];
@@ -27,6 +34,7 @@
           overlays
           nixpkgs
           nixpkgs-unstable
+          nix-ai-tools
           inputs
           ;
       };

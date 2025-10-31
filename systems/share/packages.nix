@@ -1,4 +1,8 @@
-{ pkgs, upkgs, ... }:
+{
+  pkgs,
+  extras,
+  ...
+}:
 {
   environment.systemPackages = with pkgs; [
     gh
@@ -75,7 +79,7 @@
     pspg
     pstree
     pwgen
-    (upkgs.python3.withPackages (
+    (extras.unstable.python3.withPackages (
       ps: with ps; [
         pip
         pipx
@@ -107,6 +111,7 @@
     zip
     zoxide
     zsh
+    extras.ai.opencode
   ];
 
   fonts.packages = with pkgs; [
