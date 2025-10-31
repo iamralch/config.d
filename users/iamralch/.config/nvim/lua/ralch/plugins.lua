@@ -7,6 +7,7 @@ return {
   { import = "astrocommunity.completion.blink-cmp-git" },
 
   -- Editing Support
+  { import = "astrocommunity.ai.opencode-nvim" },
   { import = "astrocommunity.editing-support.vector-code-nvim" },
   { import = "astrocommunity.editing-support.refactoring-nvim" },
   { import = "astrocommunity.editing-support.codecompanion-nvim" },
