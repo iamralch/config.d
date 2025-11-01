@@ -116,6 +116,7 @@
     epkgs.ai.opencode
     epkgs.ai.gemini-cli
     epkgs.ai.copilot-cli
+    epkgs.ai.claude-code
   ];
 
   fonts.packages = with pkgs; [
