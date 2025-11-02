@@ -4,6 +4,7 @@
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
+export TMP_CONFIG="$TMPDIR/config"
 
 # Configure the editor
 export EDITOR="nvim"
@@ -16,7 +17,6 @@ export ANONYMIZED_TELEMETRY=false
 
 # shellcheck disable=SC2155
 export GOPATH="$HOME/.local/share/go"
-export NPMPATH="$HOME/.local/share/npm"
 export PSQLRC="$HOME/.config/pspg/psqlrc"
 export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
 
@@ -25,10 +25,15 @@ if ssh-add -l >/dev/null 2>&1; then
   export GITHUB_PERSONAL_ACCESS_TOKEN="$(gh auth token)"
 fi
 
+if [ -f "$TMP_CONFIG" ]; then
+  eval "$(cat "$TMP_CONFIG")"
+fi
+
 # Set the application configuration files
 export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
 export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.toml"
+export NPM_PATH="$HOME/.local/share/npm"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
 export MATPLOTLIBRC="$XDG_CONFIG_HOME/matplotlib"
 
@@ -39,7 +44,7 @@ fi
 
 # configure languages
 export PATH="$PATH:$GOPATH/bin"
-export PATH="$PATH:$NPMPATH/bin"
+export PATH="$PATH:$NPM_PATH/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.pyenv/bin"
