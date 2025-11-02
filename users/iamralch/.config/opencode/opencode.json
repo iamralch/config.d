@@ -14,12 +14,16 @@
       "type": "remote",
       "url": "https://mcp.context7.com/mcp",
       "headers": {
-        "Authorization": "Bearer {env:CONTEXT7_API_KEY}"
+        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
       }
     },
     "playwright": {
       "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp"]
+      "command": [
+        "npx",
+        "-y",
+        "@playwright/mcp"
+      ]
     },
     "filesystem": {
       "type": "local",
@@ -40,7 +44,19 @@
     },
     "firecrawl": {
       "type": "local",
-      "command": ["npx", "-y", "firecrawl-mcp"]
+      "command": [
+        "npx",
+        "-y",
+        "firecrawl-mcp"
+      ]
+    },
+    "figma": {
+      "type": "local",
+      "command": [
+        "npx",
+        "figma-developer-mcp",
+        "--stdio"
+      ]
     }
   }
 }

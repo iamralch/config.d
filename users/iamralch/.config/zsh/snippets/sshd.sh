@@ -56,6 +56,8 @@ ssh-auth() {
 
 ssh-auth-token() {
   # shellcheck disable=SC2155
+  export FIGMA_API_KEY="$(op read 'op://Personal/Figma/API Key')"
+  # shellcheck disable=SC2155
   export CONTEXT7_API_KEY="$(op read 'op://Personal/Context7/API Key')"
   # shellcheck disable=SC2155
   export FIRECRAWL_API_KEY="$(op read 'op://Personal/Firecrawl/API Key')"
