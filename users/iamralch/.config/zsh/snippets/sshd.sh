@@ -54,6 +54,15 @@ ssh-auth() {
   rm -f "$KEY_PATH"
 }
 
+ssh-auth-token() {
+  # shellcheck disable=SC2155
+  export CONTEXT7_API_KEY="$(op read 'op://Personal/Context7/API Key')"
+  # shellcheck disable=SC2155
+  export FIRECRAWL_API_KEY="$(op read 'op://Personal/Firecrawl/API Key')"
+  # shellcheck disable=SC2155
+  export GITHUB_PERSONAL_ACCESS_TOKEN="$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')"
+}
+
 ssh-tunnel() {
   ssh -p 443 -R0:localhost:"$1" qr@a.pinggy.io
 }

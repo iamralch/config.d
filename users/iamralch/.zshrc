@@ -20,7 +20,7 @@ export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
 
 if ssh-add -l >/dev/null 2>&1; then
   # shellcheck disable=SC2155
-  export GH_TOKEN="$(gh auth token)"
+  export GITHUB_PERSONAL_ACCESS_TOKEN="$(gh auth token)"
 fi
 
 # Set the application configuration files
