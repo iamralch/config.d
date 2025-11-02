@@ -40,7 +40,7 @@ let
     inherit (pkgs) config;
   };
 
-  epkgs = {
+  extras = {
     ai = nix-ai-tools.packages.${system};
   };
 in
@@ -50,7 +50,7 @@ system-manager {
   specialArgs = {
     inherit
       inputs
-      epkgs
+      extras
       upkgs
       pkgs
       ;
@@ -75,12 +75,12 @@ system-manager {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        extraSpecialArgs = { inherit inputs upkgs epkgs; };
+        extraSpecialArgs = { inherit inputs extras upkgs; };
         users.${user} = import ../users/${user}/home.nix {
           inherit
             inputs
+            extras
             upkgs
-            epkgs
             pkgs
             ;
         };

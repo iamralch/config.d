@@ -1,7 +1,7 @@
 {
   pkgs,
   upkgs,
-  epkgs,
+  extras,
   ...
 }:
 {
@@ -112,11 +112,7 @@
     zip
     zoxide
     zsh
-    epkgs.ai.spec-kit
-    epkgs.ai.opencode
-    epkgs.ai.gemini-cli
-    epkgs.ai.copilot-cli
-    epkgs.ai.claude-code
+    extras.ai.spec-kit
   ];
 
   fonts.packages = with pkgs; [
