@@ -11,6 +11,8 @@ export EDITOR="nvim"
 export XDG_CONFIG_HOME="$HOME/.config"
 # Set the directory we want to store zinit and plugins
 export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
+# Disable any telemetry
+export ANONYMIZED_TELEMETRY=false
 
 # shellcheck disable=SC2155
 export GOPATH="$HOME/.local/share/go"

@@ -46,7 +46,6 @@
     git-lfs
     jjui
     jujutsu
-    vectorcode
     gnumake
     gnused
     go
@@ -80,7 +79,8 @@
     pspg
     pstree
     pwgen
-    (upkgs.python3.withPackages (
+    upkgs.vectorcode
+    (upkgs.python313.withPackages (
       ps: with ps; [
         pip
         pipx
