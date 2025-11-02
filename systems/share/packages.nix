@@ -79,7 +79,6 @@
     pspg
     pstree
     pwgen
-    upkgs.vectorcode
     (upkgs.python313.withPackages (
       ps: with ps; [
         pip
