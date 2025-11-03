@@ -64,5 +64,8 @@
         "--stdio"
       ]
     }
-  }
+  },
+  "plugin": [
+    "opencode-gemini-auth"
+  ]
 }
