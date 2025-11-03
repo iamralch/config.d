@@ -7,4 +7,5 @@ result-*
 .null-ls_*
 
 # Ignore temporary directories
+logs
 opencodetmp/

@@ -1,6 +1,6 @@
 {
   "ui": {
-    "theme": "./thems/catppuccin-mocha.json",
+    "theme": "$HOME/.config/gemini/themes/catppuccin-mocha.json",
     "hideBanner": true,
     "hideTips": true,
     "useFullWidth": true,

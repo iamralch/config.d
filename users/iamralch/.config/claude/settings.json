@@ -1,7 +1,7 @@
 {
   "statusLine": {
     "type": "command",
-    "command": "npx -y @owloops/claude-powerline@latest --theme=nord"
+    "command": "npx -y @owloops/claude-powerline@latest --theme=tokyo-night"
   },
   "mcpServers": {
     "vectorcode": {
@@ -25,7 +25,10 @@
     "playwright": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@playwright/mcp"]
+      "args": [
+        "-y",
+        "@playwright/mcp"
+      ]
     },
     "filesystem": {
       "type": "stdio",
@@ -39,17 +42,26 @@
     "sequential-thinking": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "firecrawl": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "firecrawl-mcp"]
+      "args": [
+        "-y",
+        "firecrawl-mcp"
+      ]
     },
     "figma": {
       "type": "stdio",
       "command": "npx",
-      "args": ["figma-developer-mcp", "--stdio"]
+      "args": [
+        "figma-developer-mcp",
+        "--stdio"
+      ]
     }
   }
 }
