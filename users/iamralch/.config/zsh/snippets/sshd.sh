@@ -64,7 +64,8 @@ ssh-auth() {
 		echo "export GITHUB_PERSONAL_ACCESS_TOKEN=\"$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')\""
 	} >"$TMP_CONFIG"
 
-	eval "$(cat "$TMP_CONFIG")"
+	# shellcheck disable=SC1090
+	source "$TMP_CONFIG"
 }
 
 ssh-tunnel() {

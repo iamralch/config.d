@@ -26,7 +26,8 @@ if ssh-add -l >/dev/null 2>&1; then
 fi
 
 if [ -f "$TMP_CONFIG" ]; then
-  eval "$(cat "$TMP_CONFIG")"
+	# shellcheck disable=SC1090
+	source "$TMP_CONFIG"
 fi
 
 # Set the application configuration files
