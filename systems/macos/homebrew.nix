@@ -36,7 +36,6 @@ _: {
     ];
 
     masApps = {
-      "Flow - Focus & Pomodoro Timer" = 1423210932;
       "Kindle" = 302584613;
       "Keynote" = 409183694;
       "Pages" = 409201541;
