@@ -1,3 +1,59 @@
 {
-  "mcpServers": {}
+  "servers": {
+    "vectorcode": {
+      "type": "local",
+      "command": "vectorcode-mcp-server",
+      "name": "VectorCode MCP Server",
+      "description": "Local MCP server for VectorCode operations"
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${env:GITHUB_PERSONAL_ACCESS_TOKEN}"
+      },
+      "name": "GitHub Copilot MCP Server",
+      "description": "Remote MCP server for GitHub Copilot integration"
+    },
+    "context7": {
+      "type": "remote",
+      "url": "https://mcp.context7.com/mcp",
+      "headers": {
+        "CONTEXT7_API_KEY": "${env:CONTEXT7_API_KEY}"
+      },
+      "name": "Context7 MCP Server",
+      "description": "Remote MCP server for Context7 integration"
+    },
+    "playwright": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp"
+      ],
+      "name": "Playwright MCP Server",
+      "description": "Local MCP server for Playwright operations"
+    },
+    "filesystem": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "${env:PWD}"
+      ],
+      "name": "Filesystem MCP Server",
+      "description": "Local MCP server for filesystem operations"
+    },
+    "sequential-thinking": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "name": "Sequential Thinking MCP Server",
+      "description": "Local MCP server for sequential thinking operations"
+    }
+  }
 }
