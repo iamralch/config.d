@@ -14,5 +14,9 @@ _: {
       "discord"
       "plex-media-server"
     ];
+
+    masApps = {
+      "Kindle" = 302584613;
+    };
   };
 }
