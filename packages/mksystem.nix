@@ -20,6 +20,7 @@ let
 
   # System Modules
   system-name = if isDarwin then "macos" else "nixos";
+  # System builder function
   system-manager = if isDarwin then inputs.nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
   # Home Manager
   host-name = name;
@@ -41,6 +42,7 @@ let
   };
 
   extras = {
+    # AI tools packages for the system
     ai = nix-ai-tools.packages.${system};
   };
 in
