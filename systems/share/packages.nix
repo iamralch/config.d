@@ -112,6 +112,7 @@
     zoxide
     zsh
     extras.ai.spec-kit
+    extras.ai.opencode
   ];
 
   fonts.packages = with pkgs; [
