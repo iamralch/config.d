@@ -77,6 +77,7 @@
     php84Packages.composer
     pnpm
     pspg
+    protobuf
     pstree
     pwgen
     (upkgs.python313.withPackages (
