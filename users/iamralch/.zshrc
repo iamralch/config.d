@@ -67,7 +67,6 @@ zinit light jeffreytse/zsh-vi-mode
 zinit light Aloxaf/fzf-tab
 # Add personal plugins
 zinit load zsh-contrib/zsh-fzf
-zinit load zsh-contrib/zsh-tmux
 
 if [[ "$TERM" != "xterm-ghossty" ]]; then
   zinit load zsh-contrib/zsh-vivid
@@ -112,3 +111,6 @@ function zvm_after_init() {
   zvm_bindkey viins '^R' atuin-search
   zvm_bindkey vicmd '^R' atuin-search
 }
+
+# Options
+setopt PROMPT_SUBST
