@@ -10,7 +10,7 @@ set -g status-position top
 set -g status-left "#[fg=#{@thm_crust},bg=#{@thm_blue}] #{keyboard_layout} #{@separator} #S "
 set -g status-left-length 100
 
-set -g status-right "#[fg=#{@thm_yellow},bg=#{@thm_surface_0}]   #{cpu_percentage} #{@separator} #{battery_icon} #{battery_percentage} #{battery_remain} #[fg=#{@thm_fg},bg=#{@thm_surface_0}]#{@separator} 󰚭 #{uptime} #[fg=#{@thm_fg},bg=#{@thm_surface_0},nobold,noitalics,nounderscore]#{@separator} #{world_clock_status} #[fg=#{@thm_fg},bg=#{@thm_surface_0},nobold,noitalics,nounderscore]#{@separator} #[fg=#{@thm_maroon}]  %H:%M:%S "
+set -g status-right "#[fg=#{@thm_yellow}]   #{cpu_percentage} #{@separator} #{battery_icon} #{battery_percentage} #{battery_remain} #[fg=#{@thm_fg}]#{@separator} 󰚭 #{uptime} #[fg=#{@thm_fg},nobold,noitalics,nounderscore]#{@separator} #{world_clock_status} #[fg=#{@thm_fg},nobold,noitalics,nounderscore]#{@separator} #[fg=#{@thm_maroon}]  %H:%M:%S "
 set -g status-right-length 240
 
 set -gF window-status-activity-style "fg=#{@thm_crust},bg=#{@thm_lavender}"
