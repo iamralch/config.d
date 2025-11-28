@@ -18,6 +18,7 @@ set -g visual-activity off
 set -g visual-silence off
 
 # status line
+set -g status-position top
 set -g status-justify left
 set -g status-interval 1
 
