@@ -32,3 +32,12 @@ aws-lambda-upload() {
 
 	aws s3 cp "$DIR_SOURCE" "$DIR_TARGET" --recursive --exclude "*" --include "*.zip" --include "*.sum"
 }
+
+hsdk-env() {
+	local selected
+	selected=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r '.[] | "\(.Id)\t\(.Name)"' | column -t -s $'\t' | fzf --with-nth=1,2 --header='  Environment' | awk '{print $1}')
+
+	if [ -n "$selected" ]; then
+		eval "$(hsdk se "$selected")"
+	fi
+}
