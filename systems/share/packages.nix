@@ -8,6 +8,7 @@
   environment.systemPackages = with pkgs; [
     gh
     sd
+    gum
     sshfs
     usql
     stow
