@@ -41,7 +41,6 @@ return {
         -- install any other package
         "tree-sitter-cli",
         "goimports",
-        "codespell",
         "sqlfluff",
         "tectonic",
         "impl",
@@ -84,7 +83,6 @@ return {
         null_ls.builtins.formatting.sqlfluff,
         null_ls.builtins.formatting.stylua,
         null_ls.builtins.formatting.swiftlint,
-        null_ls.builtins.formatting.codespell,
         null_ls.builtins.formatting.prettierd,
         null_ls.builtins.formatting.gofumpt,
         null_ls.builtins.formatting.goimports,
