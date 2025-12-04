@@ -33,7 +33,7 @@ fi
 # Set the application configuration files
 export PSPG_CONF="$XDG_CONFIG_HOME/pspg/config.toml"
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/starship.toml"
-export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.toml"
+export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.ini"
 export NPM_PATH="$HOME/.local/share/npm"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
 export MATPLOTLIBRC="$XDG_CONFIG_HOME/matplotlib"
