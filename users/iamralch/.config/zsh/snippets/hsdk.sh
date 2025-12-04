@@ -34,10 +34,19 @@ aws-lambda-upload() {
 }
 
 hsdk-env() {
-	local selected
-	selected=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r '.[] | "\(.Id)\t\(.Name)"' | column -t -s $'\t' | fzf --with-nth=1,2 --header='  Environment' | awk '{print $1}')
+	local HSDK_ENV_ID
 
-	if [ -n "$selected" ]; then
-		eval "$(hsdk se "$selected")"
+	# Get environment data with console URL built by jq
+	HSDK_ENV_ID=$(HSDK_DEFAULT_OUTPUT=json hsdk lse |
+		jq -r '.[] | "\(.Id)\t\(.Name)\t\(.AWSSsoUrl)/#/console?account_id=\(.AWSAccountId)&role_name=AdministratorAccess"' |
+		column -t -s $'\t' |
+		fzf --with-nth=1,2 \
+			--header='  Environment' \
+			--bind 'ctrl-o:become(open {3})' |
+		awk '{print $1}')
+
+	if [ -n "$HSDK_ENV_ID" ]; then
+		# Default action: set environment
+		eval "$(hsdk se "$HSDK_ENV_ID")"
 	fi
 }
