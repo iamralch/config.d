@@ -1,5 +1,8 @@
 [ui]
-default-command = "log"
+color = "always"
+pager = "delta"
+default-command = "status"
+relative-timestamps = true
 
 [user]
 name = "Svetlin Ralchev"
