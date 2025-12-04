@@ -79,9 +79,9 @@ zinit snippet OMZP::git-commit
 zinit snippet OMZP::golang
 
 # local snippets
+zinit snippet "$HOME/.config/zsh/snippets/aws.sh"
 zinit snippet "$HOME/.config/zsh/snippets/func.sh"
 zinit snippet "$HOME/.config/zsh/snippets/hsdk.sh"
-zinit snippet "$HOME/.config/zsh/snippets/hsdk-aws.sh"
 zinit snippet "$HOME/.config/zsh/snippets/sshd.sh"
 
 # Load completions

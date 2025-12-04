@@ -1,15 +1,60 @@
 #!/bin/bash -x
 
-hsdk-env() {
-	local HSDK_ENV_ID
-	local HSDK_ENV_LIST
+# ==============================================================================
+# HSDK Environment Selection Utilities
+# ==============================================================================
+# Shell functions for interacting with HSDK (Hippo Software Delivery Kit)
+# environments using fuzzy finding (fzf) for selection.
+#
+# Dependencies:
+#   - hsdk: Hippo SDK CLI tool
+#   - jq: Command-line JSON processor
+#   - fzf: Fuzzy finder for terminal
+#   - column: Text column formatting utility
+#
+# Usage:
+#   Source this file in your shell configuration:
+#   source ~/.config/zsh/snippets/hsdk.sh
+# ==============================================================================
 
-	# Get environment data with console URL built by jq
-	HSDK_ENV_LIST=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r '.[] | "\(.Id)\t\(.Name)\t\(.AWSSsoUrl)/#/console?account_id=\(.AWSAccountId)&role_name=AdministratorAccess"' | column -t -s $'\t')
-	HSDK_ENV_ID=$(echo "$HSDK_ENV_LIST" | fzf --with-nth=1,2 --accept-nth=1 --header='  Environment' --color=header:cyan --bind 'ctrl-o:become(open {3})')
+# ------------------------------------------------------------------------------
+# hsdk-env-select
+# ------------------------------------------------------------------------------
+# Interactively select an HSDK environment using fzf with AWS console URLs.
+#
+# This function queries HSDK for available environments and presents them in
+# an interactive fuzzy finder. Each environment entry includes:
+#   - Environment ID
+#   - Environment Name
+#   - AWS SSO Console URL (hidden in display, accessible via ctrl-o)
+#
+# Keybindings:
+#   - Enter: Select environment and return the ID
+#   - ctrl-o: Open the AWS console URL in default browser
+#   - Esc: Cancel selection
+#
+# Output:
+#   The selected environment ID (stdout)
+#
+# Environment Variables:
+#   HSDK_DEFAULT_OUTPUT: Temporarily set to 'json' for structured data retrieval
+#
+# Example:
+#   selected_env=$(hsdk-env-select)
+#   echo "Selected environment: $selected_env"
+# ------------------------------------------------------------------------------
+hsdk-env-select() {
+	local hsdk_env_list
 
-	if [ -n "$HSDK_ENV_ID" ]; then
-		# Default action: set environment
-		eval "$(hsdk se "$HSDK_ENV_ID")"
-	fi
+	# Query HSDK for environments and format as tab-separated values:
+	# Column 1: Environment ID
+	# Column 2: Environment Name
+	# Column 3: AWS Console URL (SSO URL + account info)
+	hsdk_env_list=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r '.[] | "\(.Id)\t\(.Name)\t\(.AWSSsoUrl)/#/console?account_id=\(.AWSAccountId)&role_name=AdministratorAccess"' | column -t -s $'\t')
+
+	# Display in fzf with:
+	# --with-nth=1,2: Show only ID and Name columns (hide URL)
+	# --accept-nth=1: Return only the Environment ID on selection
+	# --bind 'ctrl-o:become(open {3})': Open browser with URL on ctrl-o
+	echo "$hsdk_env_list" | fzf --with-nth=1,2 --accept-nth=1 --header='  Environment' --color=header:cyan --bind 'ctrl-o:become(open {3})'
 }
