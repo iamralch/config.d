@@ -9,6 +9,7 @@
     gh
     sd
     gum
+    lnav
     sshfs
     usql
     stow
