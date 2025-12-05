@@ -56,5 +56,10 @@ hsdk-env-select() {
 	# --with-nth=1,2: Show only ID and Name columns (hide URL)
 	# --accept-nth=1: Return only the Environment ID on selection
 	# --bind 'ctrl-o:become(open {3})': Open browser with URL on ctrl-o
-	echo "$hsdk_env_list" | fzf --with-nth=1,2 --accept-nth=1 --header='  Environment' --color=header:cyan --bind 'ctrl-o:become(open {3})'
+	echo "$hsdk_env_list" | fzf --ansi \
+		--with-nth=1.. \
+		--accept-nth=1 \
+		--header='  Environment' \
+		--color=header:cyan \
+		--bind 'ctrl-o:become(open {3})'
 }

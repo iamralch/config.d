@@ -49,10 +49,12 @@ aws-s3-bucket-select() {
 	# Query AWS for all S3 buckets with spinner feedback
 	# - JMESPath query extracts bucket names only
 	# - tr converts tab-separated output to newline-separated list
-	bucket_list=$(gum spin -- aws s3api list-buckets --query 'Buckets[*].Name' --output text | tr '\t' '\n')
+	bucket_list=$(gum spin -- aws s3api list-buckets --query 'Buckets[*].Name' --output text | column -t -s $'\t')
 
 	# Display buckets in fzf with s3:// prefix in prompt for context
-	echo "$bucket_list" | fzf --header="  S3 Bucket" --color=header:yellow --prompt=" s3://  "
+	echo "$bucket_list" | fzf --ansi \
+		--header="  S3 Bucket" \
+		--color=header:yellow --prompt=" s3://  "
 }
 
 # ------------------------------------------------------------------------------
@@ -80,10 +82,12 @@ aws-logs-group-select() {
 	# Query AWS for all CloudWatch log groups with spinner feedback
 	# - JMESPath query extracts log group names only
 	# - tr converts tab-separated output to newline-separated list
-	log_group_list=$(gum spin -- aws logs describe-log-groups --query 'logGroups[*].logGroupName' --output text | tr '\t' '\n')
+	log_group_list=$(gum spin --title "Loading AWS Log Groups..." -- aws logs describe-log-groups --query 'logGroups[*].logGroupName' --output text | column -t -s $'\t')
 
 	# Display log groups in fzf
-	echo "$log_group_list" | fzf --header="  CloudWatch Log Group" --color=header:yellow
+	echo "$log_group_list" | fzf --ansi \
+		--header="  CloudWatch Log Group" \
+		--color=header:yellow
 }
 
 # ------------------------------------------------------------------------------
@@ -127,8 +131,10 @@ aws-logs-stream-select() {
 	# - Ordered by LastEventTime descending (most recent first)
 	# - JMESPath query extracts log stream names only
 	# - tr converts tab-separated output to newline-separated list
-	log_stream_list=$(gum spin -- aws logs describe-log-streams --log-group-name "$log_group" --order-by LastEventTime --descending --query 'logStreams[*].logStreamName' --output text --max-items 100 | tr '\t' '\n')
+	log_stream_list=$(gum spin --title "Loading AWS Log Streams..." -- aws logs describe-log-streams --log-group-name "$log_group" --order-by LastEventTime --descending --query 'logStreams[*].logStreamName' --output text --max-items 100 | column -t -s $'\t')
 
 	# Display log streams in fzf with log group name in prompt for context
-	echo "$log_stream_list" | fzf --header="  CloudWatch Log Stream" --color=header:yellow --prompt=" $log_group   "
+	echo "$log_stream_list" | fzf --ansi \
+		--header="  CloudWatch Log Stream" \
+		--color=header:yellow --prompt=" $log_group   "
 }

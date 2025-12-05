@@ -75,10 +75,6 @@ bind generic vy view-stash
 bind generic vg view-grep
 bind generic vp view-pager
 bind generic vh view-help
-bind generic vi !gh issue list
-bind generic vI !gh issue list --web
-bind generic vp !gh pr list
-bind generic vP !gh pr list --web
 
 bind generic o  none
 bind generic oo :toggle sort-order
@@ -94,20 +90,18 @@ bind generic ot :toggle commit-title-overflow
 bind generic oF :toggle file-filter
 bind generic or :toggle commit-title-refs
 
-bind main gO !gh browse -- %(commit)
-bind log  gO !gh browse -- %(commit)
-bind refs gO !gh browse -- %(branch)
+bind main gO !gh browse %(commit)
+bind log  gO !gh browse %(commit)
+bind refs gO !gh browse %(branch)
+bind status gO !gh browse %(file)
 
-bind main gI !gh issue view --web "%(prompt GitHub Issue: )"
-bind refs gI !gh issue view --web "%(prompt GitHub Issue: )"
-
-bind status gP !gh pr view --web
-bind status gp !gh pr view
+bind generic gI !zsh -i -c gh-issue-select
+bind generic gP !zsh -i -c gh-pr-select
+bind generic gR !zsh -i -c gh-run-select
 
 bind status gC !gh pr create --web --fill --assignee @me
 bind status gc !gh pr create --editor --fill --assignee @me
-
-bind status gM !gh pr merge -r -d
+bind status gm !gh pr merge -r -d
 
 bind generic @ @sh -c "(tmux has-session -t '.{last}' && tmux respawn-pane -t '.{last}' -k 'LESS= DELTA_PAGER=\"less -R\" git show %(commit)') || tmux split-window -l 80% 'LESS= DELTA_PAGER=\"less -R\" git show %(commit)'"
 bind generic @j :/^@@
