@@ -68,7 +68,7 @@ gh-issue-select() {
 		--accept-nth=1 \
 		--header="  GitHub Issues" \
 		--color=header:blue \
-		--bind 'ctrl-o:execute(gh issue view {1} --web)' \
+		--bind 'ctrl-o:execute(gh issue view {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh issue view {1})+abort'
 }
 
@@ -119,7 +119,7 @@ gh-pr-select() {
 		--accept-nth=1 \
 		--header="  GitHub Pull Requests" \
 		--color=header:blue \
-		--bind 'ctrl-o:execute(gh pr view {1} --web)' \
+		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh pr view {1})+abort'
 }
 
@@ -177,7 +177,7 @@ gh-run-select() {
 		--accept-nth=1 \
 		--header="  GitHub Actions Runs" \
 		--color=header:blue \
-		--bind 'ctrl-o:execute(gh run view {1} --web)' \
+		--bind 'ctrl-o:execute(gh run view {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh run view {1})+abort' \
 		--bind 'ctrl-w:execute(gh run watch {1})+abort'
 }

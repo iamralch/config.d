@@ -84,9 +84,9 @@ zinit snippet OMZP::golang
 # local snippets
 zinit snippet "$HOME/.config/zsh/snippets/aws.sh"
 zinit snippet "$HOME/.config/zsh/snippets/func.sh"
-zinit snippet "$HOME/.config/zsh/snippets/github.sh"
 zinit snippet "$HOME/.config/zsh/snippets/hsdk.sh"
 zinit snippet "$HOME/.config/zsh/snippets/sshd.sh"
+zinit snippet "$HOME/.config/zsh/snippets/github.sh"
 
 # Load completions
 autoload -Uz compinit && compinit

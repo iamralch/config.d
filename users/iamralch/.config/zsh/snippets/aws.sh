@@ -49,7 +49,7 @@ aws-s3-bucket-select() {
 	# Query AWS for all S3 buckets with spinner feedback
 	# - JMESPath query extracts bucket names only
 	# - tr converts tab-separated output to newline-separated list
-	bucket_list=$(gum spin -- aws s3api list-buckets --query 'Buckets[*].Name' --output text | column -t -s $'\t')
+	bucket_list=$(gum spin -- aws s3api list-buckets --query 'Buckets[*].Name' --output text | tr '\t' '\n')
 
 	# Display buckets in fzf with s3:// prefix in prompt for context
 	echo "$bucket_list" | fzf --ansi \

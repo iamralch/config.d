@@ -61,5 +61,5 @@ hsdk-env-select() {
 		--accept-nth=1 \
 		--header='  Environment' \
 		--color=header:cyan \
-		--bind 'ctrl-o:become(open {3})'
+		--bind 'ctrl-o:become(open {3})+abort'
 }
