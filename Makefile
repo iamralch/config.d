@@ -5,7 +5,7 @@ define not_supported
 	@echo "ERROR: $@ - $(OS_TYPE) is not supported"
 endef
 
-.PONY: format
+.PHONY: format
 # format the machine
 format:
 ifeq ($(OS_TYPE),Linux)
@@ -17,7 +17,7 @@ else
 	$(call not_supported)
 endif
 
-.PONY: install
+.PHONY: install
 # install the machine
 install:
 	curl -fsSL https://install.determinate.systems/nix | bash -s -- install --determinate
@@ -26,7 +26,7 @@ ifeq ($(OS_TYPE),Darwin)
 	curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
 endif
 
-.PONY: update
+.PHONY: update
 # update the machine
 update:
 ifeq ($(OS_TYPE),Linux)
@@ -38,7 +38,7 @@ else
 	$(call not_supported)
 endif
 
-.PONY: home
+.PHONY: home
 # update the home
 home:
 	stow -v -t $(HOME) -d users/$(USER) --ignore=.*\.nix .

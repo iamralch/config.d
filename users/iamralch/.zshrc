@@ -54,11 +54,6 @@ export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.orbstack/bin"
 
-# Set up MacOS tools
-if [ "$(uname)" = "Darwin" ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv --zsh)"
-fi
-
 # limit how much of history to download
 zinit ice depth=1
 
