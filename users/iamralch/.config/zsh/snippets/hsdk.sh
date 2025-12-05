@@ -57,7 +57,7 @@ hsdk-env-select() {
 	# --accept-nth=1: Return only the Environment ID on selection
 	# --bind 'ctrl-o:become(open {3})': Open browser with URL on ctrl-o
 	echo "$hsdk_env_list" | fzf --ansi \
-		--with-nth=1.. \
+		--with-nth=1,2 \
 		--accept-nth=1 \
 		--header='  Environment' \
 		--color=header:cyan \
