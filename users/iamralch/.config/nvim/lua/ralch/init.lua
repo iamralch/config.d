@@ -25,6 +25,8 @@ require("lazy").setup({
     opts = {
       options = {
         g = {
+          -- Use nix-managed Python with pynvim and pip installed
+          -- Configured in systems/share/packages.nix with python313.withPackages
           python3_host_prog = "/run/current-system/sw/bin/python3",
         },
       },

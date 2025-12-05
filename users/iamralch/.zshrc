@@ -6,6 +6,10 @@ export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
 export TMP_CONFIG="$TMPDIR/config"
 
+# shellcheck disable=SC2155
+export PYTHON_BIN="$(readlink -f /run/current-system/sw/bin/python3)"
+export PYTHONPATH="${PYTHON_BIN}/lib/python3.13/site-packages"
+
 # Configure the editor
 export EDITOR="nvim"
 # Set the configuration directories
@@ -48,7 +52,6 @@ export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:$NPM_PATH/bin"
 export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.local/bin"
-export PATH="$PATH:$HOME/.pyenv/bin"
 export PATH="$PATH:$HOME/.orbstack/bin"
 
 # Set up MacOS tools

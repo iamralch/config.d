@@ -68,10 +68,8 @@
     bun
     pnpm
     yarn
-    nodePackages.neovim
-    nodePackages.npm
-    nodePackages.pnpm
-    nodejs
+    upkgs.nodePackages.neovim
+    upkgs.nodejs
     openssl
     perl
     perlPackages.NeovimExt
