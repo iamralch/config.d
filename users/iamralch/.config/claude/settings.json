@@ -1,68 +1,21 @@
 {
+  "permissions": {
+    "allow": ["Edit(~/Projects/**)", "Bash(~/Projects/**)"],
+    "deny": [
+      "Read(~/Desktop/**)",
+      "Bash(~/Desktop/**)",
+      "Read(~/Documents/**)",
+      "Bash(~/Documents/**)",
+      "Read(~/Downloads/**)",
+      "Bash(~/Downloads/**)",
+      "Read(~/Projects/**/.env*)",
+      "Bash(~/Projects/**/.env*)"
+    ],
+    "defaultMode": "plan"
+  },
   "statusLine": {
     "type": "command",
-    "command": "npx -y @owloops/claude-powerline@latest --theme=tokyo-night"
+    "command": "npx -y @owloops/claude-powerline@latest --theme=rose-pine"
   },
-  "spinnerTipsEnabled": false,
-  "mcpServers": {
-    "vectorcode": {
-      "type": "stdio",
-      "command": "vectorcode-mcp-server"
-    },
-    "github": {
-      "type": "http",
-      "url": "https://api.githubcopilot.com/mcp",
-      "headers": {
-        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
-    },
-    "context7": {
-      "type": "http",
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
-      }
-    },
-    "playwright": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@playwright/mcp"
-      ]
-    },
-    "filesystem": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/Users/iamralch/Projects"
-      ]
-    },
-    "sequential-thinking": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
-    },
-    "firecrawl": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "-y",
-        "firecrawl-mcp"
-      ]
-    },
-    "figma": {
-      "type": "stdio",
-      "command": "npx",
-      "args": [
-        "figma-developer-mcp",
-        "--stdio"
-      ]
-    }
-  }
+  "alwaysThinkingEnabled": true
 }

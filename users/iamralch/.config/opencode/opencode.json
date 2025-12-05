@@ -3,32 +3,12 @@
   "theme": "catppuccin",
   "autoupdate": true,
   "mcp": {
-    "vectorcode": {
-      "type": "local",
-      "command": [
-        "vectorcode-mcp-server"
-      ]
-    },
-    "github": {
-      "type": "remote",
-      "url": "https://api.githubcopilot.com/mcp",
-      "headers": {
-        "Authorization": "Bearer {env:GITHUB_PERSONAL_ACCESS_TOKEN}"
-      }
-    },
-    "context7": {
-      "type": "remote",
-      "url": "https://mcp.context7.com/mcp",
-      "headers": {
-        "CONTEXT7_API_KEY": "{env:CONTEXT7_API_KEY}"
-      }
-    },
-    "playwright": {
+    "sequential-thinking": {
       "type": "local",
       "command": [
         "npx",
         "-y",
-        "@playwright/mcp"
+        "@modelcontextprotocol/server-sequential-thinking"
       ]
     },
     "filesystem": {
@@ -40,32 +20,14 @@
         "/Users/iamralch/Projects"
       ]
     },
-    "sequential-thinking": {
+    "playwright": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ]
+      "command": ["npx", "-y", "@playwright/mcp"]
     },
-    "firecrawl": {
+    "context7": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "firecrawl-mcp"
-      ]
-    },
-    "figma": {
-      "type": "local",
-      "command": [
-        "npx",
-        "figma-developer-mcp",
-        "--stdio"
-      ]
+      "command": ["npx", "-y", "@upstash/context7-mcp"]
     }
   },
-  "plugin": [
-    "opencode-gemini-auth"
-  ]
+  "plugin": ["opencode-gemini-auth"]
 }
