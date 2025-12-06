@@ -187,6 +187,4 @@ bind log    ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
 
 # AI reviews (ar)
 bind status ar !zsh -i -c 'tig-ai-review staged'         # Review staged changes
-bind main   ar !zsh -i -c 'tig-ai-review commit %(commit)'   # Review commit
-bind diff   ar !zsh -i -c 'tig-ai-review commit %(commit)'   # Review commit
-bind log    ar !zsh -i -c 'tig-ai-review commit %(commit)'   # Review commit
+bind refs   ar !zsh -i -c 'tig-ai-review branch main "%(branch)"'   # Review branch vs main

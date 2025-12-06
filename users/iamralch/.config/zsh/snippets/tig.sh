@@ -64,29 +64,52 @@ tig-ai-explain() {
 # tig-ai-review (Public Operation)
 # ------------------------------------------------------------------------------
 # Generate AI-powered code reviews with glow display.
-# Creates comprehensive code reviews of git changes and displays them
-# using glow for optimal readability within tig.
+# Supports staged changes, specific commits, and branch comparisons.
+# Creates comprehensive code reviews and displays them using glow.
 #
 # Parameters:
-#   $1: context - "staged" for staged changes, "commit" for specific commit
-#   $2: commit  - commit hash/ref (when context="commit", defaults to HEAD)
-#   $3: model   - optional AI model override
+#   $1: context - "staged", "commit", or "branch"
+#   ${@:2}: remaining parameters based on context:
+#     - staged: [model]
+#     - commit: commit_hash [model]  
+#     - branch: base_branch feature_branch [model]
 #
 # Side Effects:
 #   Displays review using glow in temporary file
 #   Temporary file cleanup handled automatically
 #
 # Example Usage:
-#   tig-ai-review staged                    # Review staged changes
-#   tig-ai-review commit abc123            # Review specific commit
-#   tig-ai-review commit HEAD custom-model # Custom model for HEAD
+#   tig-ai-review staged                           # Review staged changes
+#   tig-ai-review commit abc123                    # Review specific commit
+#   tig-ai-review branch main feature-xyz         # Review branch vs main
+#   tig-ai-review branch main "%(branch)" model   # Custom model for branch
 # ------------------------------------------------------------------------------
 tig-ai-review() {
     local context="$1"
-    local commit="$2"
-    local model="$3"
     local content
-    content=$(_tig_ai_source "$context" "$commit" | git-ai-review "$model")
+
+    case "$context" in
+    "staged")
+        # tig-ai-review staged [model]
+        # $2 = model (optional)
+        content=$(_tig_ai_source "$context" | git-ai-review "$2")
+        ;;
+    "commit")
+        # tig-ai-review commit hash [model]  
+        # $2 = commit hash, $3 = model (optional)
+        content=$(_tig_ai_source "$context" "$2" | git-ai-review "$3")
+        ;;
+    "branch")
+        # tig-ai-review branch base_branch feature_branch [model]
+        # $2 = base branch, $3 = feature branch, $4 = model (optional) 
+        content=$(_tig_ai_source "$context" "${@:2}" | git-ai-review "$4")
+        ;;
+    *)
+        echo "Error: Invalid context '$context'" >&2
+        return 1
+        ;;
+    esac
+    
     _tig_ai_display "$content"
 }
 
@@ -113,13 +136,14 @@ tig-ai-review() {
 # ------------------------------------------------------------------------------
 # _tig_ai_source (Private Helper)
 # ------------------------------------------------------------------------------
-# Retrieves git content based on context (staged changes or specific commit).
-# This function abstracts the git command differences between staged changes
-# and commit viewing, providing a consistent interface for AI operations.
+# Retrieves git content based on context (staged changes, specific commit, or 
+# branch comparison). This function abstracts the git command differences and
+# provides a consistent interface for AI operations.
 #
 # Parameters:
-#   $1: context - "staged" for staged changes, "commit" for specific commit
-#   $2: commit  - commit hash/ref (only used when context="commit", defaults to HEAD)
+#   $1: context - "staged", "commit", or "branch"
+#   $2: commit/base_branch - commit hash (for "commit") or base branch (for "branch")
+#   $3: feature_branch - feature branch (only used when context="branch")
 #
 # Output:
 #   Git diff content to stdout
@@ -140,8 +164,17 @@ _tig_ai_source() {
     "commit")
         git show "${commit:-HEAD}"
         ;;
+    "branch")
+        local base_branch="$2"
+        local feature_branch="$3"
+        if [ -z "$base_branch" ] || [ -z "$feature_branch" ]; then
+            echo "Error: Both branches required for branch context" >&2
+            return 1
+        fi
+        git diff "$base_branch...$feature_branch"
+        ;;
     *)
-        echo "Error: Invalid context '$context'. Use 'staged' or 'commit'." >&2
+        echo "Error: Invalid context '$context'. Use 'staged', 'commit', or 'branch'." >&2
         return 1
         ;;
     esac
