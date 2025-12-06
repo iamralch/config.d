@@ -109,7 +109,7 @@ bind generic @+ :toggle diff-context +1  # Increase diff context
 # Fetch and pull
 bind refs f !git fetch --all -p    # Fetch all remotes with prune
 bind main f !git fetch --all -p    # Fetch all remotes with prune
-bind main u !git pull              # Pull changes
+bind main u !git pull -r origin %(branch)
 
 # History operations
 bind main t !git revert %(commit) --signoff    # Revert commit
