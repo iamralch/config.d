@@ -43,7 +43,7 @@
 #
 # Parameters:
 #   MODEL (optional): AI model to use for message generation
-#                    Default: "github-copilot/claude-sonnet-4"
+#                    Default: "google/gemini-2.0-flash"
 #                    Example: "anthropic/claude-haiku-3-5"
 #
 # Input:
@@ -76,7 +76,7 @@
 #   git diff HEAD~5..HEAD | git-ai-commit | tee commit.txt  # Save and display
 # ------------------------------------------------------------------------------
 git-ai-commit() {
-	local model="${1:-github-copilot/claude-sonnet-4}"
+	local model="${1:-google/gemini-2.0-flash}"
 	local changes
 	local raw_output
 	local commit_message
@@ -149,8 +149,8 @@ git-ai-commit() {
 #
 # Parameters:
 #   MODEL (optional): AI model to use for explanation generation
-#                    Default: "github-copilot/claude-sonnet-4"
-#                    Example: "anthropic/claude-haiku-3-5"
+#                    Default: "anthropic/claude-opus-4-5"
+#                    Example: "google/gemini-2.0-flash"
 #
 # Input:
 #   Git diff content from stdin (patch format)
@@ -173,7 +173,7 @@ git-ai-commit() {
 #
 # Example:
 #   git diff --staged | git-ai-explain                       # Explain staged changes
-#   git show HEAD | git-ai-explain "anthropic/claude-haiku-3-5"  # Custom model
+#   git show HEAD | git-ai-explain "google/gemini-2.0-flash"  # Custom model
 #   git diff main..feature | git-ai-explain > explanation.md # Save to file
 #   git diff HEAD~3..HEAD | git-ai-explain | less           # Page through explanation
 #
@@ -182,7 +182,7 @@ git-ai-commit() {
 #   git diff --staged | tee changes.patch | git-ai-explain  # Save diff and explain
 # ------------------------------------------------------------------------------
 git-ai-explain() {
-	local model="${1:-github-copilot/claude-sonnet-4}"
+	local model="${1:-anthropic/claude-opus-4-5}"
 	local changes
 	local raw_output
 
@@ -240,8 +240,8 @@ git-ai-explain() {
 #
 # Parameters:
 #   MODEL (optional): AI model to use for review generation
-#                    Default: "github-copilot/claude-sonnet-4"
-#                    Example: "anthropic/claude-haiku-3-5"
+#                    Default: "anthropic/claude-opus-4-5"
+#                    Example: "google/gemini-2.0-flash"
 #
 # Input:
 #   Git diff content from stdin (patch format)
@@ -264,7 +264,7 @@ git-ai-explain() {
 #
 # Example:
 #   git diff --staged | git-ai-review                        # Review staged changes
-#   git show HEAD | git-ai-review "anthropic/claude-haiku-3-5"  # Custom model
+#   git show HEAD | git-ai-review "google/gemini-2.0-flash"  # Custom model
 #   git diff main..feature | git-ai-review > review.md      # Save review to file
 #   git diff HEAD~3..HEAD | git-ai-review | grep -E "(Issue|Problem|Bug)"  # Find issues
 #
@@ -273,7 +273,7 @@ git-ai-explain() {
 #   git show HEAD | tee last-commit.patch | git-ai-review   # Save diff and review
 # ------------------------------------------------------------------------------
 git-ai-review() {
-	local model="${1:-github-copilot/claude-sonnet-4}"
+	local model="${1:-anthropic/claude-opus-4-5}"
 	local changes
 	local raw_output
 
