@@ -1,3 +1,5 @@
+# do not show all files
+all: false
 # style name or JSON path (default "auto")
 style: "auto"
 # mouse support (TUI-mode only)

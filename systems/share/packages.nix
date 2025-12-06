@@ -9,6 +9,7 @@
     gh
     sd
     gum
+    glow
     lnav
     sshfs
     usql

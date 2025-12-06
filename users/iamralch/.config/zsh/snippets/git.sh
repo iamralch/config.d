@@ -1,16 +1,17 @@
 #!/bin/bash
 
 # ==============================================================================
-# Git Utilities
+# Git AI Utilities
 # ==============================================================================
-# Shell functions for AI-powered git operations and workflow automation
-# using opencode for intelligent commit message generation following the
-# Conventional Commits specification.
+# Simple, composable shell functions for AI-powered git operations following
+# Unix philosophy: do one thing well, work with text streams, compose via pipes.
+#
+# These functions read git diffs from stdin and output processed results to stdout,
+# making them perfect for use in pipelines with standard git commands.
 #
 # Dependencies:
-#   - git: Git version control system
 #   - opencode: AI-powered code assistant
-#   - gum: A tool for glamorous shell scripts (provides spinner)
+#   - gum: A tool for glamorous shell scripts (for spinners)
 #
 # Authentication:
 #   Requires opencode authentication and configuration:
@@ -20,194 +21,342 @@
 # Usage:
 #   Source this file in your shell configuration:
 #   source ~/.config/zsh/snippets/git.sh
+#
+# Philosophy:
+#   Each function does ONE thing well and can be composed with pipes:
+#   git diff --staged | git-ai-commit
+#   git show HEAD | git-ai-explain
+#   git diff main..feature | git-ai-review
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# git-commit-message
+# git-ai-commit
 # ------------------------------------------------------------------------------
-# Generate AI-powered conventional commit messages with body from staged changes.
+# Generate AI-powered conventional commit messages from git diff input.
 #
-# This function analyzes staged git changes and uses opencode with AI to 
-# generate a complete conventional commit message including both subject and body
-# following the official specification. The generated message includes proper 
-# type classification, optional scope, descriptive body content, and follows 
-# best practices for imperative mood and character limits.
+# This function reads a git diff from stdin and uses opencode with AI to generate
+# a conventional commit message following the official specification. The output
+# includes both subject line and body, formatted for direct use with git commit.
 #
-# The function uses real examples from the Conventional Commits specification
-# to ensure high-quality, consistent output that complies with industry
-# standards and semantic versioning principles.
+# The function follows Unix philosophy: reads from stdin, writes to stdout,
+# does one thing well, and composes easily with other tools.
 #
 # Parameters:
 #   MODEL (optional): AI model to use for message generation
 #                    Default: "github-copilot/claude-sonnet-4"
 #                    Example: "anthropic/claude-haiku-3-5"
-#                    Example: "github-copilot/gpt-4o"
+#
+# Input:
+#   Git diff content from stdin (patch format)
 #
 # Output:
-#   Generated conventional commit message with subject and body to stdout
-#   Multi-line output with proper formatting for git commit
-#   Error messages and warnings to stderr
+#   Generated conventional commit message to stdout
+#   Error messages to stderr
 #
 # Required Dependencies:
-#   - git (for repository operations and diff generation)
 #   - opencode (for AI message generation)
-#   - gum (for visual feedback and user experience)
+#   - gum (for visual feedback)
 #
 # Required Setup:
-#   - Git repository with staged changes
 #   - Authenticated opencode configuration
 #   - Valid AI model access permissions
 #
 # Return Codes:
 #   0: Success - commit message generated and output to stdout
-#   1: Error - dependency missing, no staged changes, or generation failed
+#   1: Error - no input or generation failed
 #
 # Example:
-#   git-commit-message                                        # Use default model
-#   git-commit-message "anthropic/claude-haiku-3-5"          # Use specific model  
-#   git-commit-message "github-copilot/gpt-4o"               # Use different provider
-#   git commit -F <(git-commit-message)                      # Direct commit with body
-#   git-commit-message > /tmp/commit-msg && git commit -F /tmp/commit-msg  # Edit before use
+#   git diff --staged | git-ai-commit                         # Default model
+#   git show HEAD | git-ai-commit "anthropic/claude-haiku-3-5"  # Custom model
+#   git diff main..feature | git-ai-commit > commit-msg.txt  # Save to file
+#   git commit -F <(git diff --staged | git-ai-commit)       # Direct commit
 #
-# Troubleshooting:
-#   - "Not in a git repository": Run from within a git repository
-#   - "No staged changes found": Use `git add` to stage files before running
-#   - "opencode command not found": Install and configure opencode
-#   - "gum command not found": Install gum or function will work without spinners
-#   - "Failed to generate commit message": Check opencode authentication and model access
+# Pipeline Examples:
+#   git diff --staged | git-ai-commit | head -n1            # Subject only
+#   git diff HEAD~5..HEAD | git-ai-commit | tee commit.txt  # Save and display
 # ------------------------------------------------------------------------------
-git-commit-message() {
+git-ai-commit() {
 	local model="${1:-github-copilot/claude-sonnet-4}"
 	local changes
 	local raw_output
 	local commit_message
-	local use_gum=true
 
-	# Check if gum is available for visual feedback
-	if ! command -v gum >/dev/null 2>&1; then
-		use_gum=false
-		echo "Warning: gum not found - continuing without visual feedback" >&2
-	fi
-
-	# Validation: Check for git repository
-	if ! git rev-parse --git-dir >/dev/null 2>&1; then
-		echo "Error: Not in a git repository" >&2
-		echo "Please run this command from within a git repository." >&2
+	# Read diff from stdin
+	if [ -t 0 ]; then
+		echo "Error: No input provided. Please pipe git diff content." >&2
+		echo "Example: git diff --staged | git-ai-commit" >&2
 		return 1
 	fi
 
-	# Validation: Check for opencode
-	if ! command -v opencode >/dev/null 2>&1; then
-		echo "Error: opencode command not found" >&2
-		echo "Please install and configure opencode: https://opencode.dev" >&2
-		return 1
-	fi
+	changes=$(cat)
 
-	# Validation: Check for staged changes
-	if git diff --staged --quiet; then
-		echo "Error: No staged changes found" >&2
-		echo "Use 'git add <files>' to stage changes before generating commit message." >&2
-		return 1
-	fi
-
-	# Get staged changes with optional visual feedback
-	if [ "$use_gum" = true ]; then
-		changes=$(gum spin --title "Analyzing staged changes..." -- git diff --staged --patch)
-	else
-		echo "Analyzing staged changes..." >&2
-		changes=$(git diff --staged --patch)
-	fi
-
-	# Validate we got diff content
+	# Validate we got content
 	if [ -z "$changes" ]; then
-		echo "Error: Unable to retrieve staged changes" >&2
+		echo "Error: No diff content received from stdin" >&2
 		return 1
 	fi
 
-	# Generate commit message using Option C: Examples + Spec approach with body
-	local prompt="Generate a conventional commit message with both subject and body following the official specification format:
-
-<type>[optional scope]: <description>
-
-[optional body]
-
-Examples from spec:
-• feat: allow provided config object to extend other configs
-
-BREAKING CHANGE: \`extends\` key in config file is now used for extending other config files
-
-• fix: prevent racing of requests
-
-Introduce a request id and a reference to latest request. Dismiss
-incoming responses other than from latest request.
-
-• docs: correct spelling of CHANGELOG
-• feat(lang): add Polish language
-
-Add support for Polish language with proper translations
-and locale-specific formatting rules.
-
-• feat!: send an email when product is shipped (breaking)
-
-Automatically send notification emails to customers when
-their orders are shipped with tracking information.
-
-Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore
-Rules: 
-- Subject: imperative mood, lowercase, under 72 chars, ! for breaking changes
-- Body: explain what and why vs how, wrap at 72 chars
-- Leave blank line between subject and body
-
-Return the complete message (subject + blank line + body) in a code block.
-
-Git diff:
-$changes"
-
-	# Generate commit message with optional visual feedback
-	if [ "$use_gum" = true ]; then
-		raw_output=$(gum spin --title "Generating commit message..." -- opencode run "$prompt" -m "$model")
-	else
-		echo "Generating commit message with model: $model..." >&2
-		raw_output=$(opencode run "$prompt" -m "$model")
+	# Load commit message prompt from file
+	local prompt
+	if ! prompt=$(_load_git_ai_prompt "git-ai-commit" "$changes"); then
+		return 1
 	fi
+
+	# Generate commit message with visual feedback
+	raw_output=$(gum spin --title "Generating commit message..." -- opencode run "$prompt" -m "$model")
 
 	# Check if opencode command succeeded
 	if [ $? -ne 0 ]; then
 		echo "Error: Failed to execute opencode command" >&2
-		echo "Check your opencode configuration and model access." >&2
 		return 1
 	fi
 
-	# Validate we got output from opencode
+	# Validate we got output
 	if [ -z "$raw_output" ]; then
 		echo "Error: No output received from opencode" >&2
 		return 1
 	fi
 
-	# Extract complete commit message (subject + body) from code block using awk
+	# Extract commit message from code block using awk
 	commit_message=$(echo "$raw_output" | awk '/^```/{flag=!flag; next} flag')
 
-	# Fallback: if no code block found, try to extract complete conventional commit
+	# Fallback: if no code block found, try to extract conventional commit pattern
 	if [ -z "$commit_message" ]; then
-		# Look for lines starting with conventional commit types
-		local subject_line=$(echo "$raw_output" | grep -E '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)[:(!]' | head -n1)
-		if [ -n "$subject_line" ]; then
-			# For fallback, just use the subject line without body
-			commit_message="$subject_line"
-		fi
+		commit_message=$(echo "$raw_output" | grep -E '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)[:(!]' | head -n1)
 	fi
 
-	# Final validation that we got a commit message
+	# Final validation
 	if [ -z "$commit_message" ]; then
 		echo "Error: Failed to extract commit message from AI response" >&2
-		echo "Raw output was:" >&2
-		echo "$raw_output" >&2
 		return 1
 	fi
 
-	# Trim any leading/trailing whitespace
-	commit_message=$(echo "$commit_message" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-
-	# Output the clean commit message
+	# Output clean commit message to stdout
 	echo "$commit_message"
+}
+
+# ------------------------------------------------------------------------------
+# git-ai-explain
+# ------------------------------------------------------------------------------
+# Generate AI-powered explanations of git changes from diff input.
+#
+# This function reads a git diff from stdin and uses opencode with AI to generate
+# a clear, human-readable explanation of what the changes accomplish, why they
+# matter, and their potential impact. Perfect for understanding complex changes.
+#
+# The function follows Unix philosophy: reads from stdin, writes to stdout,
+# does one thing well, and composes easily with other tools.
+#
+# Parameters:
+#   MODEL (optional): AI model to use for explanation generation
+#                    Default: "github-copilot/claude-sonnet-4"
+#                    Example: "anthropic/claude-haiku-3-5"
+#
+# Input:
+#   Git diff content from stdin (patch format)
+#
+# Output:
+#   Human-readable explanation of changes to stdout
+#   Error messages to stderr
+#
+# Required Dependencies:
+#   - opencode (for AI explanation generation)
+#   - gum (for visual feedback)
+#
+# Required Setup:
+#   - Authenticated opencode configuration
+#   - Valid AI model access permissions
+#
+# Return Codes:
+#   0: Success - explanation generated and output to stdout
+#   1: Error - no input or generation failed
+#
+# Example:
+#   git diff --staged | git-ai-explain                       # Explain staged changes
+#   git show HEAD | git-ai-explain "anthropic/claude-haiku-3-5"  # Custom model
+#   git diff main..feature | git-ai-explain > explanation.md # Save to file
+#   git diff HEAD~3..HEAD | git-ai-explain | less           # Page through explanation
+#
+# Pipeline Examples:
+#   git show HEAD | git-ai-explain | grep -i "security"     # Find security mentions
+#   git diff --staged | tee changes.patch | git-ai-explain  # Save diff and explain
+# ------------------------------------------------------------------------------
+git-ai-explain() {
+	local model="${1:-github-copilot/claude-sonnet-4}"
+	local changes
+	local raw_output
+
+	# Read diff from stdin
+	if [ -t 0 ]; then
+		echo "Error: No input provided. Please pipe git diff content." >&2
+		echo "Example: git diff --staged | git-ai-explain" >&2
+		return 1
+	fi
+
+	changes=$(cat)
+
+	# Validate we got content
+	if [ -z "$changes" ]; then
+		echo "Error: No diff content received from stdin" >&2
+		return 1
+	fi
+
+	# Load explanation prompt from file
+	local prompt
+	if ! prompt=$(_load_git_ai_prompt "git-ai-explain" "$changes"); then
+		return 1
+	fi
+
+	# Generate explanation with visual feedback
+	raw_output=$(gum spin --title "Generating explanation..." -- opencode run "$prompt" -m "$model")
+
+	# Check if opencode command succeeded
+	if [ $? -ne 0 ]; then
+		echo "Error: Failed to execute opencode command" >&2
+		return 1
+	fi
+
+	# Validate we got output
+	if [ -z "$raw_output" ]; then
+		echo "Error: No output received from opencode" >&2
+		return 1
+	fi
+
+	# Output explanation directly to stdout
+	echo "$raw_output"
+}
+
+# ------------------------------------------------------------------------------
+# git-ai-review
+# ------------------------------------------------------------------------------
+# Generate AI-powered code reviews from git diff input.
+#
+# This function reads a git diff from stdin and uses opencode with AI to provide
+# comprehensive code review feedback including potential issues, improvements,
+# best practices, and security concerns. Perfect for self-review before commits.
+#
+# The function follows Unix philosophy: reads from stdin, writes to stdout,
+# does one thing well, and composes easily with other tools.
+#
+# Parameters:
+#   MODEL (optional): AI model to use for review generation
+#                    Default: "github-copilot/claude-sonnet-4"
+#                    Example: "anthropic/claude-haiku-3-5"
+#
+# Input:
+#   Git diff content from stdin (patch format)
+#
+# Output:
+#   Comprehensive code review feedback to stdout
+#   Error messages to stderr
+#
+# Required Dependencies:
+#   - opencode (for AI review generation)
+#   - gum (for visual feedback)
+#
+# Required Setup:
+#   - Authenticated opencode configuration
+#   - Valid AI model access permissions
+#
+# Return Codes:
+#   0: Success - review generated and output to stdout
+#   1: Error - no input or generation failed
+#
+# Example:
+#   git diff --staged | git-ai-review                        # Review staged changes
+#   git show HEAD | git-ai-review "anthropic/claude-haiku-3-5"  # Custom model
+#   git diff main..feature | git-ai-review > review.md      # Save review to file
+#   git diff HEAD~3..HEAD | git-ai-review | grep -E "(Issue|Problem|Bug)"  # Find issues
+#
+# Pipeline Examples:
+#   git diff --staged | git-ai-review | less                # Page through review
+#   git show HEAD | tee last-commit.patch | git-ai-review   # Save diff and review
+# ------------------------------------------------------------------------------
+git-ai-review() {
+	local model="${1:-github-copilot/claude-sonnet-4}"
+	local changes
+	local raw_output
+
+	# Read diff from stdin
+	if [ -t 0 ]; then
+		echo "Error: No input provided. Please pipe git diff content." >&2
+		echo "Example: git diff --staged | git-ai-review" >&2
+		return 1
+	fi
+
+	changes=$(cat)
+
+	# Validate we got content
+	if [ -z "$changes" ]; then
+		echo "Error: No diff content received from stdin" >&2
+		return 1
+	fi
+
+	# Load review prompt from file
+	local prompt
+	if ! prompt=$(_load_git_ai_prompt "git-ai-review" "$changes"); then
+		return 1
+	fi
+
+	# Generate review with visual feedback
+	raw_output=$(gum spin --title "Generating code review..." -- opencode run "$prompt" -m "$model")
+
+	# Check if opencode command succeeded
+	if [ $? -ne 0 ]; then
+		echo "Error: Failed to execute opencode command" >&2
+		return 1
+	fi
+
+	# Validate we got output
+	if [ -z "$raw_output" ]; then
+		echo "Error: No output received from opencode" >&2
+		return 1
+	fi
+
+	# Output review directly to stdout
+	echo "$raw_output"
+}
+
+# ==============================================================================
+# Helper Functions
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# _load_git_ai_prompt
+# ------------------------------------------------------------------------------
+# Load and substitute variables in AI prompt files
+# Parameters:
+#   $1: prompt file name (e.g., "git-ai-commit")
+#   $2: changes content to substitute
+_load_git_ai_prompt() {
+	local prompt_name="$1"
+	local changes="$2"
+	local prompt_file="$HOME/.config/zsh/prompts/${prompt_name}.md"
+
+	# Check if prompt file exists
+	if [ ! -f "$prompt_file" ]; then
+		echo "Error: Prompt file not found: $prompt_file" >&2
+		return 1
+	fi
+
+	# Load prompt template and substitute variables using a more robust approach
+	# Create a temporary file with the changes to avoid sed escaping issues
+	local temp_file
+	temp_file=$(mktemp)
+	echo "$changes" >"$temp_file"
+
+	# Use awk to replace ${CHANGES} with the file content
+	awk -v changes_file="$temp_file" '
+		/\${CHANGES}/ {
+			while ((getline line < changes_file) > 0) {
+				print line
+			}
+			close(changes_file)
+			next
+		}
+		{ print }
+	' "$prompt_file"
+
+	# Clean up temp file
+	rm "$temp_file"
 }

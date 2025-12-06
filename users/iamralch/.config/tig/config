@@ -1,3 +1,13 @@
+# ==============================================================================
+# Tig Configuration
+# ==============================================================================
+# Personal tig configuration with vim-style keybindings, AI integration,
+# and GitHub workflow support.
+
+# ==============================================================================
+# Display Settings
+# ==============================================================================
+
 # Show git SHAs in main view
 set main-view-id-display = yes
 
@@ -7,107 +17,175 @@ set refresh-mode = auto
 # Use UTF-8 characters for graphical elements
 set line-graphics = utf-8
 
-# Whether to highlight diffs using Git's 'diff-highlight' program.
+# Enable syntax highlighting for diffs
 set diff-highlight = true
 
-# theme setup
+# ==============================================================================
+# Theme & Extensions
+# ==============================================================================
+
+# Load GitHub-style theme
 source ~/.config/tig/themes/github.tigrc
 
-# git-style key bindings
-bind refs f !git fetch --all -p
-bind main f !git fetch --all -p
-bind main u !git pull
-bind main t !git revert %(commit) --signoff
-bind main i !git rebase -i %(commit) --signoff
+# ==============================================================================
+# Navigation Keybindings (Vim-style)
+# ==============================================================================
 
-bind main c !git checkout %(commit)
-bind refs c !git checkout %(branch)
-
-bind main B !git checkout -b "%(prompt New branch name: )"
-bind refs B !git checkout -b "%(prompt New branch name: )"
-
-bind main p !git push -u
-bind main P !git push -f
-bind status p !git push -u
-bind status P !git push -f
-
-bind main { !git stash
-bind status { !git stash
-
-bind main } !git stash pop
-bind status } !git stash pop
-
-bind status C !zsh -c 'source $HOME/.config/zsh/snippets/git.sh && git commit --signoff --edit -F <(git-commit-message)'
-bind status c !git commit --signoff
-bind status a !git commit --signoff --amend
-bind status x !git clean -fd
-
-# vim-style key bindings
+# Basic movement (hjkl)
 bind generic h scroll-left
 bind generic j move-down
 bind generic k move-up
 bind generic l scroll-right
 
-bind generic g  none
-bind generic gg move-first-line
-bind generic gj next
-bind generic gk previous
-bind generic gp parent
-bind generic gP back
-bind generic gn view-next
+# Go-to movements (g prefix)
+bind generic g  none                # Clear default g binding
+bind generic gg move-first-line     # Go to top
+bind generic G  move-last-line      # Go to bottom (generic)
+bind main    G  move-last-line      # Go to bottom (main view)
+bind generic gj next                # Go to next
+bind generic gk previous            # Go to previous  
+bind generic gp parent              # Go to parent
+bind generic gP back                # Go back
+bind generic gn view-next           # Go to next view
 
-bind main    G move-last-line
-bind generic G move-last-line
+# Page navigation
+bind generic <C-f> move-page-down   # Page down
+bind generic <C-b> move-page-up     # Page up
 
-bind generic <C-f> move-page-down
-bind generic <C-b> move-page-up
+# Help and view switching
+bind generic K         view-help    # Show help
+bind generic <C-w><C-w> view-next   # Cycle through views
 
-bind generic v  none
-bind generic vm view-main
-bind generic vd view-diff
-bind generic vl view-log
-bind generic vt view-tree
-bind generic vb view-blob
-bind generic vx view-blame
-bind generic vr view-refs
-bind generic vs view-status
-bind generic vu view-stage
-bind generic vy view-stash
-bind generic vg view-grep
-bind generic vp view-pager
-bind generic vh view-help
+# ==============================================================================
+# View Management (v prefix)
+# ==============================================================================
 
-bind generic o  none
-bind generic oo :toggle sort-order
-bind generic os :toggle sort-field
-bind generic on :toggle line-number
-bind generic od :toggle date
-bind generic oa :toggle author
-bind generic og :toggle line-graphics
-bind generic of :toggle file-name
-bind generic op :toggle ignore-space
-bind generic oi :toggle id
-bind generic ot :toggle commit-title-overflow
-bind generic oF :toggle file-filter
-bind generic or :toggle commit-title-refs
+bind generic v  none                # Clear default v binding
+bind generic vm view-main           # Main view
+bind generic vd view-diff           # Diff view
+bind generic vl view-log            # Log view
+bind generic vt view-tree           # Tree view
+bind generic vb view-blob           # Blob view
+bind generic vx view-blame          # Blame view
+bind generic vr view-refs           # References view
+bind generic vs view-status         # Status view
+bind generic vu view-stage          # Stage view
+bind generic vy view-stash          # Stash view
+bind generic vg view-grep           # Grep view
+bind generic vp view-pager          # Pager view
+bind generic vh view-help           # Help view
 
-bind main gO !gh browse %(commit)
-bind log  gO !gh browse %(commit)
-bind refs gO !gh browse %(branch)
-bind status gO !gh browse %(file)
+# ==============================================================================
+# Options Toggle (o prefix)
+# ==============================================================================
 
-bind generic gI !zsh -c 'source $HOME/.config/zsh/snippets/github.sh && gh-issue-select'
-bind generic gR !zsh -c 'source $HOME/.config/zsh/snippets/github.sh && gh-run-select'
-bind generic gP !zsh -c 'source $HOME/.config/zsh/snippets/github.sh && gh-pr-select'
+bind generic o  none                # Clear default o binding
+bind generic oo :toggle sort-order  # Toggle sort order
+bind generic os :toggle sort-field  # Toggle sort field
+bind generic on :toggle line-number # Toggle line numbers
+bind generic od :toggle date        # Toggle date display
+bind generic oa :toggle author      # Toggle author display
+bind generic og :toggle line-graphics    # Toggle line graphics
+bind generic of :toggle file-name   # Toggle file name display
+bind generic op :toggle ignore-space     # Toggle ignore whitespace
+bind generic oi :toggle id          # Toggle commit ID display
+bind generic ot :toggle commit-title-overflow  # Toggle title overflow
+bind generic oF :toggle file-filter # Toggle file filter
+bind generic or :toggle commit-title-refs      # Toggle title refs
 
-bind status gC !gh pr create --web --fill --assignee @me
-bind status gc !gh pr create --editor --fill --assignee @me
-bind status gm !gh pr merge -r -d
+# ==============================================================================
+# Diff Context Navigation (@ prefix) 
+# ==============================================================================
 
-bind generic @j :/^@@
-bind generic @k :?^@@
-bind generic @- :toggle diff-context -1
-bind generic @+ :toggle diff-context +1
+bind generic @j :/^@@               # Jump to next diff hunk
+bind generic @k :?^@@               # Jump to previous diff hunk
+bind generic @- :toggle diff-context -1  # Decrease diff context
+bind generic @+ :toggle diff-context +1  # Increase diff context
 
-bind generic K view-help
-bind generic <C-w><C-w> view-next
+# ==============================================================================
+# Git Operations
+# ==============================================================================
+
+# Fetch and pull
+bind refs f !git fetch --all -p    # Fetch all remotes with prune
+bind main f !git fetch --all -p    # Fetch all remotes with prune
+bind main u !git pull              # Pull changes
+
+# History operations
+bind main t !git revert %(commit) --signoff    # Revert commit
+bind main i !git rebase -i %(commit) --signoff # Interactive rebase
+
+# ==============================================================================
+# Branch Management
+# ==============================================================================
+
+# Checkout
+bind main c !git checkout %(commit)  # Checkout commit
+bind refs c !git checkout %(branch)  # Checkout branch
+
+# Create branches
+bind main B !git checkout -b "%(prompt New branch name: )"  # New branch from commit
+bind refs B !git checkout -b "%(prompt New branch name: )"  # New branch from ref
+
+# ==============================================================================
+# Push & Stash Operations
+# ==============================================================================
+
+# Push operations
+bind main   p !git push -u          # Push with upstream
+bind main   P !git push -f          # Force push
+bind status p !git push -u          # Push with upstream
+bind status P !git push -f          # Force push
+
+# Stash operations
+bind main   { !git stash            # Create stash
+bind status { !git stash            # Create stash
+bind main   } !git stash pop        # Apply stash
+bind status } !git stash pop        # Apply stash
+
+# ==============================================================================
+# Commit & Status Operations
+# ==============================================================================
+
+bind status c !git commit --signoff         # Commit with signoff
+bind status A !git commit --signoff --amend # Amend commit
+bind status x !git clean -fd                # Clean untracked files
+
+# ==============================================================================
+# GitHub Integration
+# ==============================================================================
+
+# GitHub browsing (gO prefix)
+bind main   gO !gh browse %(commit) # Open commit in browser
+bind refs   gO !gh browse %(branch) # Open branch in browser  
+bind log    gO !gh browse %(commit) # Open commit in browser
+bind status gO !gh browse %(file)   # Open file in browser
+
+# GitHub selection utilities (g prefix)
+bind generic gI !zsh -i -c 'gh-issue-select' # Select GitHub issue
+bind generic gR !zsh -i -c 'gh-run-select'   # Select GitHub run
+bind generic gP !zsh -i -c 'gh-pr-select'    # Select GitHub PR
+
+# Pull request operations
+bind status gC !gh pr create --web --fill --assignee @me     # Create PR (web)
+bind status gc !gh pr create --editor --fill --assignee @me  # Create PR (editor)
+bind status gm !gh pr merge -r -d                           # Merge PR
+
+# ==============================================================================
+# AI-Powered Operations
+# ==============================================================================
+
+# AI commit generation (ac)
+bind status ac !zsh -i -c 'git commit --signoff --edit -F <(tig-ai-commit staged)'
+
+# AI explanations (ae) 
+bind status ae !zsh -i -c 'tig-ai-explain staged'        # Explain staged changes
+bind main   ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
+bind diff   ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
+bind log    ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
+
+# AI reviews (ar)
+bind status ar !zsh -i -c 'tig-ai-review staged'         # Review staged changes
+bind main   ar !zsh -i -c 'tig-ai-review commit %(commit)'   # Review commit
+bind diff   ar !zsh -i -c 'tig-ai-review commit %(commit)'   # Review commit
+bind log    ar !zsh -i -c 'tig-ai-review commit %(commit)'   # Review commit
