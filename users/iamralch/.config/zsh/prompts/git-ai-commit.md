@@ -57,6 +57,6 @@ Return the complete message (subject + blank line + body) in a code block.
 
 ## Git diff
 
-```
+```diff
 ${CHANGES}
 ```

@@ -116,6 +116,11 @@ Explicitly recognize what’s good, such as:
 
 ---
 
+## Output Formatting Requirement
+
+- No line may exceed 120 characters.
+- Wrap text as needed to respect this limit.
+
 ## Git diff
 
 ```diff
