@@ -20,6 +20,17 @@
 # Usage:
 #   Source this file in your shell configuration:
 #   source ~/.config/zsh/snippets/gh.sh
+#
+# Keybindings:
+#   All functions support interactive selection with fzf and these keybindings:
+#   - Enter: Select item and return its number/ID
+#   - Escape/Ctrl-C: Cancel selection
+#   - Ctrl-O: Open selected item in web browser
+#   - Ctrl-V: View selected item in terminal
+#   
+#   Function-specific keybindings:
+#   - gh-pr-select: Ctrl-K to checkout the selected pull request
+#   - gh-run-select: Ctrl-W to watch the selected workflow run
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -43,6 +54,12 @@
 #
 # Required Permissions:
 #   - Repository read access
+#
+# Keybindings:
+#   - Enter: Select issue and return its number
+#   - Escape/Ctrl-C: Cancel selection
+#   - Ctrl-O: Open selected issue in web browser
+#   - Ctrl-V: View selected issue in terminal
 #
 # Example:
 #   gh-issue-select | xargs gh issue view
@@ -95,6 +112,13 @@ gh-issue-select() {
 # Required Permissions:
 #   - Repository read access
 #
+# Keybindings:
+#   - Enter: Select PR and return its number
+#   - Escape/Ctrl-C: Cancel selection
+#   - Ctrl-K: Checkout the selected pull request branch
+#   - Ctrl-O: Open selected PR in web browser
+#   - Ctrl-V: View selected PR in terminal
+#
 # Example:
 #   gh-pr-select | xargs gh pr view
 #   gh pr view $(gh-pr-select)
@@ -119,7 +143,7 @@ gh-pr-select() {
 		--accept-nth=1 \
 		--header="  GitHub Pull Requests" \
 		--color=header:blue \
-		--bind 'ctrl-c:execute(gh pr checkout {1})+abort' \
+		--bind 'ctrl-k:execute(gh pr checkout {1})+abort' \
 		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh pr view {1})+abort'
 }
@@ -153,6 +177,13 @@ gh-pr-select() {
 #
 # Required Permissions:
 #   - actions:read (repository scope)
+#
+# Keybindings:
+#   - Enter: Select run and return its ID
+#   - Escape/Ctrl-C: Cancel selection
+#   - Ctrl-O: Open selected run in web browser
+#   - Ctrl-V: View selected run in terminal
+#   - Ctrl-W: Watch the selected workflow run (live updates)
 #
 # Example:
 #   gh-run-select | xargs gh run view
