@@ -45,7 +45,6 @@ bind main    G  move-last-line      # Go to bottom (main view)
 bind generic gj next                # Go to next
 bind generic gk previous            # Go to previous  
 bind generic gp parent              # Go to parent
-bind generic gP back                # Go back
 bind generic gn view-next           # Go to next view
 
 # Page navigation
@@ -164,13 +163,15 @@ bind stage  gO !gh browse %(file):%(lineno) # Open file:line in browser
 
 # GitHub selection utilities (g prefix)
 bind generic gI !zsh -i -c 'gh-issue-select' # Select GitHub issue
-bind generic gR !zsh -i -c 'gh-run-select'   # Select GitHub run
-bind generic gP !zsh -i -c 'gh-pr-select'    # Select GitHub PR
+bind generic gW !zsh -i -c 'gh-run-select'   # Select GitHub workflow/run
+bind generic gP !zsh -i -c 'gh-pr-select'    # Select GitHub pull request
 
 # Pull request operations
 bind status gC !gh pr create --web --fill --assignee @me     # Create PR (web)
 bind status gc !gh pr create --editor --fill --assignee @me  # Create PR (editor)
-bind status gm !gh pr merge -r -d                           # Merge PR
+bind status gm !gh pr merge -r -d                            # Rebase & Merge PR (auto)
+bind refs   gr !gh pr comment %(branch) --editor             # Comment on PR (editor)
+bind refs   gR !gh pr comment %(branch) --web                # Comment on PR (web)
 
 # ==============================================================================
 # AI-Powered Operations
@@ -180,11 +181,11 @@ bind status gm !gh pr merge -r -d                           # Merge PR
 bind status ac !zsh -i -c 'git commit --signoff --edit -F <(tig-ai-commit staged)'
 
 # AI explanations (ae) 
-bind status ae !zsh -i -c 'tig-ai-explain staged'        # Explain staged changes
+bind status ae !zsh -i -c 'tig-ai-explain staged'            # Explain staged changes
 bind main   ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
 bind diff   ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
 bind log    ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
 
 # AI reviews (ar)
-bind status ar !zsh -i -c 'tig-ai-review staged'         # Review staged changes
-bind refs   ar !zsh -i -c 'tig-ai-review branch main "%(branch)"'   # Review branch vs main
+bind status ar !zsh -i -c 'tig-ai-review staged | vipe --suffix=md >/dev/null'  # Review staged changes
+bind refs   ar !zsh -i -c 'tig-ai-review branch main %(branch) | vipe --suffix=md >/dev/null' # Review branch changes

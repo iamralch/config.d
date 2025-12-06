@@ -18,6 +18,7 @@
     nixfmt-rfc-style
     deadnix
     exiftool
+    moreutils
     statix
     atlas
     atuin

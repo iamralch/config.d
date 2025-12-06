@@ -71,7 +71,7 @@ tig-ai-explain() {
 #   $1: context - "staged", "commit", or "branch"
 #   ${@:2}: remaining parameters based on context:
 #     - staged: [model]
-#     - commit: commit_hash [model]  
+#     - commit: commit_hash [model]
 #     - branch: base_branch feature_branch [model]
 #
 # Side Effects:
@@ -95,13 +95,13 @@ tig-ai-review() {
         content=$(_tig_ai_source "$context" | git-ai-review "$2")
         ;;
     "commit")
-        # tig-ai-review commit hash [model]  
+        # tig-ai-review commit hash [model]
         # $2 = commit hash, $3 = model (optional)
         content=$(_tig_ai_source "$context" "$2" | git-ai-review "$3")
         ;;
     "branch")
         # tig-ai-review branch base_branch feature_branch [model]
-        # $2 = base branch, $3 = feature branch, $4 = model (optional) 
+        # $2 = base branch, $3 = feature branch, $4 = model (optional)
         content=$(_tig_ai_source "$context" "${@:2}" | git-ai-review "$4")
         ;;
     *)
@@ -109,8 +109,8 @@ tig-ai-review() {
         return 1
         ;;
     esac
-    
-    _tig_ai_display "$content"
+
+    echo "$content"
 }
 
 # ==============================================================================
@@ -136,7 +136,7 @@ tig-ai-review() {
 # ------------------------------------------------------------------------------
 # _tig_ai_source (Private Helper)
 # ------------------------------------------------------------------------------
-# Retrieves git content based on context (staged changes, specific commit, or 
+# Retrieves git content based on context (staged changes, specific commit, or
 # branch comparison). This function abstracts the git command differences and
 # provides a consistent interface for AI operations.
 #
