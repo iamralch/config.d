@@ -119,6 +119,7 @@ gh-pr-select() {
 		--accept-nth=1 \
 		--header="  GitHub Pull Requests" \
 		--color=header:blue \
+		--bind 'ctrl-c:execute(gh pr checkout {1})+abort' \
 		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh pr view {1})+abort'
 }
