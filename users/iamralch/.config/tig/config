@@ -157,9 +157,10 @@ bind status x !git clean -fd                # Clean untracked files
 
 # GitHub browsing (gO prefix)
 bind main   gO !gh browse %(commit) # Open commit in browser
-bind refs   gO !gh browse %(branch) # Open branch in browser  
+bind refs   gO !gh browse --branch %(branch) # Open branch in browser  
 bind log    gO !gh browse %(commit) # Open commit in browser
 bind status gO !gh browse %(file)   # Open file in browser
+bind stage  gO !gh browse %(file):%(lineno) # Open file:line in browser
 
 # GitHub selection utilities (g prefix)
 bind generic gI !zsh -i -c 'gh-issue-select' # Select GitHub issue
