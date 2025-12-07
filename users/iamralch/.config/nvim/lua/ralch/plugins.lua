@@ -8,10 +8,7 @@ return {
 
   -- Editing Support
   { import = "astrocommunity.ai.opencode-nvim" },
-  { import = "astrocommunity.editing-support.mcphub-nvim" },
-  { import = "astrocommunity.editing-support.vector-code-nvim" },
   { import = "astrocommunity.editing-support.refactoring-nvim" },
-  { import = "astrocommunity.editing-support.codecompanion-nvim" },
 
   -- Code Runner
   { import = "astrocommunity.code-runner.overseer-nvim" },
