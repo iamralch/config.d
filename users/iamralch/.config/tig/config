@@ -182,13 +182,13 @@ bind blame  gO !gh browse %(file):%(lineno)  # Open file at specific line (blame
 # GitHub URL copying (gy prefix)
 # Copies GitHub URLs to clipboard without opening browser - mirrors gO bindings
 # Useful for sharing links in chat, documentation, or code reviews
-bind main   gy !zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Copy commit URL
-bind refs   gy !zsh -i -c 'gh browse -n --branch %(branch) | pbcopy' # Copy branch URL  
-bind log    gy !zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Copy commit URL
-bind status gy !zsh -i -c 'gh browse -n %(file) | pbcopy'            # Copy file URL
-bind stage  gy !zsh -i -c 'gh browse -n %(file) | pbcopy'            # Copy file URL (no line context)
-bind blob   gy !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Copy file:line URL
-bind blame  gy !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Copy file:line URL
+bind main   gy @zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Copy commit URL
+bind refs   gy @zsh -i -c 'gh browse -n --branch %(branch) | pbcopy' # Copy branch URL  
+bind log    gy @zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Copy commit URL
+bind status gy @zsh -i -c 'gh browse -n %(file) | pbcopy'            # Copy file URL
+bind stage  gy @zsh -i -c 'gh browse -n %(file) | pbcopy'            # Copy file URL (no line context)
+bind blob   gy @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Copy file:line URL
+bind blame  gy @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Copy file:line URL
 
 # GitHub selection utilities (g prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
