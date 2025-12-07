@@ -47,8 +47,7 @@
 #   - sd: Modern find-and-replace tool (sed alternative)
 #
 # Pattern Support:
-#   - Plain text strings: "old_function_name" 
-#   - Regular expressions: "TODO.*FIXME"
+#   - Plain text strings: "old_function_name"
 #   - Capture groups: "function (\w+)" -> "method $1"
 #   - Case sensitivity: patterns are case-sensitive by default
 #
@@ -64,24 +63,20 @@
 #
 # Example:
 #   replace "old_function_name" "new_function_name"     # Simple string replacement
-#   replace "TODO.*FIXME" "DONE"                       # Regex pattern replacement
 #   replace "console\.log\(" "logger.debug("          # Escape special characters
 #   replace "var (\w+)" "const $1"                     # Capture group replacement
 #
 # Advanced Usage:
 #   # Replace in specific file types (combine with rg flags)
 #   rg -l "old_api" --type js | xargs sd "old_api" "new_api"
-#   
-#   # Case-insensitive replacement
-#   rg -li "TODO" | xargs sd -i "todo" "DONE"
 #
 # Large Codebase Example:
 #   # Rename function across entire project
 #   replace "getUserById" "findUserById"
-#   
+#
 #   # Update API endpoints
 #   replace "/api/v1/" "/api/v2/"
-#   
+#
 #   # Fix common typos
 #   replace "recieve" "receive"
 #
