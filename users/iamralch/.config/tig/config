@@ -201,10 +201,10 @@ bind generic gP !zsh -i -c 'gh-pr-select'    # Select GitHub pull request
 
 # Pull request operations
 # PR creation, merging, and review workflows
-bind status gC !gh pr create --web --fill --assignee @me     # Create PR (web interface)
-bind status gc !gh pr create --editor --fill --assignee @me  # Create PR (terminal editor)
-bind status gm !gh pr merge -r -d                            # Rebase & merge PR with delete
-bind refs   gr !zsh -i -c 'gh-pr-review %(branch)'           # Review PR for branch
+bind status gC !gh pr create --assignee @me --web    # Create PR (web interface)
+bind status gc !gh pr create --assignee @me --editor # Create PR (terminal editor)
+bind status gm !gh pr merge -r -d                    # Rebase & merge PR with delete
+bind refs   gr !zsh -i -c 'gh-pr-review %(branch)'   # Review PR for branch
 
 # ==============================================================================
 # AI-Powered Operations
