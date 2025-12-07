@@ -9,7 +9,30 @@ official specification format:
 [optional body]
 ```
 
-## Examples from spec
+## Output Requirements
+
+- Do **not** include any introduction, preamble, meta-commentary, or sentences
+  such as "Let me review…" or "Here is the analysis…".
+- The output **must start directly with the commit message**.
+- Return the complete message (subject + blank line + body) in a code block.
+
+## Format Specifications
+
+- No line may exceed 80 characters.
+- All output must be valid GitHub-flavored Markdown (GFM).
+- All output must conform to `markdownlint` rules:
+  - Correct heading levels (no skipping)
+  - Proper list indentation
+  - No trailing spaces
+  - No hard tabs
+  - Proper fenced code blocks
+  - Clean paragraph breaks and spacing
+  - Only one top level heading
+- Wrap text as needed to respect these rules.
+
+## Content Structure
+
+### Examples from spec
 
 ```
 feat: allow provided config object to extend other configs
@@ -41,19 +64,15 @@ Automatically send notification emails to customers when
 their orders are shipped with tracking information.
 ```
 
-## Types
+### Types
 
 `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`
 
-## Rules
+### Rules
 
 - Subject: imperative mood, lowercase, under 72 chars, `!` for breaking changes
 - Body: explain what and why vs how, wrap at 72 chars
 - Leave blank line between subject and body
-
-## Output Format
-
-Return the complete message (subject + blank line + body) in a code block.
 
 ## Git diff
 

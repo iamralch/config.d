@@ -246,5 +246,11 @@ go-build() {
 #   5. Function exits cleanly after editor session
 # ------------------------------------------------------------------------------
 vipe-md() {
-	vipe --suffix=md >/dev/null
+	if [ -t 1 ]; then
+		# stdout is a terminal, redirect to null
+		vipe --suffix=md >/dev/null
+	else
+		# stdout is redirected/piped, allow output
+		vipe --suffix=md
+	fi
 }

@@ -297,3 +297,98 @@ gh-run-select() {
 		--bind 'ctrl-v:execute(gh run view {1})+abort' \
 		--bind 'ctrl-w:execute(gh run watch {1})+abort'
 }
+
+# ------------------------------------------------------------------------------
+# gh-pr-create
+# ------------------------------------------------------------------------------
+# Create a GitHub pull request from AI-generated markdown content.
+#
+# This function reads markdown content from stdin (typically output from
+# git-ai-describe), extracts the first heading as the PR title and the
+# remaining content as the PR body, then creates a GitHub pull request
+# using the GitHub CLI.
+#
+# The function expects markdown content with the following structure:
+# - First line starting with '#' becomes the PR title (# removed)
+# - All content after the first '#' line becomes the PR body
+# - Supports all standard 'gh pr create' arguments via "$@"
+#
+# Input Format:
+#   Markdown content from stdin with structure like:
+#   # Fix authentication bug in user login
+#   
+#   ## Summary
+#   This change resolves...
+#   [rest of markdown content]
+#
+# Output:
+#   Creates a GitHub pull request and displays the result
+#   Returns exit code from 'gh pr create' command
+#
+# Required Dependencies:
+#   - gh: GitHub CLI (authenticated)
+#   - Access to current git repository with remote on GitHub
+#
+# Arguments:
+#   All arguments are passed directly to 'gh pr create'
+#   Common useful arguments:
+#   - --assignee @me: Assign PR to yourself
+#   - --web: Open PR in web browser after creation
+#   - --draft: Create as draft PR
+#   - --reviewer user: Add reviewer
+#
+# Example Usage:
+#   git diff --staged | git-ai-describe | gh-pr-create
+#   git diff --staged | git-ai-describe | gh-pr-create --assignee @me --web
+#   git diff main..feature | git-ai-describe | gh-pr-create --draft
+#
+# Integration with tig:
+#   bind status aC !zsh -i -c 'git diff --staged | git-ai-describe | gh-pr-create'
+#   bind status ac !zsh -i -c 'git diff --staged | git-ai-describe | gh-pr-create --assignee @me --web'
+#
+# Error Conditions:
+#   - No input provided (stdin is empty)
+#   - No heading found in markdown content
+#   - GitHub CLI errors (authentication, repository access, etc.)
+# ------------------------------------------------------------------------------
+gh-pr-create() {
+  local markdown_content
+  local title
+  local body
+  
+  # Read markdown content from stdin
+  if [ -t 0 ]; then
+    echo "Error: No input provided. Please pipe markdown content from git-ai-describe." >&2
+    echo "Example: git diff --staged | git-ai-describe | gh-pr-create" >&2
+    return 1
+  fi
+  
+  markdown_content=$(cat)
+  
+  # Validate we got content
+  if [ -z "$markdown_content" ]; then
+    echo "Error: No markdown content received from stdin" >&2
+    return 1
+  fi
+  
+  # Extract title: first line that starts with '#'
+  # Remove '# ' prefix and trim whitespace
+  title=$(echo "$markdown_content" | grep -m1 '^# ' | sed 's/^# *//' | sed 's/ *$//')
+  
+  # Validate we found a title
+  if [ -z "$title" ]; then
+    echo "Error: No heading found in markdown content. Expected first line to start with '#'" >&2
+    echo "Received content preview:" >&2
+    echo "$markdown_content" | head -5 >&2
+    return 1
+  fi
+  
+  # Extract body: everything after the first heading line
+  # Skip the title line and take the rest
+  body=$(echo "$markdown_content" | sed '1,/^# /d')
+  
+  # Create PR using GitHub CLI with extracted title and body
+  # Pass through all additional arguments
+  echo "Creating PR with title: $title" >&2
+  gh pr create --title "$title" --body "$body" "$@"
+}

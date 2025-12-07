@@ -3,14 +3,14 @@
 Generate a clear, professional pull-request description based on these git
 changes.
 
-Strict Output Rules:
+## Output Requirements
 
 - Do **not** include any introduction, preamble, meta-commentary, or sentences
   such as "Let me review…" or "Here is the analysis…".
 - The output **must start directly with top level heading**.
 - Absolutely no text may appear before the first required heading.
 
-Output Formatting Requirement:
+## Format Specifications
 
 - No line may exceed 80 characters.
 - All output must be valid GitHub-flavored Markdown (GFM).
@@ -21,7 +21,10 @@ Output Formatting Requirement:
   - No hard tabs
   - Proper fenced code blocks
   - Clean paragraph breaks and spacing
+  - Only one top level heading
 - Wrap text as needed to respect these rules.
+
+## Content Structure
 
 ---
 
