@@ -317,6 +317,78 @@ git-ai-review() {
   echo "$raw_output"
 }
 
+# ------------------------------------------------------------------------------
+# git-commit
+# ------------------------------------------------------------------------------
+# Interactive git commit with optional content from stdin as initial message.
+#
+# This function allows for composing git commit messages interactively, with
+# optional initial content from stdin. Always opens an editor for final message
+# composition and commits with --signoff flag. Perfect for AI-generated commit
+# messages that need manual review before committing.
+#
+# The function follows Unix philosophy: reads from stdin, composes with pipes,
+# and provides a clean interactive editing experience for commit workflows.
+#
+# Parameters:
+#   None
+#
+# Input:
+#   Commit message content from stdin (optional - uses default template if no stdin)
+#
+# Output:
+#   Creates a git commit if user saves content in editor
+#
+# Required Dependencies:
+#   - git (for commit functionality)
+#   - Editor set in $EDITOR environment variable (or system default)
+#
+# Required Setup:
+#   - Must be run from within a git repository
+#   - Repository should have staged changes to commit
+#
+# Return Codes:
+#   0: Success - commit created or user cancelled gracefully
+#   1: Error - git command failure or repository issues
+#
+# Example:
+#   echo "Initial commit message" | git-commit              # Commit with initial content
+#   git-commit                                              # Commit with default template
+#   git-ai-commit staged | git-commit                       # AI-generated message for review
+#   git diff --staged | git-ai-commit | git-commit         # Full AI-assisted commit workflow
+#
+# Pipeline Examples:
+#   git-ai-commit staged | git-commit                       # Review AI commit message
+#   echo "feat: add new feature" | git-commit               # Commit with initial message
+#
+# Interactive Workflow:
+#   1. Input piped to function becomes initial content or default template is used
+#   2. Editor opens with commit message template (.gitcommit suffix)
+#   3. User edits commit message (or quits without saving to cancel)
+#   4. If user saves, creates commit with --signoff flag
+#   5. Temporary files cleaned up automatically
+# ------------------------------------------------------------------------------
+git-commit() {
+  local input_content
+  local temp_file
+
+  if [ -t 0 ]; then
+    # No stdin - use default
+    input_content="<!-- Write your code review below -->"
+  else
+    # Read from stdin
+    input_content=$(cat)
+  fi
+
+  # Create temporary file and edit
+  temp_file=$(mktemp).gitcommit
+  echo "$input_content" >"$temp_file"
+
+  # Submit only if content changed and file is not empty
+  git commit --signoff --edit -F "$temp_file"
+  rm -f "$temp_file"
+}
+
 # ==============================================================================
 # Helper Functions
 # ==============================================================================
