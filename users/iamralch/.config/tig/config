@@ -214,16 +214,16 @@ bind refs   gr !zsh -i -c 'gh-pr-review %(branch)'           # Review PR for bra
 
 # AI commit generation (ac)
 # Generates commit message from staged changes, opens editor for review/editing
-bind status ac !zsh -i -c 'git diff --staged | git-ai-commit | git-commit'
+bind status ac !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-commit | git-commit'
 
 # AI explanations (ae) 
 # Generates AI explanations of code changes, opens markdown viewer for reading
-bind status ae !zsh -i -c 'git diff --staged | git-ai-explain | vipe-md'   # Explain staged changes
+bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vipe-md'   # Explain staged changes
 bind main   ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'   # Explain commit
 bind log    ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'   # Explain commit (log view)
-bind refs   ae !zsh -i -c 'git diff main...%(branch) | git-ai-explain | vipe-md' # Explain branch changes
+bind refs   ae !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-explain | vipe-md' # Explain branch changes
 
 # AI reviews (ar)
 # Generates AI code reviews with different submission workflows
-bind status ar !zsh -i -c 'git diff --staged | git-ai-review | vipe-md'    # Review staged (view only)
-bind refs   ar !zsh -i -c 'git diff main...%(branch) | git-ai-review | gh-pr-review %(branch)' # Review & submit PR
+bind status ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'    # Review staged (view only)
+bind refs   ar !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)' # Review & submit PR
