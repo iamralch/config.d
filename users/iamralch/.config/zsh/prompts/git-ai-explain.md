@@ -78,7 +78,7 @@ Only include meaningful suggestions — no filler.
 
 ## Output Formatting Requirement
 
-- No line may exceed 120 characters.
+- No line may exceed 80 characters.
 - Wrap text as needed to respect this limit.
 
 ## Git diff

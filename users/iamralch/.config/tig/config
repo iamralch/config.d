@@ -38,77 +38,77 @@ bind generic k move-up
 bind generic l scroll-right
 
 # Go-to movements (g prefix)
-bind generic g  none                # Clear default g binding
-bind generic gg move-first-line     # Go to top
-bind generic G  move-last-line      # Go to bottom (generic)
-bind main    G  move-last-line      # Go to bottom (main view)
-bind generic gj next                # Go to next
-bind generic gk previous            # Go to previous  
-bind generic gp parent              # Go to parent
-bind generic gn view-next           # Go to next view
+bind generic g  none            # Clear default g binding
+bind generic gg move-first-line # Go to top
+bind generic G  move-last-line  # Go to bottom (generic)
+bind main    G  move-last-line  # Go to bottom (main view)
+bind generic gj next            # Go to next
+bind generic gk previous        # Go to previous  
+bind generic gp parent          # Go to parent
+bind generic gn view-next       # Go to next view
 
 # Page navigation
-bind generic <C-f> move-page-down   # Page down
-bind generic <C-b> move-page-up     # Page up
+bind generic <C-f> move-page-down # Page down
+bind generic <C-b> move-page-up   # Page up
 
 # Help and view switching
-bind generic K         view-help    # Show help
-bind generic <C-w><C-w> view-next   # Cycle through views
+bind generic K         view-help  # Show help
+bind generic <C-w><C-w> view-next # Cycle through views
 
 # ==============================================================================
 # View Management (v prefix)
 # ==============================================================================
 
-bind generic v  none                # Clear default v binding
-bind generic vm view-main           # Main view
-bind generic vd view-diff           # Diff view
-bind generic vl view-log            # Log view
-bind generic vt view-tree           # Tree view
-bind generic vb view-blob           # Blob view
-bind generic vx view-blame          # Blame view
-bind generic vr view-refs           # References view
-bind generic vs view-status         # Status view
-bind generic vu view-stage          # Stage view
-bind generic vy view-stash          # Stash view
-bind generic vg view-grep           # Grep view
-bind generic vp view-pager          # Pager view
-bind generic vh view-help           # Help view
+bind generic v  none        # Clear default v binding
+bind generic vm view-main   # Main view
+bind generic vd view-diff   # Diff view
+bind generic vl view-log    # Log view
+bind generic vt view-tree   # Tree view
+bind generic vb view-blob   # Blob view
+bind generic vx view-blame  # Blame view
+bind generic vr view-refs   # References view
+bind generic vs view-status # Status view
+bind generic vu view-stage  # Stage view
+bind generic vy view-stash  # Stash view
+bind generic vg view-grep   # Grep view
+bind generic vp view-pager  # Pager view
+bind generic vh view-help   # Help view
 
 # ==============================================================================
 # Options Toggle (o prefix)
 # ==============================================================================
 
-bind generic o  none                # Clear default o binding
-bind generic oo :toggle sort-order  # Toggle sort order
-bind generic os :toggle sort-field  # Toggle sort field
-bind generic on :toggle line-number # Toggle line numbers
-bind generic od :toggle date        # Toggle date display
-bind generic oa :toggle author      # Toggle author display
-bind generic og :toggle line-graphics    # Toggle line graphics
-bind generic of :toggle file-name   # Toggle file name display
-bind generic op :toggle ignore-space     # Toggle ignore whitespace
-bind generic oi :toggle id          # Toggle commit ID display
-bind generic ot :toggle commit-title-overflow  # Toggle title overflow
-bind generic oF :toggle file-filter # Toggle file filter
-bind generic or :toggle commit-title-refs      # Toggle title refs
+bind generic o  none                          # Clear default o binding
+bind generic oo :toggle sort-order            # Toggle sort order
+bind generic os :toggle sort-field            # Toggle sort field
+bind generic on :toggle line-number           # Toggle line numbers
+bind generic od :toggle date                  # Toggle date display
+bind generic oa :toggle author                # Toggle author display
+bind generic og :toggle line-graphics         # Toggle line graphics
+bind generic of :toggle file-name             # Toggle file name display
+bind generic op :toggle ignore-space          # Toggle ignore whitespace
+bind generic oi :toggle id                    # Toggle commit ID display
+bind generic ot :toggle commit-title-overflow # Toggle title overflow
+bind generic oF :toggle file-filter           # Toggle file filter
+bind generic or :toggle commit-title-refs     # Toggle title refs
 
 # ==============================================================================
 # Diff Context Navigation (@ prefix) 
 # ==============================================================================
 
-bind generic @j :/^@@               # Jump to next diff hunk
-bind generic @k :?^@@               # Jump to previous diff hunk
-bind generic @- :toggle diff-context -1  # Decrease diff context
-bind generic @+ :toggle diff-context +1  # Increase diff context
+bind generic @j :/^@@                   # Jump to next diff hunk
+bind generic @k :?^@@                   # Jump to previous diff hunk
+bind generic @- :toggle diff-context -1 # Decrease diff context
+bind generic @+ :toggle diff-context +1 # Increase diff context
 
 # ==============================================================================
 # Git Operations
 # ==============================================================================
 
 # Fetch and pull
-bind refs f !git fetch --all -p    # Fetch all remotes with prune
-bind main f !git fetch --all -p    # Fetch all remotes with prune
-bind main u !git pull -r origin %(branch)
+bind refs f !git fetch --all -p           # Fetch all remotes with prune
+bind main f !git fetch --all -p           # Fetch all remotes with prune
+bind main u !git pull -r origin %(branch) # Pull with rebase
 
 # History operations
 bind main t !git revert %(commit) --signoff    # Revert commit
@@ -119,28 +119,28 @@ bind main i !git rebase -i %(commit) --signoff # Interactive rebase
 # ==============================================================================
 
 # Checkout
-bind main c !git checkout %(commit)  # Checkout commit
-bind refs c !git checkout %(branch)  # Checkout branch
+bind main c !git checkout %(commit) # Checkout commit
+bind refs c !git checkout %(branch) # Checkout branch
 
 # Create branches
-bind main B !git checkout -b "%(prompt New branch name: )"  # New branch from commit
-bind refs B !git checkout -b "%(prompt New branch name: )"  # New branch from ref
+bind main B !git checkout -b "%(prompt New branch name: )" # New branch from commit
+bind refs B !git checkout -b "%(prompt New branch name: )" # New branch from ref
 
 # ==============================================================================
 # Push & Stash Operations
 # ==============================================================================
 
 # Push operations
-bind main   p !git push -u          # Push with upstream
-bind main   P !git push -f          # Force push
-bind status p !git push -u          # Push with upstream
-bind status P !git push -f          # Force push
+bind main   p !git push -u # Push with upstream
+bind main   P !git push -f # Force push
+bind status p !git push -u # Push with upstream
+bind status P !git push -f # Force push
 
 # Stash operations
-bind main   { !git stash            # Create stash
-bind status { !git stash            # Create stash
-bind main   } !git stash pop        # Apply stash
-bind status } !git stash pop        # Apply stash
+bind main   { !git stash     # Create stash
+bind status { !git stash     # Create stash
+bind main   } !git stash pop # Apply stash
+bind status } !git stash pop # Apply stash
 
 # ==============================================================================
 # Commit & Status Operations
@@ -155,11 +155,11 @@ bind status x !git clean -fd                # Clean untracked files
 # ==============================================================================
 
 # GitHub browsing (gO prefix)
-bind main   gO !gh browse %(commit) # Open commit in browser
+bind main   gO !gh browse %(commit)          # Open commit in browser
 bind refs   gO !gh browse --branch %(branch) # Open branch in browser  
-bind log    gO !gh browse %(commit) # Open commit in browser
-bind status gO !gh browse %(file)   # Open file in browser
-bind stage  gO !gh browse %(file):%(lineno) # Open file:line in browser
+bind log    gO !gh browse %(commit)          # Open commit in browser
+bind status gO !gh browse %(file)            # Open file in browser
+bind stage  gO !gh browse %(file):%(lineno)  # Open file:line in browser
 
 # GitHub selection utilities (g prefix)
 bind generic gI !zsh -i -c 'gh-issue-select' # Select GitHub issue
@@ -170,22 +170,21 @@ bind generic gP !zsh -i -c 'gh-pr-select'    # Select GitHub pull request
 bind status gC !gh pr create --web --fill --assignee @me     # Create PR (web)
 bind status gc !gh pr create --editor --fill --assignee @me  # Create PR (editor)
 bind status gm !gh pr merge -r -d                            # Rebase & Merge PR (auto)
-bind refs   gr !gh pr comment %(branch) --editor             # Comment on PR (editor)
-bind refs   gR !gh pr comment %(branch) --web                # Comment on PR (web)
+bind refs   gr !zsh -i -c 'gh-pr-review %(branch)'           # Review PR (editor)
 
 # ==============================================================================
 # AI-Powered Operations
 # ==============================================================================
 
 # AI commit generation (ac)
-bind status ac !zsh -i -c 'git commit --signoff --edit -F <(tig-ai-commit staged)'
+bind status ac !zsh -i -c 'git commit --signoff --edit -F <(git diff --staged | git-ai-commit)'
 
 # AI explanations (ae) 
-bind status ae !zsh -i -c 'tig-ai-explain staged'            # Explain staged changes
-bind main   ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
-bind diff   ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
-bind log    ae !zsh -i -c 'tig-ai-explain commit %(commit)'  # Explain commit
+bind status ae !zsh -i -c 'git diff --staged | git-ai-explain | vipe-md'
+bind main   ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
+bind log    ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
+bind refs   ae !zsh -i -c 'git diff main...%(branch) | git-ai-explain | vipe-md'
 
 # AI reviews (ar)
-bind status ar !zsh -i -c 'tig-ai-review staged'  # Review staged changes
-bind refs   ar !zsh -i -c 'tig-ai-review branch main %(branch)'  # Review branch changes
+bind status ar !zsh -i -c 'git diff --staged | git-ai-review | vipe-md'
+bind refs   ar !zsh -i -c 'git diff main...%(branch) | git-ai-review | gh-pr-review %(branch)' # Review branch changes

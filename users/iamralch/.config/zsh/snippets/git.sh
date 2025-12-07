@@ -76,63 +76,63 @@
 #   git diff HEAD~5..HEAD | git-ai-commit | tee commit.txt  # Save and display
 # ------------------------------------------------------------------------------
 git-ai-commit() {
-	local model="${1:-google/gemini-2.0-flash}"
-	local changes
-	local raw_output
-	local commit_message
+  local model="${1:-google/gemini-2.0-flash}"
+  local changes
+  local raw_output
+  local commit_message
 
-	# Read diff from stdin
-	if [ -t 0 ]; then
-		echo "Error: No input provided. Please pipe git diff content." >&2
-		echo "Example: git diff --staged | git-ai-commit" >&2
-		return 1
-	fi
+  # Read diff from stdin
+  if [ -t 0 ]; then
+    echo "Error: No input provided. Please pipe git diff content." >&2
+    echo "Example: git diff --staged | git-ai-commit" >&2
+    return 1
+  fi
 
-	changes=$(cat)
+  changes=$(cat)
 
-	# Validate we got content
-	if [ -z "$changes" ]; then
-		echo "Error: No diff content received from stdin" >&2
-		return 1
-	fi
+  # Validate we got content
+  if [ -z "$changes" ]; then
+    echo "Error: No diff content received from stdin" >&2
+    return 1
+  fi
 
-	# Load commit message prompt from file
-	local prompt
-	if ! prompt=$(_load_git_ai_prompt "git-ai-commit" "$changes"); then
-		return 1
-	fi
+  # Load commit message prompt from file
+  local prompt
+  if ! prompt=$(_load_git_ai_prompt "git-ai-commit" "$changes"); then
+    return 1
+  fi
 
-	# Generate commit message with visual feedback
-	raw_output=$(gum spin --title "Generating commit message..." -- opencode run "$prompt" -m "$model")
+  # Generate commit message with visual feedback
+  raw_output=$(gum spin --title "Generating commit message..." -- opencode run "$prompt" -m "$model")
 
-	# Check if opencode command succeeded
-	if [ $? -ne 0 ]; then
-		echo "Error: Failed to execute opencode command" >&2
-		return 1
-	fi
+  # Check if opencode command succeeded
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to execute opencode command" >&2
+    return 1
+  fi
 
-	# Validate we got output
-	if [ -z "$raw_output" ]; then
-		echo "Error: No output received from opencode" >&2
-		return 1
-	fi
+  # Validate we got output
+  if [ -z "$raw_output" ]; then
+    echo "Error: No output received from opencode" >&2
+    return 1
+  fi
 
-	# Extract commit message from code block using awk
-	commit_message=$(echo "$raw_output" | awk '/^```/{flag=!flag; next} flag')
+  # Extract commit message from code block using awk
+  commit_message=$(echo "$raw_output" | awk '/^```/{flag=!flag; next} flag')
 
-	# Fallback: if no code block found, try to extract conventional commit pattern
-	if [ -z "$commit_message" ]; then
-		commit_message=$(echo "$raw_output" | grep -E '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)[:(!]' | head -n1)
-	fi
+  # Fallback: if no code block found, try to extract conventional commit pattern
+  if [ -z "$commit_message" ]; then
+    commit_message=$(echo "$raw_output" | grep -E '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)[:(!]' | head -n1)
+  fi
 
-	# Final validation
-	if [ -z "$commit_message" ]; then
-		echo "Error: Failed to extract commit message from AI response" >&2
-		return 1
-	fi
+  # Final validation
+  if [ -z "$commit_message" ]; then
+    echo "Error: Failed to extract commit message from AI response" >&2
+    return 1
+  fi
 
-	# Output clean commit message to stdout
-	echo "$commit_message"
+  # Output clean commit message to stdout
+  echo "$commit_message"
 }
 
 # ------------------------------------------------------------------------------
@@ -182,48 +182,48 @@ git-ai-commit() {
 #   git diff --staged | tee changes.patch | git-ai-explain  # Save diff and explain
 # ------------------------------------------------------------------------------
 git-ai-explain() {
-	local model="${1:-anthropic/claude-opus-4-5}"
-	local changes
-	local raw_output
+  local model="${1:-anthropic/claude-opus-4-5}"
+  local changes
+  local raw_output
 
-	# Read diff from stdin
-	if [ -t 0 ]; then
-		echo "Error: No input provided. Please pipe git diff content." >&2
-		echo "Example: git diff --staged | git-ai-explain" >&2
-		return 1
-	fi
+  # Read diff from stdin
+  if [ -t 0 ]; then
+    echo "Error: No input provided. Please pipe git diff content." >&2
+    echo "Example: git diff --staged | git-ai-explain" >&2
+    return 1
+  fi
 
-	changes=$(cat)
+  changes=$(cat)
 
-	# Validate we got content
-	if [ -z "$changes" ]; then
-		echo "Error: No diff content received from stdin" >&2
-		return 1
-	fi
+  # Validate we got content
+  if [ -z "$changes" ]; then
+    echo "Error: No diff content received from stdin" >&2
+    return 1
+  fi
 
-	# Load explanation prompt from file
-	local prompt
-	if ! prompt=$(_load_git_ai_prompt "git-ai-explain" "$changes"); then
-		return 1
-	fi
+  # Load explanation prompt from file
+  local prompt
+  if ! prompt=$(_load_git_ai_prompt "git-ai-explain" "$changes"); then
+    return 1
+  fi
 
-	# Generate explanation with visual feedback
-	raw_output=$(gum spin --title "Generating explanation..." -- opencode run "$prompt" -m "$model")
+  # Generate explanation with visual feedback
+  raw_output=$(gum spin --title "Generating explanation..." -- opencode run "$prompt" -m "$model")
 
-	# Check if opencode command succeeded
-	if [ $? -ne 0 ]; then
-		echo "Error: Failed to execute opencode command" >&2
-		return 1
-	fi
+  # Check if opencode command succeeded
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to execute opencode command" >&2
+    return 1
+  fi
 
-	# Validate we got output
-	if [ -z "$raw_output" ]; then
-		echo "Error: No output received from opencode" >&2
-		return 1
-	fi
+  # Validate we got output
+  if [ -z "$raw_output" ]; then
+    echo "Error: No output received from opencode" >&2
+    return 1
+  fi
 
-	# Output explanation directly to stdout
-	echo "$raw_output"
+  # Output explanation directly to stdout
+  echo "$raw_output"
 }
 
 # ------------------------------------------------------------------------------
@@ -273,48 +273,48 @@ git-ai-explain() {
 #   git show HEAD | tee last-commit.patch | git-ai-review   # Save diff and review
 # ------------------------------------------------------------------------------
 git-ai-review() {
-	local model="${1:-anthropic/claude-opus-4-5}"
-	local changes
-	local raw_output
+  local model="${1:-anthropic/claude-opus-4-5}"
+  local changes
+  local raw_output
 
-	# Read diff from stdin
-	if [ -t 0 ]; then
-		echo "Error: No input provided. Please pipe git diff content." >&2
-		echo "Example: git diff --staged | git-ai-review" >&2
-		return 1
-	fi
+  # Read diff from stdin
+  if [ -t 0 ]; then
+    echo "Error: No input provided. Please pipe git diff content." >&2
+    echo "Example: git diff --staged | git-ai-review" >&2
+    return 1
+  fi
 
-	changes=$(cat)
+  changes=$(cat)
 
-	# Validate we got content
-	if [ -z "$changes" ]; then
-		echo "Error: No diff content received from stdin" >&2
-		return 1
-	fi
+  # Validate we got content
+  if [ -z "$changes" ]; then
+    echo "Error: No diff content received from stdin" >&2
+    return 1
+  fi
 
-	# Load review prompt from file
-	local prompt
-	if ! prompt=$(_load_git_ai_prompt "git-ai-review" "$changes"); then
-		return 1
-	fi
+  # Load review prompt from file
+  local prompt
+  if ! prompt=$(_load_git_ai_prompt "git-ai-review" "$changes"); then
+    return 1
+  fi
 
-	# Generate review with visual feedback
-	raw_output=$(gum spin --title "Generating code review..." -- opencode run "$prompt" -m "$model")
+  # Generate review with visual feedback
+  raw_output=$(gum spin --title "Generating code review..." -- opencode run "$prompt" -m "$model")
 
-	# Check if opencode command succeeded
-	if [ $? -ne 0 ]; then
-		echo "Error: Failed to execute opencode command" >&2
-		return 1
-	fi
+  # Check if opencode command succeeded
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to execute opencode command" >&2
+    return 1
+  fi
 
-	# Validate we got output
-	if [ -z "$raw_output" ]; then
-		echo "Error: No output received from opencode" >&2
-		return 1
-	fi
+  # Validate we got output
+  if [ -z "$raw_output" ]; then
+    echo "Error: No output received from opencode" >&2
+    return 1
+  fi
 
-	# Output review directly to stdout
-	echo "$raw_output"
+  # Output review directly to stdout
+  echo "$raw_output"
 }
 
 # ==============================================================================
@@ -329,24 +329,24 @@ git-ai-review() {
 #   $1: prompt file name (e.g., "git-ai-commit")
 #   $2: changes content to substitute
 _load_git_ai_prompt() {
-	local prompt_name="$1"
-	local changes="$2"
-	local prompt_file="$HOME/.config/zsh/prompts/${prompt_name}.md"
+  local prompt_name="$1"
+  local changes="$2"
+  local prompt_file="$HOME/.config/zsh/prompts/${prompt_name}.md"
 
-	# Check if prompt file exists
-	if [ ! -f "$prompt_file" ]; then
-		echo "Error: Prompt file not found: $prompt_file" >&2
-		return 1
-	fi
+  # Check if prompt file exists
+  if [ ! -f "$prompt_file" ]; then
+    echo "Error: Prompt file not found: $prompt_file" >&2
+    return 1
+  fi
 
-	# Load prompt template and substitute variables using a more robust approach
-	# Create a temporary file with the changes to avoid sed escaping issues
-	local temp_file
-	temp_file=$(mktemp)
-	echo "$changes" >"$temp_file"
+  # Load prompt template and substitute variables using a more robust approach
+  # Create a temporary file with the changes to avoid sed escaping issues
+  local temp_file
+  temp_file=$(mktemp)
+  echo "$changes" >"$temp_file"
 
-	# Use awk to replace ${CHANGES} with the file content
-	awk -v changes_file="$temp_file" '
+  # Use awk to replace ${CHANGES} with the file content
+  awk -v changes_file="$temp_file" '
 		/\${CHANGES}/ {
 			while ((getline line < changes_file) > 0) {
 				print line
@@ -357,6 +357,6 @@ _load_git_ai_prompt() {
 		{ print }
 	' "$prompt_file"
 
-	# Clean up temp file
-	rm "$temp_file"
+  # Clean up temp file
+  rm "$temp_file"
 }

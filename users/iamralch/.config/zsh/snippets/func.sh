@@ -100,3 +100,7 @@ go-build() {
 	# generate the binary sha256
 	openssl dgst -binary -sha256 "$APP_FQDN.zip" | base64 | tr -d '\n' >"$APP_FQDN-base64-sha256.sum"
 }
+
+vipe-md() {
+	vipe --suffix=md >/dev/null
+}

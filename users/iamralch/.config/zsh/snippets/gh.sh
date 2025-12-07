@@ -27,7 +27,7 @@
 #   - Escape/Ctrl-C: Cancel selection
 #   - Ctrl-O: Open selected item in web browser
 #   - Ctrl-V: View selected item in terminal
-#   
+#
 #   Function-specific keybindings:
 #   - gh-pr-select: Ctrl-K to checkout the selected pull request
 #   - gh-run-select: Ctrl-W to watch the selected workflow run
@@ -146,6 +146,90 @@ gh-pr-select() {
 		--bind 'ctrl-k:execute(gh pr checkout {1})+abort' \
 		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh pr view {1})+abort'
+}
+
+# ------------------------------------------------------------------------------
+# gh-pr-review
+# ------------------------------------------------------------------------------
+# Interactive PR review submission using editor integration.
+#
+# This function opens an editor for interactive review composition, with optional
+# content from stdin as initial content. Uses markdown syntax highlighting and
+# submits the final review via `gh pr review` only if content is modified. Perfect
+# for editing AI-generated reviews before submission or creating reviews from scratch.
+#
+# The function follows Unix philosophy: reads from stdin, composes with pipes,
+# and provides a clean interactive editing experience for code review workflows.
+#
+# Parameters:
+#   $1 (required): Branch name or PR number to review
+#
+# Input:
+#   Review content from stdin (optional - uses default template if no stdin)
+#
+# Output:
+#   Submits review via `gh pr review` command if content is modified
+#
+# Required Dependencies:
+#   - vipe (from moreutils package for interactive editing)
+#   - gh CLI (for gh pr review functionality)
+#
+# Required Setup:
+#   - Authenticated gh CLI configuration
+#   - Must be run from within a repository with an active PR
+#
+# Return Codes:
+#   0: Success - review submitted or user cancelled gracefully
+#   1: Error - editor or submission failure
+#
+# Example:
+#   echo "LGTM! Great work." | gh-pr-review 123               # Review PR #123 with initial content
+#   echo "Great work!" | gh-pr-review main                    # Review PR for main branch
+#   gh-pr-review 456                                          # Review PR #456 with default template
+#   git diff main..feature | git-ai-review | gh-pr-review feature  # Review feature branch
+#
+# Pipeline Examples:
+#   git-ai-review < changes.patch | gh-pr-review 456          # Review specific PR
+#   git show HEAD | git-ai-review | gh-pr-review main         # Review main branch PR
+#
+# Interactive Workflow:
+#   1. Input piped to function becomes initial content or default template is used
+#   2. Editor opens with markdown syntax highlighting (.md suffix)
+#   3. User edits review content (or quits without saving to cancel)
+#   4. If content is modified and not empty, submits via `gh pr review -c -F $(file)`
+#   5. Temporary files cleaned up automatically
+# ------------------------------------------------------------------------------
+gh-pr-review() {
+	local input_content
+	local target="$1"
+	local temp_file
+	local input_hash
+	local output_hash
+
+	if [ -t 0 ]; then
+		# No stdin - use default
+		input_content="<!-- Write your code review below -->"
+	else
+		# Read from stdin
+		input_content=$(cat)
+	fi
+
+	# Calculate hash of input content
+	input_hash=$(echo "$input_content" | md5sum | awk '{print $1}')
+	
+	# Create temporary file and edit
+	temp_file=$(mktemp).md
+	echo "$input_content" | vipe --suffix=md >"$temp_file"
+	
+	# Calculate hash of edited content
+	output_hash=$(md5sum "$temp_file" | awk '{print $1}')
+	
+	# Submit only if content changed and file is not empty
+	if [ "$input_hash" != "$output_hash" ] && [ -s "$temp_file" ]; then
+		gh pr review "$target" -c -F "$temp_file"
+	fi
+	
+	rm -f "$temp_file"
 }
 
 # ------------------------------------------------------------------------------
