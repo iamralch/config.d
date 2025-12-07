@@ -141,6 +141,9 @@ bind refs c !git checkout %(branch) # Checkout branch
 bind main B !git checkout -b "%(prompt New branch name: )" # New branch from commit
 bind refs B !git checkout -b "%(prompt New branch name: )" # New branch from ref
 
+# Delete branches (local and remote)
+bind refs gX !zsh -i -c 'git branch -D %(branch) && git push origin --delete %(branch) --quite' # Delete branch locally and on GitHub
+
 # ==============================================================================
 # Push & Stash Operations
 # ==============================================================================
