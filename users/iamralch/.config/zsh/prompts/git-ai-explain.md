@@ -76,6 +76,15 @@ Only include meaningful suggestions — no filler.
 
 ---
 
+## Strict Output Rules
+
+- Do **not** include any introduction, preamble, meta-commentary, or sentences
+  such as "Let me review…" or "Here is the analysis…".
+- The output **must start directly with top level heading**.
+- Absolutely no text may appear before the first required heading.
+
+---
+
 ## Output Formatting Requirement
 
 - No line may exceed 80 characters.
