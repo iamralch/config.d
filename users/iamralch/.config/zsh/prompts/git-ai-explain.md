@@ -79,7 +79,15 @@ Only include meaningful suggestions — no filler.
 ## Output Formatting Requirement
 
 - No line may exceed 80 characters.
-- Wrap text as needed to respect this limit.
+- All output must be valid GitHub-flavored Markdown (GFM).
+- All output must conform to `markdownlint` rules:
+  - Correct heading levels (no skipping)
+  - Proper list indentation
+  - No trailing spaces
+  - No hard tabs
+  - Proper fenced code blocks
+  - Clean paragraph breaks and spacing
+- Wrap text as needed to respect these rules.
 
 ## Git diff
 

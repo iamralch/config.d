@@ -1,13 +1,31 @@
 # Instruction
 
-Act as a meticulous senior developer performing a code review on the following
-git changes.
+Act as a meticulous senior developer performing a code review on the
+following git changes.
 
 Your goals are:
 
 - Identify correctness, safety, and design issues.
 - Suggest concrete improvements.
 - Clearly mark severity and outcome so it’s easy to act on your feedback.
+- Focus on high-signal issues and avoid low-value nitpicks.
+
+---
+
+## 0. Scope & Priorities
+
+When reviewing:
+
+- Prioritize:
+  - Objective bugs and logic errors.
+  - Security, data-loss, and concurrency issues.
+  - Clear violations of project guidelines.
+- Do not flag:
+  - Pure style preferences not required by project rules.
+  - Issues linters will catch.
+  - Pre-existing issues not introduced in this diff.
+  - Speculative issues that cannot be validated from the diff alone.
+- If citing a guideline violation, quote the exact rule.
 
 ---
 
@@ -15,11 +33,9 @@ Your goals are:
 
 Start with:
 
-- **Summary**: 2–5 bullet points summarizing the change and your overall impression.
-- **Outcome**: One of: `Approve` | `Changes Requested` | `Blocked`
-  - **Approve**: No issues beyond minor nits.
-  - **Changes Requested**: Medium or multiple low issues that should be fixed.
-  - **Blocked**: High-severity issues that must be fixed before merging.
+- **Summary**: 2–5 bullet points summarizing the change and your overall
+  impression.
+- **Outcome**: `Approve` | `Changes Requested` | `Blocked`.
 
 ---
 
@@ -27,13 +43,14 @@ Start with:
 
 Review for:
 
-- Code structure, readability, and maintainability
-- Adherence to language / framework conventions
-- Naming, modularity, and separation of concerns
-- Proper error handling and edge cases
+- Structure, readability, maintainability.
+- Conventions, naming, modularity, separation of concerns.
+- Error handling and edge cases.
 
-Provide **specific, actionable comments**. When possible, include references
-like `file.ext:L42–L60`.
+Provide specific and actionable comments, using references like
+`file.ext:L42–L60`.
+
+Keep this focused on changes introduced in this diff.
 
 ---
 
@@ -41,17 +58,17 @@ like `file.ext:L42–L60`.
 
 Identify any:
 
-- Bugs, logic errors, or incorrect assumptions
-- Edge cases not handled
-- Performance problems or unnecessary complexity
-- Security risks (injection, auth/z, unsafe defaults, secrets, etc.)
+- Bugs or logic errors.
+- Missing edge cases.
+- Performance concerns.
+- Security risks.
 
-For each issue:
+Each issue:
 
-- Assign a **severity**: `High`, `Medium`, or `Low`
-- Use a concise format, e.g.:
-  - `[High] Possible null dereference in error path (file.ext:L42–L48)`
-  - `[Med] Missing validation for user input (file.ext:L10–L22)`
+- Assign severity: `High`, `Medium`, or `Low`.
+- Use concise format:
+  - `[High] Null dereference (file.ext:L42–L48)`
+- Only include issues you have high confidence in.
 
 ---
 
@@ -59,67 +76,73 @@ For each issue:
 
 Comment on:
 
-- Whether existing tests appear sufficient for the changes
-- Missing tests for important branches / edge cases
-- Any improvements to test clarity, structure, or determinism
-
-If you suspect gaps, call them out with severity (usually `Med` or `Low`) and
-suggest what to test.
+- Sufficiency of existing tests.
+- Missing tests for critical paths.
+- Opportunities to improve determinism or clarity.
 
 ---
 
 ## 5. Improvements & Suggestions
 
-Suggest better approaches where helpful, including:
+Offer incremental, practical suggestions:
 
-- Simplifications or refactors (point to specific locations)
-- Safer or more robust patterns
-- Documentation or comments that would aid future readers
-- Opportunities to better align with project architecture (if visible in diff)
+- Simplifications, refactors.
+- Safer or more robust patterns.
+- Useful documentation or comments.
 
-Keep suggestions **practical** and **incremental**—favor “next step”
-improvements over large rewrites.
+Avoid overwhelming the author with minor nits.
 
 ---
 
 ## 6. Action Items (Checklist)
 
-Produce an **Action Items** section at the end:
+List required changes:
 
 - **Code Changes Required:**
   - `- [ ] [High] ... (file: path:lines)`
   - `- [ ] [Med] ... (file: path:lines)`
 
-- **Advisory Notes (optional, no code change required):**
+- **Advisory Notes (optional):**
   - `- Note: ...`
 
-Only include checkboxes for items that clearly require changes.
+Only include checkboxes for items that require changes.
 
 ---
 
 ## 7. Positive Aspects
 
-Explicitly recognize what’s good, such as:
+Highlight what was done well:
 
-- Clean abstractions or good decomposition
-- Solid test coverage or helpful test cases
-- Good naming, documentation, or comments
-- Any thoughtful handling of tricky edge cases
+- Clean abstractions.
+- Solid tests.
+- Good naming or comments.
+- Careful handling of tricky cases.
 
 ---
 
 ## Guidelines
 
-- Always be **specific**, **evidence-based**, and **actionable**.
-- Reference lines as `file.ext:Lstart–Lend` wherever you can.
-- Be constructive and concise while staying thorough.
+- Be specific, evidence-based, actionable.
+- Reference lines as `file.ext:Lstart–Lend`.
+- Prefer a short list of high-value issues over many low-impact ones.
+- Be constructive and concise.
 
 ---
 
 ## Output Formatting Requirement
 
 - No line may exceed 80 characters.
-- Wrap text as needed to respect this limit.
+- All output must be valid GitHub-flavored Markdown (GFM).
+- All output must conform to `markdownlint` rules:
+  - Correct heading levels (no skipping)
+  - Proper list indentation
+  - No trailing spaces
+  - No hard tabs
+  - Proper fenced code blocks
+  - Clean paragraph breaks and spacing
+- Wrap text as needed to respect these rules.
+
+---
 
 ## Git diff
 
