@@ -374,7 +374,7 @@ git-commit() {
 
   if [ -t 0 ]; then
     # No stdin - use default
-    input_content="<!-- Write your code review below -->"
+    input_content="<!-- Write your commit message below -->"
   else
     # Read from stdin
     input_content=$(cat)
@@ -387,6 +387,108 @@ git-commit() {
   # Submit only if content changed and file is not empty
   git commit --signoff --edit -F "$temp_file"
   rm -f "$temp_file"
+}
+
+# ------------------------------------------------------------------------------
+# git-br-delete
+# ------------------------------------------------------------------------------
+# Delete git branch locally and remotely from tig interface.
+#
+# Designed for use with tig keybinding where branch name is provided via %(branch).
+# Performs essential safety checks and confirms deletion before proceeding.
+#
+# Parameters:
+#   BRANCH (required): Name of branch to delete (provided by tig via %(branch))
+#
+# Usage from tig:
+#   bind refs gX !zsh -i -c 'git-br-delete %(branch)' # Delete branch locally and on GitHub
+#
+# Safety Features:
+#   - Prevents deletion of protected branches (main, master, develop)
+#   - Prevents deletion of current branch
+#   - Confirms before destructive operations
+#
+# Return Codes:
+#   0: Success - branch deleted successfully
+#   1: Error - validation failed, user cancelled, or git command failed
+# ------------------------------------------------------------------------------
+git-br-delete() {
+  local branch="$1"
+  local protected_branches="main master develop"
+
+  # Validate branch parameter
+  if [[ -z "$branch" ]]; then
+    echo "Error: Branch name required" >&2
+    return 1
+  fi
+
+  # Check for protected branches
+  if echo "$protected_branches" | grep -q "\b$branch\b"; then
+    echo "Error: Cannot delete protected branch '$branch'" >&2
+    return 1
+  fi
+
+  # Check if trying to delete current branch
+  local current_branch
+  current_branch=$(git branch --show-current)
+  if [[ "$branch" == "$current_branch" ]]; then
+    echo "Error: Cannot delete current branch '$branch'" >&2
+    echo "Switch to another branch first" >&2
+    return 1
+  fi
+
+  # Check if branch exists locally
+  local local_exists=false
+  if git branch --list "$branch" | grep -q "^"; then
+    local_exists=true
+  fi
+
+  # Check if branch exists remotely
+  local remote_exists=false
+  if git branch -r --list "origin/$branch" | grep -q "^"; then
+    remote_exists=true
+  fi
+
+  # Validate branch exists somewhere
+  if [[ "$local_exists" == false && "$remote_exists" == false ]]; then
+    echo "Error: Branch '$branch' does not exist" >&2
+    return 1
+  fi
+
+  # Confirm deletion
+  if ! gum confirm "Delete branch '$branch' locally and remotely?"; then
+    echo "Cancelled"
+    return 1
+  fi
+
+  local errors=0
+
+  # Delete local branch if it exists
+  if [[ "$local_exists" == true ]]; then
+    if git branch -D "$branch" 2>/dev/null; then
+      echo "✓ Deleted local branch '$branch'"
+    else
+      echo "✗ Failed to delete local branch '$branch'" >&2
+      ((errors++))
+    fi
+  fi
+
+  # Delete remote branch if it exists
+  if [[ "$remote_exists" == true ]]; then
+    if git push origin --delete "$branch" 2>/dev/null; then
+      echo "✓ Deleted remote branch '$branch'"
+    else
+      echo "✗ Failed to delete remote branch '$branch'" >&2
+      ((errors++))
+    fi
+  fi
+
+  if [[ $errors -eq 0 ]]; then
+    echo "✓ Branch '$branch' deleted successfully"
+    return 0
+  else
+    return 1
+  fi
 }
 
 # ==============================================================================
