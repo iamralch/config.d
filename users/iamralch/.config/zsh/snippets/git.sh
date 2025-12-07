@@ -227,6 +227,99 @@ git-ai-explain() {
 }
 
 # ------------------------------------------------------------------------------
+# git-ai-describe
+# ------------------------------------------------------------------------------
+# Generate AI-powered pull request descriptions from git diff input.
+#
+# This function reads a git diff from stdin and uses opencode with AI to generate
+# professional, structured pull request descriptions following GitHub best
+# practices. Perfect for creating comprehensive PR descriptions that explain
+# what changed, why it changed, and the impact of the changes.
+#
+# The function follows Unix philosophy: reads from stdin, writes to stdout,
+# does one thing well, and composes easily with other tools.
+#
+# Parameters:
+#   MODEL (optional): AI model to use for description generation
+#                    Default: "anthropic/claude-opus-4-5"
+#                    Example: "google/gemini-2.0-flash"
+#
+# Input:
+#   Git diff content from stdin (patch format)
+#
+# Output:
+#   Professional pull request description to stdout
+#   Error messages to stderr
+#
+# Required Dependencies:
+#   - opencode (for AI description generation)
+#   - gum (for visual feedback)
+#
+# Required Setup:
+#   - Authenticated opencode configuration
+#   - Valid AI model access permissions
+#
+# Return Codes:
+#   0: Success - description generated and output to stdout
+#   1: Error - no input or generation failed
+#
+# Example:
+#   git diff main..feature | git-ai-describe                    # Generate PR description
+#   git diff --staged | git-ai-describe "google/gemini-2.0-flash"  # Custom model
+#   git diff HEAD~3..HEAD | git-ai-describe > pr-template.md   # Save to file
+#   git diff origin/main..HEAD | git-ai-describe | less        # Page through description
+#
+# Pipeline Examples:
+#   git diff main..feature | git-ai-describe | gh pr create --body-file - # Create PR with description
+#   git diff --staged | tee changes.patch | git-ai-describe    # Save diff and describe
+#   git log --oneline -n 5 && git diff HEAD~5..HEAD | git-ai-describe # Show commits and describe
+# ------------------------------------------------------------------------------
+git-ai-describe() {
+  local model="${1:-anthropic/claude-opus-4-5}"
+  local changes
+  local raw_output
+
+  # Read diff from stdin
+  if [ -t 0 ]; then
+    echo "Error: No input provided. Please pipe git diff content." >&2
+    echo "Example: git diff main..feature | git-ai-describe" >&2
+    return 1
+  fi
+
+  changes=$(cat)
+
+  # Validate we got content
+  if [ -z "$changes" ]; then
+    echo "Error: No diff content received from stdin" >&2
+    return 1
+  fi
+
+  # Load description prompt from file
+  local prompt
+  if ! prompt=$(_load_git_ai_prompt "git-ai-describe" "$changes"); then
+    return 1
+  fi
+
+  # Generate description with visual feedback
+  raw_output=$(gum spin --title "Generating PR description..." -- opencode run "$prompt" -m "$model")
+
+  # Check if opencode command succeeded
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to execute opencode command" >&2
+    return 1
+  fi
+
+  # Validate we got output
+  if [ -z "$raw_output" ]; then
+    echo "Error: No output received from opencode" >&2
+    return 1
+  fi
+
+  # Output description directly to stdout
+  echo "$raw_output"
+}
+
+# ------------------------------------------------------------------------------
 # git-ai-review
 # ------------------------------------------------------------------------------
 # Generate AI-powered code reviews from git diff input.
