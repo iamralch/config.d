@@ -11,6 +11,7 @@
 #   - gh: GitHub CLI
 #   - fzf: Fuzzy finder for terminal
 #   - gum: A tool for glamorous shell scripts (provides spinner)
+#   - vipe-md: Interactive markdown editor (for gh-pr-create and gh-pr-review)
 #
 # Authentication:
 #   Requires GitHub CLI authentication:
@@ -29,7 +30,7 @@
 #   - Ctrl-V: View selected item in terminal
 #
 #   Function-specific keybindings:
-#   - gh-pr-select: Ctrl-K to checkout the selected pull request
+#   - gh-pr-select: Ctrl-K (checkout), Ctrl-M (merge), Ctrl-R (review), Ctrl-W (watch checks)
 #   - gh-run-select: Ctrl-W to watch the selected workflow run
 # ==============================================================================
 
@@ -116,8 +117,12 @@ gh-issue-select() {
 #   - Enter: Select PR and return its number
 #   - Escape/Ctrl-C: Cancel selection
 #   - Ctrl-K: Checkout the selected pull request branch
+#   - Ctrl-M: Merge the selected pull request (rebase and delete branch)
 #   - Ctrl-O: Open selected PR in web browser
+#   - Ctrl-R: Review the selected pull request (interactive editor)
 #   - Ctrl-V: View selected PR in terminal
+#   - Ctrl-W: Watch PR checks (live updates)
+#   - Ctrl-Shift-W: Open PR checks in web browser
 #
 # Example:
 #   gh-pr-select | xargs gh pr view
@@ -141,11 +146,12 @@ gh-pr-select() {
 	echo "$pr_list" | fzf --ansi \
 		--with-nth=1.. \
 		--accept-nth=1 \
-		--header="  GitHub Pull Requests" \
+		--header="  GitHub Pull Requests" \
 		--color=header:blue \
 		--bind 'ctrl-k:execute(gh pr checkout {1})+abort' \
 		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
 		--bind 'ctrl-m:execute(gh pr merge {1} -r -d)+abort' \
+		--bind 'ctrl-A:execute(gh pr review {1} --approve)+abort' \
 		--bind 'ctrl-w:execute(gh pr checks {1} --watch)+abort' \
 		--bind 'ctrl-W:execute(gh pr checks {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh pr view {1})+abort'
@@ -174,8 +180,9 @@ gh-pr-select() {
 #   Submits review via `gh pr review` command if content is modified
 #
 # Required Dependencies:
-#   - vipe (from moreutils package for interactive editing)
-#   - gh CLI (for gh pr review functionality)
+#   - vipe-md: Interactive markdown editor
+#   - gh: GitHub CLI (for gh pr review functionality)
+#   - gum: For spinner visual feedback
 #
 # Required Setup:
 #   - Authenticated gh CLI configuration
@@ -197,9 +204,9 @@ gh-pr-select() {
 #
 # Interactive Workflow:
 #   1. Input piped to function becomes initial content or default template is used
-#   2. Editor opens with markdown syntax highlighting (.md suffix)
+#   2. Editor opens with markdown syntax highlighting via vipe-md (.md suffix)
 #   3. User edits review content (or quits without saving to cancel)
-#   4. If content is modified and not empty, submits via `gh pr review -c -F $(file)`
+#   4. If content is modified and not empty, submits via `gh pr review -c -F {file}`
 #   5. Temporary files cleaned up automatically
 # ------------------------------------------------------------------------------
 gh-pr-review() {
@@ -304,55 +311,54 @@ gh-run-select() {
 # ------------------------------------------------------------------------------
 # gh-pr-create
 # ------------------------------------------------------------------------------
-# Create a GitHub pull request from AI-generated markdown content.
+# Create a GitHub pull request with interactive editor integration.
 #
-# This function reads markdown content from stdin (typically output from
-# git-ai-describe), extracts the first heading as the PR title and the
-# remaining content as the PR body, then creates a GitHub pull request
-# using the GitHub CLI.
+# This function opens an interactive markdown editor for PR composition, with optional
+# content from stdin as initial content. Extracts the first line as the PR title (if it
+# starts with '#') and uses the full content as the PR body. Creates the PR from the
+# specified source branch and automatically opens it in the web browser.
 #
-# The function expects markdown content with the following structure:
-# - First heading line starting with '#' becomes the PR title (# removed)
-# - All content becomes the PR body (including the heading)
-# - Supports all standard 'gh pr create' arguments via "$@"
-# - If no heading is found, uses a default title
+# The function follows the same pattern as gh-pr-review: reads from stdin, provides
+# interactive editing with vipe-md, and submits only if content is modified.
 #
-# Input Format:
-#   Markdown content from stdin with structure like:
-#   # Fix authentication bug in user login
+# Parameters:
+#   $1 (required): Source branch name for the pull request
 #
-#   ## Summary
-#   This change resolves...
-#   [rest of markdown content]
+# Input:
+#   Markdown content from stdin (optional - uses default template if no stdin)
 #
 # Output:
-#   Creates a GitHub pull request and displays the result
+#   Creates a GitHub pull request and opens it in web browser
 #   Returns exit code from 'gh pr create' command
 #
 # Required Dependencies:
 #   - gh: GitHub CLI (authenticated)
-#   - vipe-md: Interactive markdown editor (from moreutils/custom)
+#   - vipe-md: Interactive markdown editor
+#   - gum: For spinner visual feedback
 #   - Access to current git repository with remote on GitHub
 #
-# Arguments:
-#   All arguments are passed directly to 'gh pr create'
-#   Common useful arguments:
-#   - --assignee @me: Assign PR to yourself
-#   - --web: Open PR in web browser after creation
-#   - --draft: Create as draft PR
-#   - --reviewer user: Add reviewer
-#   - --base main: Set base branch (default: repository default)
+# Return Codes:
+#   0: Success - PR created successfully
+#   1: Cancelled - no changes made to template or editor error
 #
 # Example Usage:
-#   git diff main..feature | git-ai-describe | gh-pr-create
-#   git diff main..feature | git-ai-describe | gh-pr-create --assignee @me --web
-#   git diff main..feature | git-ai-describe | gh-pr-create --draft --reviewer @team
+#   gh-pr-create feature-branch                                    # Create PR with interactive editor
+#   echo "# Fix bug" | gh-pr-create feature-branch                # Create PR with initial content
+#   git diff main..feature | git-ai-describe | gh-pr-create feature-branch   # AI-assisted PR creation
 #
 # Integration with tig:
-#   bind status aC !zsh -i -c 'git diff --staged | git-ai-describe | gh-pr-create --assignee @me --web'
+#   bind refs gC !zsh -i -c 'gh-pr-create %(branch)'
+#   bind refs aC !zsh -i -c 'git diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
+#
+# Interactive Workflow:
+#   1. Input piped to function becomes initial content or default template is used
+#   2. Editor opens with markdown syntax highlighting (.md suffix)
+#   3. User edits PR content (or quits without saving to cancel)
+#   4. Title extracted from first line if it starts with '#', fallback to "Pull Request from {branch}"
+#   5. If content is modified, creates PR with --head {branch} --web flags
+#   6. Temporary files cleaned up automatically
 #
 # Error Conditions:
-#   - No input provided (stdin is empty)
 #   - Editor cancelled without saving changes
 #   - GitHub CLI errors (authentication, repository access, etc.)
 # ------------------------------------------------------------------------------
