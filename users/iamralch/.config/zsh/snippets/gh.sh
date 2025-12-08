@@ -147,6 +147,7 @@ gh-pr-select() {
 		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
 		--bind 'ctrl-m:execute(gh pr merge {1} -r -d)+abort' \
 		--bind 'ctrl-w:execute(gh pr checks {1} --watch)+abort' \
+		--bind 'ctrl-W:execute(gh pr checks {1} --web)+abort' \
 		--bind 'ctrl-v:execute(gh pr view {1})+abort'
 }
 
