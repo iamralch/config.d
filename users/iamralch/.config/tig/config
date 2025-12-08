@@ -6,8 +6,8 @@
 #
 # Key Features:
 #   - Vim-style navigation (hjkl, gg, G, etc.)
-#   - Organized keybinding prefixes (g=goto, v=view, o=options, @=diff)
-#   - GitHub CLI integration (gO=browse, gY=copy, sI/sW/sP=select)
+#   - Organized keybinding prefixes (g=goto, v=view, o=options, s=select, @=diff)
+#   - GitHub CLI integration (gO=browse, gY=copy, si/sr/sp=select)
 #   - AI-powered operations (ac=commit, ae=explain, ar=review)
 #   - Context-aware GitHub browsing (line-specific in blob/blame views)
 #
@@ -56,7 +56,6 @@ bind generic f none  # file/blob view
 bind generic b none  # blame view
 bind generic r none  # refs view
 bind generic y none  # stash view
-bind generic s none  # status view
 bind generic c none  # stage view
 
 # ==============================================================================
@@ -213,11 +212,12 @@ bind stage  gY !zsh -i -c 'gh-browse-url %(file) | pbcopy'
 bind blob   gY !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
 bind blame  gY !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
 
-# GitHub Selection Utilities
+# GitHub Selection Utilities (s prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
-bind generic gI !zsh -i -c 'gh-issue-select'
-bind generic gW !zsh -i -c 'gh-run-select'
-bind generic gP !zsh -i -c 'gh-pr-select'
+bind generic s  none
+bind generic si !zsh -i -c 'gh-issue-select'
+bind generic sr !zsh -i -c 'gh-run-select'
+bind generic sp !zsh -i -c 'gh-pr-select'
 
 # Pull Request Operations
 # PR creation, merging, and review workflows
