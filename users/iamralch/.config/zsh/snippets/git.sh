@@ -103,7 +103,7 @@ git-ai-commit() {
   fi
 
   # Generate commit message with visual feedback
-  if ! raw_output=$(_exec_git_ai_prompt "Generating commit message..." "$prompt" "$model"); then
+  if ! raw_output=$(_exec_git_ai_prompt "Generating Git commit message..." "$prompt" "$model"); then
     return 1
   fi
 
@@ -198,7 +198,7 @@ git-ai-explain() {
   fi
 
   # Generate explanation with visual feedback
-  if ! raw_output=$(_exec_git_ai_prompt "Generating explanation..." "$prompt" "$model"); then
+  if ! raw_output=$(_exec_git_ai_prompt "Generating Git explanation..." "$prompt" "$model"); then
     return 1
   fi
 
@@ -281,7 +281,7 @@ git-ai-describe() {
   fi
 
   # Generate description with visual feedback
-  if ! raw_output=$(_exec_git_ai_prompt "Generating PR description..." "$prompt" "$model"); then
+  if ! raw_output=$(_exec_git_ai_prompt "Generating Git description..." "$prompt" "$model"); then
     return 1
   fi
 
@@ -362,7 +362,7 @@ git-ai-review() {
   fi
 
   # Generate review with visual feedback
-  if ! raw_output=$(_exec_git_ai_prompt "Generating code review..." "$prompt" "$model"); then
+  if ! raw_output=$(_exec_git_ai_prompt "Generating Git code review..." "$prompt" "$model"); then
     return 1
   fi
 
