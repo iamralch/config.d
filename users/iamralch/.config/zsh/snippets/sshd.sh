@@ -124,7 +124,7 @@ ssh-auth() {
 		echo "export FIGMA_API_KEY=\"$(op read 'op://Personal/Figma/API Key')\""
 		echo "export CONTEXT7_API_KEY=\"$(op read 'op://Personal/Context7/API Key')\""
 		echo "export FIRECRAWL_API_KEY=\"$(op read 'op://Personal/Firecrawl/API Key')\""
-		echo "export GITHUB_PERSONAL_ACCESS_TOKEN=\"$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')\""
+		echo "export GH_TOKEN=\"$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')\""
 	} >"$TMP_CONFIG"
 
 	# shellcheck disable=SC1090
@@ -169,10 +169,10 @@ ssh-auth() {
 # Usage with Development Servers:
 #   # Start your local server
 #   npm start                # Usually runs on port 3000
-#   
+#
 #   # In another terminal, create tunnel
 #   ssh-tunnel 3000
-#   
+#
 #   # Access via the provided HTTPS URL
 #   # Example output: https://abc123.a.pinggy.io
 # ------------------------------------------------------------------------------
