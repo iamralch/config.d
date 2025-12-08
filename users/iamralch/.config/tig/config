@@ -204,6 +204,7 @@ bind generic gP !zsh -i -c 'gh-pr-select'
 # PR creation, merging, and review workflows
 bind refs   gC !zsh -i -c 'gh-pr-create %(branch)'
 bind refs   gR !zsh -i -c 'gh-pr-review %(branch)'
+bind refs   ga !gh pr review %(branch) --approve --body "LGTM"
 bind refs   gm !gh pr merge %(branch) -r -d
 bind status gm !gh pr merge -r -d
 
