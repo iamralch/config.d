@@ -312,9 +312,10 @@ gh-run-select() {
 # using the GitHub CLI.
 #
 # The function expects markdown content with the following structure:
-# - First line starting with '#' becomes the PR title (# removed)
-# - All content after the first '#' line becomes the PR body
+# - First heading line starting with '#' becomes the PR title (# removed)
+# - All content becomes the PR body (including the heading)
 # - Supports all standard 'gh pr create' arguments via "$@"
+# - If no heading is found, uses a default title
 #
 # Input Format:
 #   Markdown content from stdin with structure like:
@@ -330,6 +331,7 @@ gh-run-select() {
 #
 # Required Dependencies:
 #   - gh: GitHub CLI (authenticated)
+#   - vipe-md: Interactive markdown editor (from moreutils/custom)
 #   - Access to current git repository with remote on GitHub
 #
 # Arguments:
@@ -339,28 +341,32 @@ gh-run-select() {
 #   - --web: Open PR in web browser after creation
 #   - --draft: Create as draft PR
 #   - --reviewer user: Add reviewer
+#   - --base main: Set base branch (default: repository default)
 #
 # Example Usage:
 #   git diff main..feature | git-ai-describe | gh-pr-create
 #   git diff main..feature | git-ai-describe | gh-pr-create --assignee @me --web
-#   git diff main..feature | git-ai-describe | gh-pr-create --draft
+#   git diff main..feature | git-ai-describe | gh-pr-create --draft --reviewer @team
 #
 # Integration with tig:
 #   bind status aC !zsh -i -c 'git diff --staged | git-ai-describe | gh-pr-create --assignee @me --web'
 #
 # Error Conditions:
 #   - No input provided (stdin is empty)
-#   - No heading found in markdown content
+#   - Editor cancelled without saving changes
 #   - GitHub CLI errors (authentication, repository access, etc.)
 # ------------------------------------------------------------------------------
 gh-pr-create() {
+	local title
 	local target="$1"
 	local input_content
 	local temp_file
+	local input_hash
+	local output_hash
 
 	# Read markdown content from stdin
 	if [ -t 0 ]; then
-		input_content="<!-- Write your GitHub Pull Request description below -->"
+		input_content="<!-- Write your GitHub Pull Request description below. -->"
 	else
 		input_content=$(cat)
 	fi
@@ -377,9 +383,21 @@ gh-pr-create() {
 
 	# Submit only if content changed and file is not empty
 	if [ "$input_hash" != "$output_hash" ] && [ -s "$temp_file" ]; then
+		# Extract title from first heading line, fallback to default if none found
+		title=$(cat "$temp_file" | head -n 1 | sed -e "s/#\s*//")
+
+		# Use fallback title if no heading found or title is empty
+		if [ -z "$title" ]; then
+			title="Pull Request from $target"
+		fi
+
 		# Create PR using GitHub CLI with extracted title and body
-		# Pass through all additional arguments
-		gum spin --title "Creating GitHub Pull Request..." -- gh pr create --head "$target" -F "$temp_file" --assignee @me --web
+		# Pass through all additional arguments provided by user
+		gum spin --title "Creating GitHub Pull Request..." -- gh pr create --head "$target" --title "$title" -F "$temp_file" --web
+	else
+		echo "PR creation cancelled - no changes made to template" >&2
+		rm -f "$temp_file"
+		return 1
 	fi
 
 	rm -f "$temp_file"

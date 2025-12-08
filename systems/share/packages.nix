@@ -10,6 +10,7 @@
     sd
     d2
     gum
+    mdq
     glow
     lnav
     sshfs
