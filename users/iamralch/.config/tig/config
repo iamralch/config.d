@@ -196,16 +196,16 @@ bind blame  gY !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
 
 # GitHub Selection Utilities
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
-bind generic sI !zsh -i -c 'gh-issue-select'
-bind generic sW !zsh -i -c 'gh-run-select'
-bind generic sP !zsh -i -c 'gh-pr-select'
+bind generic gI !zsh -i -c 'gh-issue-select'
+bind generic gW !zsh -i -c 'gh-run-select'
+bind generic gP !zsh -i -c 'gh-pr-select'
 
 # Pull Request Operations
 # PR creation, merging, and review workflows
-bind refs   gC !gh pr create --head %(branch) --fill-first --assignee @me --web
+bind refs   gC !zsh -i -c 'gh-pr-create %(branch)'
 bind refs   gR !zsh -i -c 'gh-pr-review %(branch)'
-bind refs   gM !gh pr merge %(branch) -r -d
-bind status gM !gh pr merge -r -d
+bind refs   gm !gh pr merge %(branch) -r -d
+bind status gm !gh pr merge -r -d
 
 # ==============================================================================
 # AI-Powered Operations
@@ -227,5 +227,5 @@ bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vi
 # AI Code Reviews
 # Generates AI code reviews with different submission workflows
 bind status ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
-bind refs   aC !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create --head %(branch) --assignee @me --web'
+bind refs   aC !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
 bind refs   aR !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  

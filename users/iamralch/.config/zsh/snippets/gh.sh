@@ -219,14 +219,14 @@ gh-pr-review() {
 
 	# Create temporary file and edit
 	temp_file=$(mktemp).md
-	echo "$input_content" | vipe --suffix=md >"$temp_file"
+	echo "$input_content" | vipe-md >"$temp_file"
 
 	# Calculate hash of edited content
 	output_hash=$(md5sum "$temp_file" | awk '{print $1}')
 
 	# Submit only if content changed and file is not empty
 	if [ "$input_hash" != "$output_hash" ] && [ -s "$temp_file" ]; then
-		gh pr review "$target" -c -F "$temp_file"
+		gum spin --title "Creating GitHub Pull Request Review..." -- gh pr review "$target" -c -F "$temp_file"
 	fi
 
 	rm -f "$temp_file"
@@ -351,22 +351,34 @@ gh-run-select() {
 #   - GitHub CLI errors (authentication, repository access, etc.)
 # ------------------------------------------------------------------------------
 gh-pr-create() {
-	local body
+	local target="$1"
+	local input_content
 	local temp_file
 
 	# Read markdown content from stdin
 	if [ -t 0 ]; then
-		body="<!-- Write your GitHub Pull Request description below -->"
+		input_content="<!-- Write your GitHub Pull Request description below -->"
 	else
-		body=$(cat)
+		input_content=$(cat)
 	fi
 
-	temp_file=$(mktemp).md
-	echo "$body" >"$temp_file"
+	# Calculate hash of input content
+	input_hash=$(echo "$input_content" | md5sum | awk '{print $1}')
 
-	# Create PR using GitHub CLI with extracted title and body
-	# Pass through all additional arguments
-	gum spin --title "Creating GitHub Pull Request..." -- gh pr create -F "$temp_file" "$@"
+	# Create temporary file and edit
+	temp_file=$(mktemp).md
+	echo "$input_content" | vipe-md >"$temp_file"
+
+	# Calculate hash of edited content
+	output_hash=$(md5sum "$temp_file" | awk '{print $1}')
+
+	# Submit only if content changed and file is not empty
+	if [ "$input_hash" != "$output_hash" ] && [ -s "$temp_file" ]; then
+		# Create PR using GitHub CLI with extracted title and body
+		# Pass through all additional arguments
+		gum spin --title "Creating GitHub Pull Request..." -- gh pr create --head "$target" -F "$temp_file" --assignee @me --web
+	fi
+
 	rm -f "$temp_file"
 }
 
