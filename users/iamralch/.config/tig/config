@@ -134,8 +134,8 @@ bind main i !git rebase -i %(commit) --signoff
 # ==============================================================================
 
 # Checkout
-bind main c !git checkout %(commit)
-bind refs c !git checkout %(branch)
+bind main C !git checkout %(commit)
+bind refs C !git checkout %(branch)
 
 # Create branches
 bind main B !git checkout -b "%(prompt New branch name: )"
@@ -164,9 +164,10 @@ bind status } !git stash pop
 # Commit & Status Operations
 # ==============================================================================
 
-bind status c !git commit --signoff
-bind status a !git commit --signoff --amend
-bind status x !git clean -fd
+bind status c  none
+bind status ca !git commit --signoff --amend
+bind status cc !git commit --signoff
+bind status x  !git clean -fd
 
 # ==============================================================================
 # GitHub Integration
