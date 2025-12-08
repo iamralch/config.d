@@ -8,6 +8,7 @@
   environment.systemPackages = with pkgs; [
     gh
     sd
+    d2
     gum
     glow
     lnav
