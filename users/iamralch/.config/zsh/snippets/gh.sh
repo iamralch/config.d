@@ -145,6 +145,7 @@ gh-pr-select() {
 		--color=header:blue \
 		--bind 'ctrl-k:execute(gh pr checkout {1})+abort' \
 		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
+		--bind 'ctrl-m:execute(gh pr merge {1} -r -d)+abort' \
 		--bind 'ctrl-v:execute(gh pr view {1})+abort'
 }
 
