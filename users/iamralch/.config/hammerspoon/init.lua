@@ -244,3 +244,10 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "l", function()
 	-- update the mouse position
 	mouse.focus()
 end)
+
+hs.hotkey.bind({ "ctrl", "alt", "shift" }, "o", function()
+	-- start the app
+	hs.application.launchOrFocus("Obsidian")
+	-- update the mouse position
+	mouse.focus()
+end)
