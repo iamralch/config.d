@@ -42,6 +42,24 @@ set diff-highlight = true
 source ~/.config/tig/themes/github.tigrc
 
 # ==============================================================================
+# Disable Default View-Switching Bindings
+# ==============================================================================
+# Disable single-key view switching to prevent conflicts with custom bindings
+# Use v* prefix bindings instead (vm, vd, vl, etc.)
+# Note: h/l preserved for vim-style horizontal scrolling
+
+bind generic m none  # main view
+bind generic d none  # diff view  
+bind generic p none  # pager view
+bind generic t none  # tree view
+bind generic f none  # file/blob view
+bind generic b none  # blame view
+bind generic r none  # refs view
+bind generic y none  # stash view
+bind generic s none  # status view
+bind generic c none  # stage view
+
+# ==============================================================================
 # Navigation Keybindings (Vim-style)
 # ==============================================================================
 
