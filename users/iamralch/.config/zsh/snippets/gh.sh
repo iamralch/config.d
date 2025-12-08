@@ -76,7 +76,7 @@ gh-issue-select() {
 
 	# Check if we got any issues
 	if [ -z "$issue_list" ]; then
-		gum log --level=error "No GitHub issues found"
+		gum log --level=warn "No GitHub issues found"
 		return 1
 	fi
 
@@ -138,7 +138,7 @@ gh-pr-select() {
 
 	# Check if we got any PRs
 	if [ -z "$pr_list" ]; then
-		gum log --level=error "No GitHub pull requests found"
+		gum log --level=warn "No GitHub pull requests found"
 		return 1
 	fi
 
@@ -289,7 +289,7 @@ gh-run-select() {
 
 	# Check if we got any runs
 	if [ -z "$run_list" ]; then
-		gum log --level=error "No GitHub runs found"
+		gum log --level=warn "No GitHub runs found"
 		return 1
 	fi
 
