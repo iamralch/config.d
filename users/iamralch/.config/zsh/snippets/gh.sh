@@ -76,7 +76,7 @@ gh-issue-select() {
 
 	# Check if we got any issues
 	if [ -z "$issue_list" ]; then
-		echo "No GitHub issues found" >&2
+		gum log --level=error "No GitHub issues found"
 		return 1
 	fi
 
@@ -138,7 +138,7 @@ gh-pr-select() {
 
 	# Check if we got any PRs
 	if [ -z "$pr_list" ]; then
-		echo "No GitHub pull requests found" >&2
+		gum log --level=error "No GitHub pull requests found"
 		return 1
 	fi
 
@@ -146,7 +146,7 @@ gh-pr-select() {
 	echo "$pr_list" | fzf --ansi \
 		--with-nth=1.. \
 		--accept-nth=1 \
-		--header="  GitHub Pull Requests" \
+		--header="  GitHub Pull Requests" \
 		--color=header:blue \
 		--bind 'ctrl-k:execute(gh pr checkout {1})+abort' \
 		--bind 'ctrl-o:execute(gh pr view {1} --web)+abort' \
@@ -290,7 +290,7 @@ gh-run-select() {
 
 	# Check if we got any runs
 	if [ -z "$run_list" ]; then
-		echo "No GitHub runs found" >&2
+		gum log --level=error "No GitHub runs found"
 		return 1
 	fi
 
@@ -398,7 +398,7 @@ gh-pr-create() {
 		# Pass through all additional arguments provided by user
 		gum spin --title "Creating GitHub Pull Request..." -- gh pr create --head "$target" --title "$title" -F "$temp_file" --web
 	else
-		echo "PR creation cancelled - no changes made to template" >&2
+		gum log --level=error "Creating GitHub Pull Request cancelled - no changes made to template"
 		rm -f "$temp_file"
 		return 1
 	fi

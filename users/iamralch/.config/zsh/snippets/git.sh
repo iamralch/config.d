@@ -83,8 +83,8 @@ git-ai-commit() {
 
   # Read diff from stdin
   if [ -t 0 ]; then
-    echo "Error: No input provided. Please pipe git diff content." >&2
-    echo "Example: git diff --staged | git-ai-commit" >&2
+    gum log --level=error "No input provided. Please pipe git diff content."
+    gum log --level=info "Example: git diff --staged | git-ai-commit"
     return 1
   fi
 
@@ -92,7 +92,7 @@ git-ai-commit() {
 
   # Validate we got content
   if [ -z "$changes" ]; then
-    echo "Error: No diff content received from stdin" >&2
+    gum log --level=error "No diff content received from stdin"
     return 1
   fi
 
@@ -117,7 +117,7 @@ git-ai-commit() {
 
   # Final validation
   if [ -z "$commit_message" ]; then
-    echo "Error: Failed to extract commit message from AI response" >&2
+    gum log --level=error "Failed to extract commit message from AI response"
     return 1
   fi
 
@@ -178,8 +178,8 @@ git-ai-explain() {
 
   # Read diff from stdin
   if [ -t 0 ]; then
-    echo "Error: No input provided. Please pipe git diff content." >&2
-    echo "Example: git diff --staged | git-ai-explain" >&2
+    gum log --level=error "No input provided. Please pipe git diff content."
+    gum log --level=info "Example: git diff --staged | git-ai-explain"
     return 1
   fi
 
@@ -187,7 +187,7 @@ git-ai-explain() {
 
   # Validate we got content
   if [ -z "$changes" ]; then
-    echo "Error: No diff content received from stdin" >&2
+    gum log --level=error "No diff content received from stdin"
     return 1
   fi
 
@@ -261,8 +261,8 @@ git-ai-describe() {
 
   # Read diff from stdin
   if [ -t 0 ]; then
-    echo "Error: No input provided. Please pipe git diff content." >&2
-    echo "Example: git diff main..feature | git-ai-describe" >&2
+    gum log --level=error "No input provided. Please pipe git diff content."
+    gum log --level=info "Example: git diff main..feature | git-ai-describe"
     return 1
   fi
 
@@ -270,7 +270,7 @@ git-ai-describe() {
 
   # Validate we got content
   if [ -z "$changes" ]; then
-    echo "Error: No diff content received from stdin" >&2
+    gum log --level=error "No diff content received from stdin"
     return 1
   fi
 
@@ -342,8 +342,8 @@ git-ai-review() {
 
   # Read diff from stdin
   if [ -t 0 ]; then
-    echo "Error: No input provided. Please pipe git diff content." >&2
-    echo "Example: git diff --staged | git-ai-review" >&2
+    gum log --level=error "No input provided. Please pipe git diff content."
+    gum log --level=info "Example: git diff --staged | git-ai-review"
     return 1
   fi
 
@@ -351,7 +351,7 @@ git-ai-review() {
 
   # Validate we got content
   if [ -z "$changes" ]; then
-    echo "Error: No diff content received from stdin" >&2
+    gum log --level=error "No diff content received from stdin"
     return 1
   fi
 
@@ -558,13 +558,13 @@ _exec_git_ai_prompt() {
 
   # Check execution success
   if [ $? -ne 0 ]; then
-    echo "Error: Failed to execute opencode command" >&2
+    gum log --level=error "Failed to execute opencode command"
     return 1
   fi
 
   # Validate we got output
   if [ -z "$raw_output" ]; then
-    echo "Error: No output received from opencode" >&2
+    gum log --level=error "No output received from opencode"
     return 1
   fi
 
@@ -586,7 +586,7 @@ _load_git_ai_prompt() {
 
   # Check if prompt file exists
   if [ ! -f "$prompt_file" ]; then
-    echo "Error: Prompt file not found: $prompt_file" >&2
+    gum log --level=error "Prompt file not found: $prompt_file"
     return 1
   fi
 

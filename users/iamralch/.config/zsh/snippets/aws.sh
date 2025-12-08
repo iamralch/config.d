@@ -123,7 +123,7 @@ aws-logs-stream-select() {
 
 	# Validate required parameter
 	if [ -z "$log_group" ]; then
-		echo "Error: Log group name required as first argument" >&2
+		gum log --level=error "Log group name required as first argument"
 		return 1
 	fi
 
