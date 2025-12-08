@@ -103,17 +103,7 @@ git-ai-commit() {
   fi
 
   # Generate commit message with visual feedback
-  raw_output=$(gum spin --title "Generating commit message..." -- opencode run "$prompt" -m "$model")
-
-  # Check if opencode command succeeded
-  if [ $? -ne 0 ]; then
-    echo "Error: Failed to execute opencode command" >&2
-    return 1
-  fi
-
-  # Validate we got output
-  if [ -z "$raw_output" ]; then
-    echo "Error: No output received from opencode" >&2
+  if ! raw_output=$(_exec_git_ai_prompt "Generating commit message..." "$prompt" "$model"); then
     return 1
   fi
 
@@ -208,17 +198,7 @@ git-ai-explain() {
   fi
 
   # Generate explanation with visual feedback
-  raw_output=$(gum spin --title "Generating explanation..." -- opencode run "$prompt" -m "$model")
-
-  # Check if opencode command succeeded
-  if [ $? -ne 0 ]; then
-    echo "Error: Failed to execute opencode command" >&2
-    return 1
-  fi
-
-  # Validate we got output
-  if [ -z "$raw_output" ]; then
-    echo "Error: No output received from opencode" >&2
+  if ! raw_output=$(_exec_git_ai_prompt "Generating explanation..." "$prompt" "$model"); then
     return 1
   fi
 
@@ -301,17 +281,7 @@ git-ai-describe() {
   fi
 
   # Generate description with visual feedback
-  raw_output=$(gum spin --title "Generating PR description..." -- opencode run "$prompt" -m "$model")
-
-  # Check if opencode command succeeded
-  if [ $? -ne 0 ]; then
-    echo "Error: Failed to execute opencode command" >&2
-    return 1
-  fi
-
-  # Validate we got output
-  if [ -z "$raw_output" ]; then
-    echo "Error: No output received from opencode" >&2
+  if ! raw_output=$(_exec_git_ai_prompt "Generating PR description..." "$prompt" "$model"); then
     return 1
   fi
 
@@ -392,17 +362,7 @@ git-ai-review() {
   fi
 
   # Generate review with visual feedback
-  raw_output=$(gum spin --title "Generating code review..." -- opencode run "$prompt" -m "$model")
-
-  # Check if opencode command succeeded
-  if [ $? -ne 0 ]; then
-    echo "Error: Failed to execute opencode command" >&2
-    return 1
-  fi
-
-  # Validate we got output
-  if [ -z "$raw_output" ]; then
-    echo "Error: No output received from opencode" >&2
+  if ! raw_output=$(_exec_git_ai_prompt "Generating code review..." "$prompt" "$model"); then
     return 1
   fi
 
@@ -587,6 +547,97 @@ git-br-delete() {
 # ==============================================================================
 # Helper Functions
 # ==============================================================================
+
+# ------------------------------------------------------------------------------
+# _exec_git_ai_prompt
+# ------------------------------------------------------------------------------
+# Execute opencode with prompt file attachment and gum spinner feedback.
+#
+# This internal helper function encapsulates the common pattern of creating
+# temporary files, writing prompt content, and executing opencode with file
+# attachment. Designed for use by all git-ai-* functions to eliminate code
+# duplication and provide consistent behavior.
+#
+# The function handles the complete workflow:
+# 1. Creates temporary markdown file with proper cleanup trap
+# 2. Writes prompt content to the temporary file
+# 3. Executes opencode with gum spinner and file attachment
+# 4. Returns the raw AI response content
+# 5. Ensures cleanup even on interrupts or failures
+#
+# Parameters:
+#   $1 (title): Spinner title for gum visual feedback
+#               Example: "Generating commit message..."
+#   $2 (prompt): Complete prompt content with variables already substituted
+#                This should be the output from _load_git_ai_prompt
+#   $3 (model): AI model identifier for opencode
+#               Example: "google/gemini-2.0-flash", "anthropic/claude-opus-4-5"
+#
+# Input:
+#   None (all input via parameters)
+#
+# Output:
+#   Raw AI response content to stdout
+#   Error messages to stderr
+#
+# Required Dependencies:
+#   - opencode (for AI processing)
+#   - gum (for visual feedback spinner)
+#   - mktemp (for temporary file creation)
+#
+# Return Codes:
+#   0: Success - AI response generated and output to stdout
+#   1: Error - opencode execution failed or no output received
+#
+# Implementation Notes:
+#   - Uses .md extension on temp files for proper syntax highlighting
+#   - Implements robust cleanup with trap for EXIT/INT/TERM signals
+#   - Uses --log-level="ERROR" for clean spinner output
+#   - Generic prompt message works for all AI task types
+#   - No parameter validation (internal function, callers ensure validity)
+#
+# Example Usage (internal):
+#   if ! raw_output=$(_exec_git_ai_prompt "Generating..." "$prompt" "$model"); then
+#     return 1
+#   fi
+# ------------------------------------------------------------------------------
+_exec_git_ai_prompt() {
+  local title="$1"
+  local prompt="$2"
+  local model="$3"
+  local temp_file
+  local raw_output
+
+  # Create temporary file with cleanup trap
+  temp_file=$(mktemp).md
+  trap 'rm -f "$temp_file"' EXIT INT TERM
+
+  # Write prompt to temp file
+  echo "$prompt" >"$temp_file"
+
+  # Execute opencode with gum spinner
+  raw_output=$(gum spin --title "$title" -- \
+    opencode run "Please process the attached prompt and provide the requested output" \
+    --title "$title" \
+    --file "$temp_file" \
+    --model "$model" \
+    --log-level="ERROR")
+
+  # Check execution success
+  if [ $? -ne 0 ]; then
+    echo "Error: Failed to execute opencode command" >&2
+    return 1
+  fi
+
+  # Validate we got output
+  if [ -z "$raw_output" ]; then
+    echo "Error: No output received from opencode" >&2
+    return 1
+  fi
+
+  # Output result
+  echo "$raw_output"
+}
 
 # ------------------------------------------------------------------------------
 # _load_git_ai_prompt
