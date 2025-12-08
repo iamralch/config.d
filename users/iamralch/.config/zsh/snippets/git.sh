@@ -467,80 +467,13 @@ git-commit() {
 # ------------------------------------------------------------------------------
 git-br-delete() {
   local branch="$1"
-  local protected_branches="main master develop"
 
-  # Validate branch parameter
-  if [[ -z "$branch" ]]; then
-    echo "Error: Branch name required" >&2
-    return 1
-  fi
-
-  # Check for protected branches
-  if echo "$protected_branches" | grep -q "\b$branch\b"; then
-    echo "Error: Cannot delete protected branch '$branch'" >&2
-    return 1
-  fi
-
-  # Check if trying to delete current branch
-  local current_branch
-  current_branch=$(git branch --show-current)
-  if [[ "$branch" == "$current_branch" ]]; then
-    echo "Error: Cannot delete current branch '$branch'" >&2
-    echo "Switch to another branch first" >&2
-    return 1
-  fi
-
-  # Check if branch exists locally
-  local local_exists=false
-  if git branch --list "$branch" | grep -q "^"; then
-    local_exists=true
-  fi
-
-  # Check if branch exists remotely
-  local remote_exists=false
-  if git branch -r --list "origin/$branch" | grep -q "^"; then
-    remote_exists=true
-  fi
-
-  # Validate branch exists somewhere
-  if [[ "$local_exists" == false && "$remote_exists" == false ]]; then
-    echo "Error: Branch '$branch' does not exist" >&2
-    return 1
-  fi
-
-  # Confirm deletion
-  if ! gum confirm "Delete branch '$branch' locally and remotely?"; then
-    echo "Cancelled"
-    return 1
-  fi
-
-  local errors=0
-
-  # Delete local branch if it exists
-  if [[ "$local_exists" == true ]]; then
-    if gum spin --title "Deleting local branch '$branch'..." -- git branch -D "$branch" 2>/dev/null; then
-      echo "✓ Deleted local branch '$branch'"
-    else
-      echo "✗ Failed to delete local branch '$branch'" >&2
-      ((errors++))
-    fi
-  fi
-
-  # Delete remote branch if it exists
-  if [[ "$remote_exists" == true ]]; then
-    if gum spin --title "Deleting remote branch '$branch'..." -- git push origin --delete "$branch" 2>/dev/null; then
-      echo "✓ Deleted remote branch '$branch'"
-    else
-      echo "✗ Failed to delete remote branch '$branch'" >&2
-      ((errors++))
-    fi
-  fi
-
-  if [[ $errors -eq 0 ]]; then
-    echo "✓ Branch '$branch' deleted successfully"
-    return 0
+  if [[ $branch == origin/* ]]; then
+    # Split origin/branch into remote and branch name
+    local name="${branch#*/}" # Extract everything after first "/"
+    git push --delete origin "$name"
   else
-    return 1
+    git branch -D "$branch"
   fi
 }
 
