@@ -184,14 +184,15 @@ bind blame  gO !gh browse %(file):%(lineno)
 
 # GitHub URL Copying
 # Copies GitHub URLs to clipboard without opening browser - mirrors gO bindings
+# Uses gh-browse-url function for consistent visual feedback via gum spinner
 # Useful for sharing links in chat, documentation, or code reviews
-bind main   gY @zsh -i -c 'gh browse -n %(commit) | pbcopy'
-bind refs   gY @zsh -i -c 'gh browse -n --branch %(branch) | pbcopy'
-bind log    gY @zsh -i -c 'gh browse -n %(commit) | pbcopy'
-bind status gY @zsh -i -c 'gh browse -n %(file) | pbcopy'
-bind stage  gY @zsh -i -c 'gh browse -n %(file) | pbcopy'
-bind blob   gY @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
-bind blame  gY @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
+bind main   gY !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
+bind refs   gY !zsh -i -c 'gh-browse-url --branch %(branch) | pbcopy'
+bind log    gY !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
+bind status gY !zsh -i -c 'gh-browse-url %(file) | pbcopy'
+bind stage  gY !zsh -i -c 'gh-browse-url %(file) | pbcopy'
+bind blob   gY !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
+bind blame  gY !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
 
 # GitHub Selection Utilities
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
@@ -203,6 +204,7 @@ bind generic sP !zsh -i -c 'gh-pr-select'
 # PR creation, merging, and review workflows
 bind refs   gC !gh pr create --head %(branch) --fill-first --assignee @me --web
 bind refs   gR !zsh -i -c 'gh-pr-review %(branch)'
+bind refs   gM !gh pr merge %(branch) -r -d
 bind status gM !gh pr merge -r -d
 
 # ==============================================================================

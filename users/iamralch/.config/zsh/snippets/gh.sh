@@ -71,7 +71,7 @@ gh-issue-select() {
 
 	# Query GitHub for issues with spinner feedback
 	# Format: number | state | title | author | created_at
-	issue_list=$(gum spin --title "Loading GitHub issues..." -- gh issue list --limit 30 --json number,state,title,author,createdAt --jq '.[] | "\(.number)\t\(.state)\t\(.title)\t\(.author.login)\t\(.createdAt)"' | column -t -s $'\t')
+	issue_list=$(gum spin --title "Loading GitHub Issues..." -- gh issue list --limit 30 --json number,state,title,author,createdAt --jq '.[] | "\(.number)\t\(.state)\t\(.title)\t\(.author.login)\t\(.createdAt)"' | column -t -s $'\t')
 
 	# Check if we got any issues
 	if [ -z "$issue_list" ]; then
@@ -129,7 +129,7 @@ gh-pr-select() {
 
 	# Query GitHub for pull requests with spinner feedback
 	# Format: number | state | title | branch | author | created_at
-	pr_list=$(gum spin --title "Loading GitHub pull requests..." -- gh pr list --limit 30 --json number,state,title,headRefName,author,createdAt --jq '.[] | "\(.number)\t\(.state)\t\(.title)\t\(.headRefName)\t\(.author.login)\t\(.createdAt)"' | column -t -s $'\t')
+	pr_list=$(gum spin --title "Loading GitHub Pull Requests..." -- gh pr list --limit 30 --json number,state,title,headRefName,author,createdAt --jq '.[] | "\(.number)\t\(.state)\t\(.title)\t\(.headRefName)\t\(.author.login)\t\(.createdAt)"' | column -t -s $'\t')
 
 	# Check if we got any PRs
 	if [ -z "$pr_list" ]; then
@@ -356,7 +356,7 @@ gh-pr-create() {
 
 	# Read markdown content from stdin
 	if [ -t 0 ]; then
-		body="<!-- Write your pr description below -->"
+		body="<!-- Write your GitHub Pull Request description below -->"
 	else
 		body=$(cat)
 	fi
@@ -366,6 +366,55 @@ gh-pr-create() {
 
 	# Create PR using GitHub CLI with extracted title and body
 	# Pass through all additional arguments
-	gum spin --title "Creating PR ..." -- gh pr create -F "$temp_file" "$@"
+	gum spin --title "Creating GitHub Pull Request..." -- gh pr create -F "$temp_file" "$@"
 	rm -f "$temp_file"
+}
+
+# ------------------------------------------------------------------------------
+# gh-browse-url
+# ------------------------------------------------------------------------------
+# Generate GitHub URLs using gh browse with visual feedback.
+#
+# This function wraps `gh browse -n` with a gum spinner for visual feedback
+# during GitHub API calls. It outputs the generated URL to stdout, making it
+# suitable for piping to other commands like pbcopy, or for use in scripts.
+#
+# The function accepts all arguments that `gh browse` supports, making it
+# versatile for various GitHub URL generation scenarios including commits,
+# branches, files, and line-specific links.
+#
+# Arguments:
+#   All arguments passed directly to `gh browse -n`
+#   Common patterns:
+#   - COMMIT_SHA: Generate URL for specific commit
+#   - --branch BRANCH_NAME: Generate URL for branch
+#   - FILE_PATH: Generate URL for file
+#   - FILE_PATH:LINE_NUMBER: Generate URL for specific line
+#
+# Output:
+#   GitHub URL to stdout
+#   Gum spinner feedback during API call
+#   Returns same exit code as `gh browse`
+#
+# Required Dependencies:
+#   - gh: GitHub CLI (authenticated)
+#   - gum: For spinner visual feedback
+#
+# Example Usage:
+#   gh-browse-url abc123                           # Output commit URL
+#   gh-browse-url --branch feature/auth            # Output branch URL
+#   gh-browse-url src/main.js:42 | pbcopy          # Copy line URL to clipboard
+#   echo $(gh-browse-url README.md)                # Store file URL in variable
+#
+# Integration Examples:
+#   # Tig keybinding usage
+#   bind main gY !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
+#   bind refs gY !zsh -i -c 'gh-browse-url --branch %(branch) | pbcopy'
+#
+#   # Script usage
+#   url=$(gh-browse-url $(git rev-parse HEAD))     # Get current commit URL
+#   gh-browse-url --branch main | xargs open       # Open main branch in browser
+# ------------------------------------------------------------------------------
+gh-browse-url() {
+	gum spin --title "Getting GitHub URL..." -- gh browse -n "$@"
 }
