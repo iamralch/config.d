@@ -558,7 +558,7 @@ git-br-delete() {
 
   # Delete local branch if it exists
   if [[ "$local_exists" == true ]]; then
-    if git branch -D "$branch" 2>/dev/null; then
+    if gum spin --title "Deleting local branch '$branch'..." -- git branch -D "$branch" 2>/dev/null; then
       echo "✓ Deleted local branch '$branch'"
     else
       echo "✗ Failed to delete local branch '$branch'" >&2
@@ -568,7 +568,7 @@ git-br-delete() {
 
   # Delete remote branch if it exists
   if [[ "$remote_exists" == true ]]; then
-    if git push origin --delete "$branch" 2>/dev/null; then
+    if gum spin --title "Deleting remote branch '$branch'..." -- git push origin --delete "$branch" 2>/dev/null; then
       echo "✓ Deleted remote branch '$branch'"
     else
       echo "✗ Failed to delete remote branch '$branch'" >&2

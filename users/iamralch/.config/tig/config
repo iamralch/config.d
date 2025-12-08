@@ -7,7 +7,7 @@
 # Key Features:
 #   - Vim-style navigation (hjkl, gg, G, etc.)
 #   - Organized keybinding prefixes (g=goto, v=view, o=options, @=diff)
-#   - GitHub CLI integration (gO=browse, gy=copy, gI/gW/gP=select)
+#   - GitHub CLI integration (gO=browse, gY=copy, sI/sW/sP=select)
 #   - AI-powered operations (ac=commit, ae=explain, ar=review)
 #   - Context-aware GitHub browsing (line-specific in blob/blame views)
 #
@@ -52,158 +52,158 @@ bind generic k move-up
 bind generic l scroll-right
 
 # Go-to movements (g prefix)
-bind generic g  none            # Clear default g binding
-bind generic gg move-first-line # Go to top
-bind generic G  move-last-line  # Go to bottom (generic)
-bind main    G  move-last-line  # Go to bottom (main view)
-bind generic gj next            # Go to next
-bind generic gk previous        # Go to previous  
-bind generic gp parent          # Go to parent
-bind generic gn view-next       # Go to next view
+bind generic g  none
+bind generic gg move-first-line
+bind generic G  move-last-line
+bind main    G  move-last-line
+bind generic gj next
+bind generic gk previous
+bind generic gp parent
+bind generic gn view-next
 
 # Page navigation
-bind generic <C-f> move-page-down # Page down
-bind generic <C-b> move-page-up   # Page up
+bind generic <C-f> move-page-down
+bind generic <C-b> move-page-up
 
 # Help and view switching
-bind generic K         view-help  # Show help
-bind generic <C-w><C-w> view-next # Cycle through views
+bind generic K         view-help
+bind generic <C-w><C-w> view-next
 
 # ==============================================================================
 # View Management (v prefix)
 # ==============================================================================
 
-bind generic v  none        # Clear default v binding
-bind generic vm view-main   # Main view
-bind generic vd view-diff   # Diff view
-bind generic vl view-log    # Log view
-bind generic vt view-tree   # Tree view
-bind generic vb view-blob   # Blob view
-bind generic vx view-blame  # Blame view
-bind generic vr view-refs   # References view
-bind generic vs view-status # Status view
-bind generic vu view-stage  # Stage view
-bind generic vy view-stash  # Stash view
-bind generic vg view-grep   # Grep view
-bind generic vp view-pager  # Pager view
-bind generic vh view-help   # Help view
+bind generic v  none
+bind generic vm view-main
+bind generic vd view-diff
+bind generic vl view-log
+bind generic vt view-tree
+bind generic vb view-blob
+bind generic vx view-blame
+bind generic vr view-refs
+bind generic vs view-status
+bind generic vu view-stage
+bind generic vy view-stash
+bind generic vg view-grep
+bind generic vp view-pager
+bind generic vh view-help
 
 # ==============================================================================
 # Options Toggle (o prefix)
 # ==============================================================================
 
-bind generic o  none                          # Clear default o binding
-bind generic oo :toggle sort-order            # Toggle sort order
-bind generic os :toggle sort-field            # Toggle sort field
-bind generic on :toggle line-number           # Toggle line numbers
-bind generic od :toggle date                  # Toggle date display
-bind generic oa :toggle author                # Toggle author display
-bind generic og :toggle line-graphics         # Toggle line graphics
-bind generic of :toggle file-name             # Toggle file name display
-bind generic op :toggle ignore-space          # Toggle ignore whitespace
-bind generic oi :toggle id                    # Toggle commit ID display
-bind generic ot :toggle commit-title-overflow # Toggle title overflow
-bind generic oF :toggle file-filter           # Toggle file filter
-bind generic or :toggle commit-title-refs     # Toggle title refs
+bind generic o  none
+bind generic oo :toggle sort-order
+bind generic os :toggle sort-field
+bind generic on :toggle line-number
+bind generic od :toggle date
+bind generic oa :toggle author
+bind generic og :toggle line-graphics
+bind generic of :toggle file-name
+bind generic op :toggle ignore-space
+bind generic oi :toggle id
+bind generic ot :toggle commit-title-overflow
+bind generic oF :toggle file-filter
+bind generic or :toggle commit-title-refs
 
 # ==============================================================================
 # Diff Context Navigation (@ prefix) 
 # ==============================================================================
 # Navigate between diff hunks and adjust context lines for better readability
 
-bind generic @j :/^@@                   # Jump to next diff hunk
-bind generic @k :?^@@                   # Jump to previous diff hunk  
-bind generic @- :toggle diff-context -1 # Decrease diff context lines
-bind generic @+ :toggle diff-context +1 # Increase diff context lines
+bind generic @j :/^@@
+bind generic @k :?^@@
+bind generic @- :toggle diff-context -1
+bind generic @+ :toggle diff-context +1
 
 # ==============================================================================
 # Git Operations
 # ==============================================================================
 
 # Fetch and pull
-bind refs f !git fetch --all -p           # Fetch all remotes with prune
-bind main f !git fetch --all -p           # Fetch all remotes with prune
-bind main u !git pull -r origin %(branch) # Pull with rebase
+bind main f !git fetch --all -p
+bind refs f !git fetch --all -p
+bind main u !git pull -r origin %(branch)
 
 # History operations
-bind main t !git revert %(commit) --signoff    # Revert commit
-bind main i !git rebase -i %(commit) --signoff # Interactive rebase
+bind main t !git revert %(commit) --signoff
+bind main i !git rebase -i %(commit) --signoff
 
 # ==============================================================================
 # Branch Management
 # ==============================================================================
 
 # Checkout
-bind main c !git checkout %(commit) # Checkout commit
-bind refs c !git checkout %(branch) # Checkout branch
+bind main c !git checkout %(commit)
+bind refs c !git checkout %(branch)
 
 # Create branches
-bind main B !git checkout -b "%(prompt New branch name: )" # New branch from commit
-bind refs B !git checkout -b "%(prompt New branch name: )" # New branch from ref
+bind main B !git checkout -b "%(prompt New branch name: )"
+bind refs B !git checkout -b "%(prompt New branch name: )"
 
 # Delete branches (local and remote)
-bind refs X !zsh -i -c 'git-br-delete %(branch)' # Delete branch locally and on GitHub
+bind refs X !zsh -i -c 'git-br-delete %(branch)'
 
 # ==============================================================================
 # Push & Stash Operations
 # ==============================================================================
 
 # Push operations
-bind main   p !git push -u # Push with upstream
-bind main   P !git push -f # Force push
-bind status p !git push -u # Push with upstream
-bind status P !git push -f # Force push
+bind main   p !git push -u
+bind main   P !git push -f
+bind status p !git push -u
+bind status P !git push -f
 
 # Stash operations
-bind main   { !git stash     # Create stash
-bind status { !git stash     # Create stash
-bind main   } !git stash pop # Apply stash
-bind status } !git stash pop # Apply stash
+bind main   { !git stash
+bind status { !git stash
+bind main   } !git stash pop
+bind status } !git stash pop
 
 # ==============================================================================
 # Commit & Status Operations
 # ==============================================================================
 
-bind status c !git commit --signoff         # Commit with signoff
-bind status A !git commit --signoff --amend # Amend commit
-bind status x !git clean -fd                # Clean untracked files
+bind status c !git commit --signoff
+bind status A !git commit --signoff --amend
+bind status x !git clean -fd
 
 # ==============================================================================
 # GitHub Integration
 # ==============================================================================
 
-# GitHub browsing (gO prefix)
+# GitHub Browsing
 # Opens content in GitHub web interface - behavior varies by view context
-bind main   gO !gh browse %(commit)          # Open commit in browser
-bind refs   gO !gh browse --branch %(branch) # Open branch in browser  
-bind log    gO !gh browse %(commit)          # Open commit in browser
-bind status gO !gh browse %(file)            # Open file in browser (file list view)
-bind stage  gO !gh browse %(file)            # Open file in browser (stage shows diffs, no line context)
-bind blob   gO !gh browse %(file):%(lineno)  # Open file at specific line (blob shows actual file content)
-bind blame  gO !gh browse %(file):%(lineno)  # Open file at specific line (blame shows annotated content)
+bind main   gO !gh browse %(commit)
+bind refs   gO !gh browse --branch %(branch)
+bind log    gO !gh browse %(commit)
+bind status gO !gh browse %(file)
+bind stage  gO !gh browse %(file)
+bind blob   gO !gh browse %(file):%(lineno)
+bind blame  gO !gh browse %(file):%(lineno)
 
-# GitHub URL copying (gy prefix)
+# GitHub URL Copying
 # Copies GitHub URLs to clipboard without opening browser - mirrors gO bindings
 # Useful for sharing links in chat, documentation, or code reviews
-bind main   gy @zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Copy commit URL
-bind refs   gy @zsh -i -c 'gh browse -n --branch %(branch) | pbcopy' # Copy branch URL  
-bind log    gy @zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Copy commit URL
-bind status gy @zsh -i -c 'gh browse -n %(file) | pbcopy'            # Copy file URL
-bind stage  gy @zsh -i -c 'gh browse -n %(file) | pbcopy'            # Copy file URL (no line context)
-bind blob   gy @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Copy file:line URL
-bind blame  gy @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Copy file:line URL
+bind main   gY @zsh -i -c 'gh browse -n %(commit) | pbcopy'
+bind refs   gY @zsh -i -c 'gh browse -n --branch %(branch) | pbcopy'
+bind log    gY @zsh -i -c 'gh browse -n %(commit) | pbcopy'
+bind status gY @zsh -i -c 'gh browse -n %(file) | pbcopy'
+bind stage  gY @zsh -i -c 'gh browse -n %(file) | pbcopy'
+bind blob   gY @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
+bind blame  gY @zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
 
-# GitHub selection utilities (g prefix)
+# GitHub Selection Utilities
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
-bind generic gI !zsh -i -c 'gh-issue-select' # Select GitHub issue
-bind generic gW !zsh -i -c 'gh-run-select'   # Select GitHub workflow/run  
-bind generic gP !zsh -i -c 'gh-pr-select'    # Select GitHub pull request
+bind generic sI !zsh -i -c 'gh-issue-select'
+bind generic sW !zsh -i -c 'gh-run-select'
+bind generic sP !zsh -i -c 'gh-pr-select'
 
-# Pull request operations
+# Pull Request Operations
 # PR creation, merging, and review workflows
-bind status gC !gh pr create --fill-first --assignee @me --web  --head iamralch:wip-test-2   # Create PR (web interface)
-bind status gm !gh pr merge -r -d                    # Rebase & merge PR with delete
-bind refs   gr !zsh -i -c 'gh-pr-review %(branch)'   # Review PR for branch
+bind refs   gC !gh pr create --head %(branch) --fill-first --assignee @me --web
+bind refs   gR !zsh -i -c 'gh-pr-review %(branch)'
+bind status gM !gh pr merge -r -d
 
 # ==============================================================================
 # AI-Powered Operations
@@ -211,20 +211,19 @@ bind refs   gr !zsh -i -c 'gh-pr-review %(branch)'   # Review PR for branch
 # AI-assisted workflows for commit generation, code explanations, and reviews
 # All operations use OpenCode AI with interactive editing capabilities
 
-# AI commit generation (ac)
+# AI Commit Generation
 # Generates commit message from staged changes, opens editor for review/editing
 bind status ac !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-commit | git-commit'
 
-# AI Pull Request creation (aC/ap)
-bind status aC !zsh -i -c 'git diff --no-ext-diff main...$(branch) | git-ai-describe | gh-pr-create --fill-first --assignee @me --web' # Create PR (web interface)  
-
+# AI Code Explanations
 # Generates AI explanations of code changes, opens markdown viewer for reading
-bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vipe-md'         # Explain staged changes
-bind main   ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'                      # Explain commit
-bind log    ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'                      # Explain commit (log view)
-bind refs   ae !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-explain | vipe-md' # Explain branch changes
+bind main   ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
+bind refs   ae !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-explain | vipe-md'
+bind log    ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
+bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vipe-md'
 
-# AI reviews (ar)
+# AI Code Reviews
 # Generates AI code reviews with different submission workflows
-bind status ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'    # Review staged (view only)
-bind refs   ar !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)' # Review & submit PR
+bind status ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
+bind refs   aC !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create --head %(branch) --assignee @me --web'
+bind refs   aR !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
