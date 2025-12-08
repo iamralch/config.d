@@ -216,19 +216,19 @@ gh-pr-review() {
 
 	# Calculate hash of input content
 	input_hash=$(echo "$input_content" | md5sum | awk '{print $1}')
-	
+
 	# Create temporary file and edit
 	temp_file=$(mktemp).md
 	echo "$input_content" | vipe --suffix=md >"$temp_file"
-	
+
 	# Calculate hash of edited content
 	output_hash=$(md5sum "$temp_file" | awk '{print $1}')
-	
+
 	# Submit only if content changed and file is not empty
 	if [ "$input_hash" != "$output_hash" ] && [ -s "$temp_file" ]; then
 		gh pr review "$target" -c -F "$temp_file"
 	fi
-	
+
 	rm -f "$temp_file"
 }
 
@@ -316,7 +316,7 @@ gh-run-select() {
 # Input Format:
 #   Markdown content from stdin with structure like:
 #   # Fix authentication bug in user login
-#   
+#
 #   ## Summary
 #   This change resolves...
 #   [rest of markdown content]
@@ -338,13 +338,12 @@ gh-run-select() {
 #   - --reviewer user: Add reviewer
 #
 # Example Usage:
-#   git diff --staged | git-ai-describe | gh-pr-create
-#   git diff --staged | git-ai-describe | gh-pr-create --assignee @me --web
+#   git diff main..feature | git-ai-describe | gh-pr-create
+#   git diff main..feature | git-ai-describe | gh-pr-create --assignee @me --web
 #   git diff main..feature | git-ai-describe | gh-pr-create --draft
 #
 # Integration with tig:
-#   bind status aC !zsh -i -c 'git diff --staged | git-ai-describe | gh-pr-create'
-#   bind status ac !zsh -i -c 'git diff --staged | git-ai-describe | gh-pr-create --assignee @me --web'
+#   bind status aC !zsh -i -c 'git diff --staged | git-ai-describe | gh-pr-create --assignee @me --web'
 #
 # Error Conditions:
 #   - No input provided (stdin is empty)
@@ -352,43 +351,43 @@ gh-run-select() {
 #   - GitHub CLI errors (authentication, repository access, etc.)
 # ------------------------------------------------------------------------------
 gh-pr-create() {
-  local markdown_content
-  local title
-  local body
-  
-  # Read markdown content from stdin
-  if [ -t 0 ]; then
-    echo "Error: No input provided. Please pipe markdown content from git-ai-describe." >&2
-    echo "Example: git diff --staged | git-ai-describe | gh-pr-create" >&2
-    return 1
-  fi
-  
-  markdown_content=$(cat)
-  
-  # Validate we got content
-  if [ -z "$markdown_content" ]; then
-    echo "Error: No markdown content received from stdin" >&2
-    return 1
-  fi
-  
-  # Extract title: first line that starts with '#'
-  # Remove '# ' prefix and trim whitespace
-  title=$(echo "$markdown_content" | grep -m1 '^# ' | sed 's/^# *//' | sed 's/ *$//')
-  
-  # Validate we found a title
-  if [ -z "$title" ]; then
-    echo "Error: No heading found in markdown content. Expected first line to start with '#'" >&2
-    echo "Received content preview:" >&2
-    echo "$markdown_content" | head -5 >&2
-    return 1
-  fi
-  
-  # Extract body: everything after the first heading line
-  # Skip the title line and take the rest
-  body=$(echo "$markdown_content" | sed '1,/^# /d')
-  
-  # Create PR using GitHub CLI with extracted title and body
-  # Pass through all additional arguments
-  echo "Creating PR with title: $title" >&2
-  gh pr create --title "$title" --body "$body" "$@"
+	local markdown_content
+	local title
+	local body
+
+	# Read markdown content from stdin
+	if [ -t 0 ]; then
+		echo "Error: No input provided. Please pipe markdown content from git-ai-describe." >&2
+		echo "Example: git diff main..feature | git-ai-describe | gh-pr-create" >&2
+		return 1
+	fi
+
+	markdown_content=$(cat)
+
+	# Validate we got content
+	if [ -z "$markdown_content" ]; then
+		echo "Error: No markdown content received from stdin" >&2
+		return 1
+	fi
+
+	# Extract title: first line that starts with '#'
+	# Remove '# ' prefix and trim whitespace
+	title=$(echo "$markdown_content" | grep -m1 '^# ' | sed 's/^# *//' | sed 's/ *$//')
+
+	# Validate we found a title
+	if [ -z "$title" ]; then
+		echo "Error: No heading found in markdown content. Expected first line to start with '#'" >&2
+		echo "Received content preview:" >&2
+		echo "$markdown_content" | head -5 >&2
+		return 1
+	fi
+
+	# Extract body: everything after the first heading line
+	# Skip the title line and take the rest
+	body=$(echo "$markdown_content" | sed '1,/^# /d')
+
+	# Create PR using GitHub CLI with extracted title and body
+	# Pass through all additional arguments
+	echo "Creating PR with title: $title" >&2
+	gh pr create --title "$title" --body "$body" "$@"
 }
