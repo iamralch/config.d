@@ -55,6 +55,7 @@ bind generic f none  # file/blob view
 bind generic b none  # blame view
 bind generic y none  # stash view
 bind generic c none  # stage view
+bind generic <Space> none
 
 # ==============================================================================
 # Navigation Keybindings (Vim-style)
@@ -71,10 +72,9 @@ bind generic g  none
 bind generic gg move-first-line
 bind generic G  move-last-line
 bind main    G  move-last-line
-bind generic gj next
-bind generic gk previous
-bind generic gp parent
-bind generic gn view-next
+bind generic gn next
+bind generic gN previous
+bind generic <Tab> view-next
 
 # Page navigation
 bind generic <C-f> move-page-down
@@ -189,10 +189,10 @@ bind status c !git commit --signoff
 bind status X !git clean -fd
 
 # GitHub PR Operations for Current Branch
-bind status <C-g>pc !zsh -i -c 'gh-pr-create'
-bind status <C-g>pr !zsh -i -c 'gh-pr-review' 
-bind status <C-g>pw !gh pr checks --watch
-bind status <C-g>py !gh pr review --approve --body "LGTM"
+bind status gpc !zsh -i -c 'gh-pr-create'
+bind status gpr !zsh -i -c 'gh-pr-review' 
+bind status gpw !gh pr checks --watch
+bind status gpy !gh pr review --approve --body "LGTM"
 
 # ==============================================================================
 # GitHub Integration
@@ -200,40 +200,40 @@ bind status <C-g>py !gh pr review --approve --body "LGTM"
 
 # GitHub Browsing
 # Opens content in GitHub web interface - behavior varies by view context
-bind main   <C-g>o !gh browse %(commit)
-bind refs   <C-g>o !gh browse --branch %(branch)
-bind log    <C-g>o !gh browse %(commit)
-bind status <C-g>o !gh browse %(file)
-bind stage  <C-g>o !gh browse %(file)
-bind blob   <C-g>o !gh browse %(file):%(lineno)
-bind blame  <C-g>o !gh browse %(file):%(lineno)
+bind main   go !gh browse %(commit)
+bind refs   go !gh browse --branch %(branch)
+bind log    go !gh browse %(commit)
+bind status go !gh browse %(file)
+bind stage  go !gh browse %(file)
+bind blob   go !gh browse %(file):%(lineno)
+bind blame  go !gh browse %(file):%(lineno)
 
 # GitHub URL Copying
 # Copies GitHub URLs to clipboard without opening browser - mirrors <C-g>o bindings
 # Uses gh-browse-url function for consistent visual feedback via gum spinner
 # Useful for sharing links in chat, documentation, or code reviews
-bind main   <C-g>y !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
-bind refs   <C-g>y !zsh -i -c 'gh-browse-url --branch %(branch) | pbcopy'
-bind log    <C-g>y !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
-bind status <C-g>y !zsh -i -c 'gh-browse-url %(file) | pbcopy'
-bind stage  <C-g>y !zsh -i -c 'gh-browse-url %(file) | pbcopy'
-bind blob   <C-g>y !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
-bind blame  <C-g>y !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
+bind main   gy !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
+bind refs   gy !zsh -i -c 'gh-browse-url --branch %(branch) | pbcopy'
+bind log    gy !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
+bind status gy !zsh -i -c 'gh-browse-url %(file) | pbcopy'
+bind stage  gy !zsh -i -c 'gh-browse-url %(file) | pbcopy'
+bind blob   gy !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
+bind blame  gy !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
 
 # GitHub Selection Utilities (<C-g>f prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
-bind generic <C-g>fi !zsh -i -c 'gh-issue-select'
-bind generic <C-g>fr !zsh -i -c 'gh-run-select'
-bind generic <C-g>fp !zsh -i -c 'gh-pr-select'
+bind generic fgi !zsh -i -c 'gh-issue-select'
+bind generic fgr !zsh -i -c 'gh-run-select'
+bind generic fgp !zsh -i -c 'gh-pr-select'
 
 # Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
-bind refs   <C-g>pc !zsh -i -c 'gh-pr-create %(branch)'
-bind refs   <C-g>pr !zsh -i -c 'gh-pr-review %(branch)'
-bind refs   <C-g>pw !gh pr checks %(branch) --watch
-bind refs   <C-g>py !gh pr review %(branch) --approve --body "LGTM"
-bind refs   <C-g>pm !gh pr merge %(branch) -r -d
-bind status <C-g>pm !gh pr merge -r -d
+bind refs   gpc !zsh -i -c 'gh-pr-create %(branch)'
+bind refs   gpr !zsh -i -c 'gh-pr-review %(branch)'
+bind refs   gpw !gh pr checks %(branch) --watch
+bind refs   gpy !gh pr review %(branch) --approve --body "LGTM"
+bind refs   gpm !gh pr merge %(branch) -r -d
+bind status gpm !gh pr merge -r -d
 
 # ==============================================================================
 # AI-Powered Operations
@@ -254,11 +254,12 @@ bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vi
 
 # AI Code Reviews
 # Generates AI code reviews with different submission workflows
-bind status       ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
+bind status ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
 
 # AI-Powered PR Operations
 # Current branch operations (status view) and branch-specific operations (refs view)
-bind status <C-g>pac !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-describe | gh-pr-create'
-bind status <C-g>par !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-review | gh-pr-review'
-bind refs   <C-g>pac !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
-bind refs   <C-g>par !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
+bind status apc !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-describe | gh-pr-create'
+bind status apr !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-review | gh-pr-review'
+bind refs   apc !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
+bind refs   apr !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
+
