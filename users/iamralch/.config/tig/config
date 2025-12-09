@@ -49,15 +49,12 @@ source ~/.config/tig/themes/github.tigrc
 # Use v* prefix bindings instead (vm, vd, vl, etc.)
 # Note: h/l preserved for vim-style horizontal scrolling
 
-bind generic m none  # main view
-bind generic d none  # diff view  
 bind generic p none  # pager view
 bind generic t none  # tree view
 bind generic f none  # file/blob view
 bind generic b none  # blame view
 bind generic r none  # refs view
 bind generic y none  # stash view
-bind generic s none  # status view
 bind generic c none  # stage view
 
 # ==============================================================================
@@ -188,7 +185,7 @@ bind status } !git stash pop
 # Commit & Status Operations
 # ==============================================================================
 
-bind status a !git commit --signoff --amend
+bind status A !git commit --signoff --amend
 bind status c !git commit --signoff
 bind status X !git clean -fd
 
@@ -241,14 +238,14 @@ bind status <C-g>pm !gh pr merge -r -d
 
 # AI Commit Generation
 # Generates commit message from staged changes, opens editor for review/editing
-bind status <C-a>c !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-commit | git-commit'
+bind status ac !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-commit | git-commit'
 
 # AI Code Explanations
 # Generates AI explanations of code changes, opens markdown viewer for reading
-bind main   <C-a>e !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
-bind refs   <C-a>e !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-explain | vipe-md'
-bind log    <C-a>e !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
-bind status <C-a>e !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vipe-md'
+bind main   ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
+bind refs   ae !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-explain | vipe-md'
+bind log    ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
+bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vipe-md'
 
 # AI Code Reviews
 # Generates AI code reviews with different submission workflows
