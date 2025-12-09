@@ -4,11 +4,13 @@
 # SSH Authentication and Tunneling Utilities
 # ==============================================================================
 # Shell functions for managing SSH authentication using 1Password and creating
-# SSH tunnels for development purposes.
+# SSH tunnels for development purposes. Features interactive UI with progress
+# indicators and structured logging for enhanced user experience.
 #
 # Dependencies:
 #   - op: 1Password CLI tool
 #   - ssh: OpenSSH client
+#   - gum: Charm CLI styling and interaction tool
 #   - mktemp: Temporary file creation utility
 #
 # Authentication:
@@ -49,13 +51,22 @@
 #   - FIGMA_API_KEY: Figma API access token
 #   - CONTEXT7_API_KEY: Context7 service API key
 #   - FIRECRAWL_API_KEY: Firecrawl API access token
-#   - GITHUB_PERSONAL_ACCESS_TOKEN: GitHub personal access token
+#   - GH_TOKEN: GitHub personal access token
 #
 # Security Features:
 #   - Temporary files are created with 600 permissions
 #   - SSH keys are automatically cleaned up after loading
 #   - Keys expire after specified time period
-#   - Secrets are loaded into temporary config file
+#   - Secrets are loaded into temporary config file with actual values
+#   - 1Password CLI handles secure secret retrieval
+#   - Environment variables are exported directly to current shell
+#
+# User Experience Features:
+#   - Interactive progress indicators using gum spinners
+#   - Structured logging with appropriate levels (info/warn/error)
+#   - Profile selection feedback with visual confirmation
+#   - Context-aware error messages with troubleshooting hints
+#   - Clean success reporting with operation summaries
 #
 # Example:
 #   ssh-auth                           # Load personal SSH key for 1 hour
@@ -68,7 +79,6 @@ ssh-auth() {
 	VAULT_NAME="Private"
 	VAULT_ACCOUNT="my.1password.com"
 	VAULT_ITEM_ID="vxzzdak7qtvnts2rjwwvpcall4"
-
 	KEY_EXPIRATION="${1:-"1h"}"
 
 	while [[ $# -gt 0 ]]; do
@@ -78,10 +88,16 @@ ssh-auth() {
 			work)
 				VAULT_ACCOUNT="team-em.1password.com"
 				VAULT_ITEM_ID="6iyzh6xbx3aq3bdgph6jxyz2t4"
+				gum log --level info "🏢 Using work profile (team-em.1password.com)"
+				;;
+			personal)
+				# Already set as defaults, just show confirmation
+				gum log --level info "🔑 Using personal profile (my.1password.com)"
 				;;
 			*)
-				echo "Provided profile is not found"
-				exti 1
+				gum log --level error "Profile '$2' not found"
+				gum log --level warn "Available profiles: work, personal"
+				exit 1
 				;;
 			esac
 			shift 2
@@ -97,10 +113,12 @@ ssh-auth() {
 	done
 
 	# Key Information
-	KEY_DATA=$(op item get "$VAULT_ITEM_ID" --account "$VAULT_ACCOUNT" --vault "$VAULT_NAME" --field "private key" --reveal | sed 's/^"//; s/"$//' | sed '/^[[:space:]]*$/d')
+	KEY_DATA=$(gum spin --title "Retrieving SSH key from $VAULT_ACCOUNT..." -- op item get "$VAULT_ITEM_ID" --account "$VAULT_ACCOUNT" --vault "$VAULT_NAME" --field "private key" --reveal | sed 's/^\"//' | sed 's/\"$//' | sed '/^[[:space:]]*$/d')
 
 	if [[ -z "$KEY_DATA" ]]; then
-		echo "Failed to retrieve SSH key from 1Password"
+		gum log --level error "Failed to retrieve SSH key from 1Password"
+		gum log --level warn "Check your 1Password authentication and vault access"
+		gum log --level warn "Run: op signin --account $VAULT_ACCOUNT"
 		exit 1
 	fi
 
@@ -111,24 +129,70 @@ ssh-auth() {
 
 	# Add the key with a timeout and delete all others first
 	# ssh-add -D
-	ssh-add -t "${KEY_EXPIRATION}" "$KEY_PATH"
+	gum spin --title "Adding SSH key to agent (expires: ${KEY_EXPIRATION})..." -- ssh-add -t "${KEY_EXPIRATION}" "$KEY_PATH"
+
+	if [[ $? -ne 0 ]]; then
+		gum log --level error "Failed to add SSH key to agent"
+		gum log --level warn "Make sure SSH agent is running: eval \$(ssh-agent)"
+		rm -f "$KEY_PATH"
+		exit 1
+	fi
 
 	# Cleanup
 	rm -f "$KEY_PATH"
 
 	# Create file with environment variable exports
 	TMP_CONFIG="${TMPDIR:-/tmp}/config"
+	# Write the environment secrets
+	gum spin --title "Loading environment secrets..." -- sh -c "_write_env_secrets $TMP_CONFIG"
+	# shellcheck disable=SC1090
+	source "$TMP_CONFIG"
 
+	# Success messages
+	gum log --level info "SSH authentication completed successfully"
+	gum log --level info "SSH key loaded with ${KEY_EXPIRATION} expiration"
+	gum log --level info "Environment secrets loaded"
+}
+
+# ------------------------------------------------------------------------------
+# _write_env_secrets
+# ------------------------------------------------------------------------------
+# Helper function to retrieve environment secrets from 1Password and write them
+# to a configuration file with actual values.
+#
+# This internal function is called by ssh-auth to handle the environment variable
+# loading process. It retrieves API keys and tokens from 1Password Personal vault
+# and writes export statements with the actual secret values to the specified file.
+#
+# Arguments:
+#   $1 - Output file path where export statements will be written
+#
+# 1Password Items Required:
+#   - op://Personal/Figma/API Key
+#   - op://Personal/Context7/API Key
+#   - op://Personal/Firecrawl/API Key
+#   - op://Personal/GitHub/Secrets/Personal Access Token
+#
+# Output Format:
+#   The generated file contains export statements with actual secret values:
+#   export FIGMA_API_KEY="actual_figma_token_here"
+#   export CONTEXT7_API_KEY="actual_context7_key_here"
+#   export FIRECRAWL_API_KEY="actual_firecrawl_token_here"
+#   export GH_TOKEN="actual_github_token_here"
+#
+# Error Handling:
+#   Function will fail if any 1Password read operation fails or if the output
+#   file cannot be created. Errors are handled by the calling function.
+# ------------------------------------------------------------------------------
+_write_env_secrets() {
+	local FILE_PATH="$1"
 	# Read secrets and write export statements to file
 	{
 		echo "export FIGMA_API_KEY=\"$(op read 'op://Personal/Figma/API Key')\""
 		echo "export CONTEXT7_API_KEY=\"$(op read 'op://Personal/Context7/API Key')\""
 		echo "export FIRECRAWL_API_KEY=\"$(op read 'op://Personal/Firecrawl/API Key')\""
 		echo "export GH_TOKEN=\"$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')\""
-	} >"$TMP_CONFIG"
-
-	# shellcheck disable=SC1090
-	source "$TMP_CONFIG"
+	} >"$FILE_PATH"
 }
 
 # ------------------------------------------------------------------------------

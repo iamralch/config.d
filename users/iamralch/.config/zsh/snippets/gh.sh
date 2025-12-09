@@ -76,7 +76,7 @@ gh-issue-select() {
 
 	# Check if we got any issues
 	if [ -z "$issue_list" ]; then
-		gum log --level=warn "No GitHub issues found"
+		gum log --level=warn "No GitHub Issues found"
 		return 1
 	fi
 
@@ -138,7 +138,7 @@ gh-pr-select() {
 
 	# Check if we got any PRs
 	if [ -z "$pr_list" ]; then
-		gum log --level=warn "No GitHub pull requests found"
+		gum log --level=warn "No GitHub Pull Requests found"
 		return 1
 	fi
 
@@ -285,11 +285,11 @@ gh-run-select() {
 
 	# Query GitHub for recent workflow runs with spinner feedback
 	# Format: status | workflow_name | branch | commit_sha | run_id
-	run_list=$(gum spin --title "Loading GitHub runs..." -- gh run list --limit 30 --json databaseId,status,name,headBranch,headSha --jq '.[] | "\(.databaseId)\t\(.status)\t\(.name)\t\(.headBranch)\t\(.headSha[0:7])"' | column -t -s $'\t')
+	run_list=$(gum spin --title "Loading GitHub Runs..." -- gh run list --limit 30 --json databaseId,status,name,headBranch,headSha --jq '.[] | "\(.databaseId)\t\(.status)\t\(.name)\t\(.headBranch)\t\(.headSha[0:7])"' | column -t -s $'\t')
 
 	# Check if we got any runs
 	if [ -z "$run_list" ]; then
-		gum log --level=warn "No GitHub runs found"
+		gum log --level=warn "No GitHub Runs found"
 		return 1
 	fi
 
