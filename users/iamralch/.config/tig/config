@@ -53,7 +53,6 @@ bind generic p none  # pager view
 bind generic t none  # tree view
 bind generic f none  # file/blob view
 bind generic b none  # blame view
-bind generic r none  # refs view
 bind generic y none  # stash view
 bind generic c none  # stage view
 
@@ -226,7 +225,7 @@ bind generic <C-g>fp !zsh -i -c 'gh-pr-select'
 bind refs   <C-g>pc !zsh -i -c 'gh-pr-create %(branch)'
 bind refs   <C-g>pr !zsh -i -c 'gh-pr-review %(branch)'
 bind refs   <C-g>pw !gh pr checks %(branch) --watch
-bind refs   <C-g>pa !gh pr review %(branch) --approve --body "LGTM"
+bind refs   <C-g>py !gh pr review %(branch) --approve --body "LGTM"
 bind refs   <C-g>pm !gh pr merge %(branch) -r -d
 bind status <C-g>pm !gh pr merge -r -d
 
@@ -249,6 +248,6 @@ bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vi
 
 # AI Code Reviews
 # Generates AI code reviews with different submission workflows
-bind status <C-g>par !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
+bind status       ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
 bind refs   <C-g>pac !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
 bind refs   <C-g>par !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
