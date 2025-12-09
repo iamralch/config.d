@@ -109,9 +109,9 @@ bind generic vh view-help
 # ==============================================================================
 # Organized by: Display toggles (lowercase) vs Administrative (UPPERCASE)
 
-bind generic o  none
 
 # Display Toggles (Visual Elements)
+bind generic o  none
 bind generic on :toggle line-number
 bind generic od :toggle date
 bind generic oa :toggle author
