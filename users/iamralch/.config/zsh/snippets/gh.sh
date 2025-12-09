@@ -35,31 +35,6 @@
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# get-file-stat
-# ------------------------------------------------------------------------------
-# Cross-platform file stat function for metadata retrieval.
-#
-# Returns file modification time and size in a consistent format across
-# macOS and Linux systems. For detecting editor save operations, use
-# get-file-mtime() which focuses on modification time only.
-#
-# Parameters:
-#   $1 (required): Path to file to stat
-#
-# Output:
-#   String containing "modification_time file_size"
-#   Format: "1609459200 1024" (Unix timestamp and bytes)
-#
-# Platform Support:
-#   - Linux: Uses stat -c "%Y %s"
-#   - macOS: Uses stat -f "%m %z"
-#   - Automatic detection with fallback
-# ------------------------------------------------------------------------------
-get-file-stat() {
-	stat -c "%Y %s" "$1" 2>/dev/null || stat -f "%m %z" "$1"
-}
-
-# ------------------------------------------------------------------------------
 # get-file-mtime
 # ------------------------------------------------------------------------------
 # Cross-platform file modification time function for save detection.
@@ -271,8 +246,8 @@ gh-pr-review() {
 
 	# Create temporary file with initial content
 	temp_file=$(mktemp).md
-	echo "$input_content" > "$temp_file"
-	
+	echo "$input_content" >"$temp_file"
+
 	# Get initial modification time before editing
 	initial_mtime=$(get-file-mtime "$temp_file")
 
@@ -427,8 +402,8 @@ gh-pr-create() {
 
 	# Create temporary file with initial content
 	temp_file=$(mktemp).md
-	echo "$input_content" > "$temp_file"
-	
+	echo "$input_content" >"$temp_file"
+
 	# Get initial modification time before editing
 	initial_mtime=$(get-file-mtime "$temp_file")
 
