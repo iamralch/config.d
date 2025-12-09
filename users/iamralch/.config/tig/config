@@ -188,6 +188,12 @@ bind status A !git commit --signoff --amend
 bind status c !git commit --signoff
 bind status X !git clean -fd
 
+# GitHub PR Operations for Current Branch
+bind status <C-g>pc !zsh -i -c 'gh-pr-create'
+bind status <C-g>pr !zsh -i -c 'gh-pr-review' 
+bind status <C-g>pw !gh pr checks --watch
+bind status <C-g>py !gh pr review --approve --body "LGTM"
+
 # ==============================================================================
 # GitHub Integration
 # ==============================================================================
@@ -221,7 +227,7 @@ bind generic <C-g>fr !zsh -i -c 'gh-run-select'
 bind generic <C-g>fp !zsh -i -c 'gh-pr-select'
 
 # Pull Request Operations
-# PR creation, merging, and review workflows
+# PR creation, merging, and review workflows for branch-specific context
 bind refs   <C-g>pc !zsh -i -c 'gh-pr-create %(branch)'
 bind refs   <C-g>pr !zsh -i -c 'gh-pr-review %(branch)'
 bind refs   <C-g>pw !gh pr checks %(branch) --watch
@@ -249,5 +255,10 @@ bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vi
 # AI Code Reviews
 # Generates AI code reviews with different submission workflows
 bind status       ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
+
+# AI-Powered PR Operations
+# Current branch operations (status view) and branch-specific operations (refs view)
+bind status <C-g>pac !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-describe | gh-pr-create'
+bind status <C-g>par !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-review | gh-pr-review'
 bind refs   <C-g>pac !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
 bind refs   <C-g>par !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
