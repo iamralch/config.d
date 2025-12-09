@@ -37,11 +37,11 @@
 # ------------------------------------------------------------------------------
 # get-file-stat
 # ------------------------------------------------------------------------------
-# Cross-platform file stat function for change detection.
+# Cross-platform file stat function for metadata retrieval.
 #
 # Returns file modification time and size in a consistent format across
-# macOS and Linux systems. Used to detect if files have been modified
-# without needing expensive MD5 hashing.
+# macOS and Linux systems. For detecting editor save operations, use
+# get-file-mtime() which focuses on modification time only.
 #
 # Parameters:
 #   $1 (required): Path to file to stat
@@ -57,6 +57,30 @@
 # ------------------------------------------------------------------------------
 get-file-stat() {
 	stat -c "%Y %s" "$1" 2>/dev/null || stat -f "%m %z" "$1"
+}
+
+# ------------------------------------------------------------------------------
+# get-file-mtime
+# ------------------------------------------------------------------------------
+# Cross-platform file modification time function for save detection.
+#
+# Returns file modification time in seconds since epoch. This will change
+# whenever the file is saved in an editor (even without content changes),
+# making it suitable for detecting user interaction with the file.
+#
+# Parameters:
+#   $1 (required): Path to file to check
+#
+# Output:
+#   Unix timestamp (seconds since epoch)
+#
+# Platform Support:
+#   - Linux: Uses stat -c "%Y"
+#   - macOS: Uses stat -f "%m"
+#   - Automatic detection with fallback
+# ------------------------------------------------------------------------------
+get-file-mtime() {
+	stat -c "%Y" "$1" 2>/dev/null || stat -f "%m" "$1"
 }
 
 # ------------------------------------------------------------------------------
@@ -227,15 +251,15 @@ gh-pr-select() {
 #   1. Input piped to function becomes initial content or default template is used
 #   2. nvim opens with markdown syntax highlighting (.md suffix)
 #   3. User edits review content (or quits without saving to cancel)
-#   4. If content is modified (detected via file stat) and not empty, submits via `gh pr review -c -F {file}`
+#   4. If file is saved (detected via modification time) and not empty, submits via `gh pr review -c -F {file}`
 #   5. Temporary files cleaned up automatically
 # ------------------------------------------------------------------------------
 gh-pr-review() {
 	local input_content
 	local target="$1"
 	local temp_file
-	local initial_stat
-	local final_stat
+	local initial_mtime
+	local final_mtime
 
 	if [ -t 0 ]; then
 		# No stdin - use default
@@ -249,17 +273,17 @@ gh-pr-review() {
 	temp_file=$(mktemp).md
 	echo "$input_content" > "$temp_file"
 	
-	# Get initial file stat before editing
-	initial_stat=$(get-file-stat "$temp_file")
+	# Get initial modification time before editing
+	initial_mtime=$(get-file-mtime "$temp_file")
 
 	# Open in nvim for editing
 	nvim "$temp_file"
 
-	# Get final file stat after editing
-	final_stat=$(get-file-stat "$temp_file")
+	# Get final modification time after editing
+	final_mtime=$(get-file-mtime "$temp_file")
 
-	# Submit only if content changed and file is not empty
-	if [ "$initial_stat" != "$final_stat" ] && [ -s "$temp_file" ]; then
+	# Submit if file was saved (mtime changed) and file is not empty
+	if [ "$initial_mtime" != "$final_mtime" ] && [ -s "$temp_file" ]; then
 		gum spin --title "Creating GitHub Pull Request Review..." -- gh pr review "$target" -c -F "$temp_file"
 	fi
 
@@ -379,7 +403,7 @@ gh-run-select() {
 #   2. nvim opens with markdown syntax highlighting (.md suffix)
 #   3. User edits PR content (or quits without saving to cancel)
 #   4. Title extracted from first line if it starts with '#', fallback to "Pull Request from {branch}"
-#   5. If content is modified (detected via file stat), creates PR with --head {branch} --web flags
+#   5. If file is saved (detected via modification time), creates PR with --head {branch} --web flags
 #   6. Temporary files cleaned up automatically
 #
 # Error Conditions:
@@ -391,8 +415,8 @@ gh-pr-create() {
 	local target="$1"
 	local input_content
 	local temp_file
-	local initial_stat
-	local final_stat
+	local initial_mtime
+	local final_mtime
 
 	# Read markdown content from stdin
 	if [ -t 0 ]; then
@@ -405,17 +429,17 @@ gh-pr-create() {
 	temp_file=$(mktemp).md
 	echo "$input_content" > "$temp_file"
 	
-	# Get initial file stat before editing
-	initial_stat=$(get-file-stat "$temp_file")
+	# Get initial modification time before editing
+	initial_mtime=$(get-file-mtime "$temp_file")
 
 	# Open in nvim for editing
 	nvim "$temp_file"
 
-	# Get final file stat after editing
-	final_stat=$(get-file-stat "$temp_file")
+	# Get final modification time after editing
+	final_mtime=$(get-file-mtime "$temp_file")
 
-	# Submit only if content changed and file is not empty
-	if [ "$initial_stat" != "$final_stat" ] && [ -s "$temp_file" ]; then
+	# Submit if file was saved (mtime changed) and file is not empty
+	if [ "$initial_mtime" != "$final_mtime" ] && [ -s "$temp_file" ]; then
 		# Extract title from first heading line, fallback to default if none found
 		title=$(cat "$temp_file" | head -n 1 | sed -e "s/#\s*//")
 
@@ -428,7 +452,7 @@ gh-pr-create() {
 		# Pass through all additional arguments provided by user
 		gum spin --title "Creating GitHub Pull Request..." -- gh pr create --head "$target" --title "$title" -F "$temp_file" --web
 	else
-		gum log --level=error "Creating GitHub Pull Request cancelled - no changes made to template"
+		gum log --level=error "Creating GitHub Pull Request cancelled - file was not saved or is empty"
 		rm -f "$temp_file"
 		return 1
 	fi

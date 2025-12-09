@@ -258,8 +258,8 @@ bind status ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vip
 
 # AI-Powered PR Operations
 # Current branch operations (status view) and branch-specific operations (refs view)
-bind status apc !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-describe | gh-pr-create'
-bind status apr !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-review | gh-pr-review'
-bind refs   apc !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
-bind refs   apr !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
+bind status gapc !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-describe | gh-pr-create'
+bind status gapr !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-review | gh-pr-review'
+bind refs   gapc !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
+bind refs   gapr !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
 
