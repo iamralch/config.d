@@ -11,7 +11,7 @@
 #   - gh: GitHub CLI
 #   - fzf: Fuzzy finder for terminal
 #   - gum: A tool for glamorous shell scripts (provides spinner)
-#   - vipe-md: Interactive markdown editor (for gh-pr-create and gh-pr-review)
+#   - nvim: Neovim editor (for gh-pr-create and gh-pr-review)
 #
 # Authentication:
 #   Requires GitHub CLI authentication:
@@ -33,6 +33,31 @@
 #   - gh-pr-select: Ctrl-K (checkout), Ctrl-M (merge), Ctrl-R (review), Ctrl-W (watch checks)
 #   - gh-run-select: Ctrl-W to watch the selected workflow run
 # ==============================================================================
+
+# ------------------------------------------------------------------------------
+# get-file-stat
+# ------------------------------------------------------------------------------
+# Cross-platform file stat function for change detection.
+#
+# Returns file modification time and size in a consistent format across
+# macOS and Linux systems. Used to detect if files have been modified
+# without needing expensive MD5 hashing.
+#
+# Parameters:
+#   $1 (required): Path to file to stat
+#
+# Output:
+#   String containing "modification_time file_size"
+#   Format: "1609459200 1024" (Unix timestamp and bytes)
+#
+# Platform Support:
+#   - Linux: Uses stat -c "%Y %s"
+#   - macOS: Uses stat -f "%m %z"
+#   - Automatic detection with fallback
+# ------------------------------------------------------------------------------
+get-file-stat() {
+	stat -c "%Y %s" "$1" 2>/dev/null || stat -f "%m %z" "$1"
+}
 
 # ------------------------------------------------------------------------------
 # gh-issue-select
@@ -156,9 +181,9 @@ gh-pr-select() {
 # ------------------------------------------------------------------------------
 # gh-pr-review
 # ------------------------------------------------------------------------------
-# Interactive PR review submission using editor integration.
+# Interactive PR review submission using nvim editor integration.
 #
-# This function opens an editor for interactive review composition, with optional
+# This function opens nvim for interactive review composition, with optional
 # content from stdin as initial content. Uses markdown syntax highlighting and
 # submits the final review via `gh pr review` only if content is modified. Perfect
 # for editing AI-generated reviews before submission or creating reviews from scratch.
@@ -176,7 +201,7 @@ gh-pr-select() {
 #   Submits review via `gh pr review` command if content is modified
 #
 # Required Dependencies:
-#   - vipe-md: Interactive markdown editor
+#   - nvim: Neovim editor with markdown support
 #   - gh: GitHub CLI (for gh pr review functionality)
 #   - gum: For spinner visual feedback
 #
@@ -200,17 +225,17 @@ gh-pr-select() {
 #
 # Interactive Workflow:
 #   1. Input piped to function becomes initial content or default template is used
-#   2. Editor opens with markdown syntax highlighting via vipe-md (.md suffix)
+#   2. nvim opens with markdown syntax highlighting (.md suffix)
 #   3. User edits review content (or quits without saving to cancel)
-#   4. If content is modified and not empty, submits via `gh pr review -c -F {file}`
+#   4. If content is modified (detected via file stat) and not empty, submits via `gh pr review -c -F {file}`
 #   5. Temporary files cleaned up automatically
 # ------------------------------------------------------------------------------
 gh-pr-review() {
 	local input_content
 	local target="$1"
 	local temp_file
-	local input_hash
-	local output_hash
+	local initial_stat
+	local final_stat
 
 	if [ -t 0 ]; then
 		# No stdin - use default
@@ -220,18 +245,21 @@ gh-pr-review() {
 		input_content=$(cat)
 	fi
 
-	# Calculate hash of input content
-	input_hash=$(echo "$input_content" | md5sum | awk '{print $1}')
-
-	# Create temporary file and edit
+	# Create temporary file with initial content
 	temp_file=$(mktemp).md
-	echo "$input_content" | vipe-md >"$temp_file"
+	echo "$input_content" > "$temp_file"
+	
+	# Get initial file stat before editing
+	initial_stat=$(get-file-stat "$temp_file")
 
-	# Calculate hash of edited content
-	output_hash=$(md5sum "$temp_file" | awk '{print $1}')
+	# Open in nvim for editing
+	nvim "$temp_file"
+
+	# Get final file stat after editing
+	final_stat=$(get-file-stat "$temp_file")
 
 	# Submit only if content changed and file is not empty
-	if [ "$input_hash" != "$output_hash" ] && [ -s "$temp_file" ]; then
+	if [ "$initial_stat" != "$final_stat" ] && [ -s "$temp_file" ]; then
 		gum spin --title "Creating GitHub Pull Request Review..." -- gh pr review "$target" -c -F "$temp_file"
 	fi
 
@@ -307,15 +335,15 @@ gh-run-select() {
 # ------------------------------------------------------------------------------
 # gh-pr-create
 # ------------------------------------------------------------------------------
-# Create a GitHub pull request with interactive editor integration.
+# Create a GitHub pull request with interactive nvim editor integration.
 #
-# This function opens an interactive markdown editor for PR composition, with optional
+# This function opens nvim for PR composition, with optional
 # content from stdin as initial content. Extracts the first line as the PR title (if it
 # starts with '#') and uses the full content as the PR body. Creates the PR from the
 # specified source branch and automatically opens it in the web browser.
 #
 # The function follows the same pattern as gh-pr-review: reads from stdin, provides
-# interactive editing with vipe-md, and submits only if content is modified.
+# interactive editing with nvim, and submits only if content is modified.
 #
 # Parameters:
 #   $1 (required): Source branch name for the pull request
@@ -329,7 +357,7 @@ gh-run-select() {
 #
 # Required Dependencies:
 #   - gh: GitHub CLI (authenticated)
-#   - vipe-md: Interactive markdown editor
+#   - nvim: Neovim editor with markdown support
 #   - gum: For spinner visual feedback
 #   - Access to current git repository with remote on GitHub
 #
@@ -348,10 +376,10 @@ gh-run-select() {
 #
 # Interactive Workflow:
 #   1. Input piped to function becomes initial content or default template is used
-#   2. Editor opens with markdown syntax highlighting (.md suffix)
+#   2. nvim opens with markdown syntax highlighting (.md suffix)
 #   3. User edits PR content (or quits without saving to cancel)
 #   4. Title extracted from first line if it starts with '#', fallback to "Pull Request from {branch}"
-#   5. If content is modified, creates PR with --head {branch} --web flags
+#   5. If content is modified (detected via file stat), creates PR with --head {branch} --web flags
 #   6. Temporary files cleaned up automatically
 #
 # Error Conditions:
@@ -363,8 +391,8 @@ gh-pr-create() {
 	local target="$1"
 	local input_content
 	local temp_file
-	local input_hash
-	local output_hash
+	local initial_stat
+	local final_stat
 
 	# Read markdown content from stdin
 	if [ -t 0 ]; then
@@ -373,18 +401,21 @@ gh-pr-create() {
 		input_content=$(cat)
 	fi
 
-	# Calculate hash of input content
-	input_hash=$(echo "$input_content" | md5sum | awk '{print $1}')
-
-	# Create temporary file and edit
+	# Create temporary file with initial content
 	temp_file=$(mktemp).md
-	echo "$input_content" | vipe-md >"$temp_file"
+	echo "$input_content" > "$temp_file"
+	
+	# Get initial file stat before editing
+	initial_stat=$(get-file-stat "$temp_file")
 
-	# Calculate hash of edited content
-	output_hash=$(md5sum "$temp_file" | awk '{print $1}')
+	# Open in nvim for editing
+	nvim "$temp_file"
+
+	# Get final file stat after editing
+	final_stat=$(get-file-stat "$temp_file")
 
 	# Submit only if content changed and file is not empty
-	if [ "$input_hash" != "$output_hash" ] && [ -s "$temp_file" ]; then
+	if [ "$initial_stat" != "$final_stat" ] && [ -s "$temp_file" ]; then
 		# Extract title from first heading line, fallback to default if none found
 		title=$(cat "$temp_file" | head -n 1 | sed -e "s/#\s*//")
 
