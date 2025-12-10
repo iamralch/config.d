@@ -87,21 +87,22 @@ bind generic <C-w><C-w> view-next
 # ==============================================================================
 # View Management (v prefix)
 # ==============================================================================
+# Ordered by typical usage priority: most commonly used views first
 
 bind generic v  none
-bind generic vm view-main
-bind generic vd view-diff
-bind generic vl view-log
-bind generic vt view-tree
-bind generic vb view-blob
-bind generic vx view-blame
-bind generic vr view-refs
-bind generic vs view-status
-bind generic vu view-stage
-bind generic vy view-stash
-bind generic vg view-grep
-bind generic vp view-pager
-bind generic vh view-help
+bind generic vm view-main      # Most used: main commit view
+bind generic vs view-status    # Very common: working directory status
+bind generic vd view-diff      # Very common: viewing changes
+bind generic vr view-refs      # Common: branch/tag management
+bind generic vl view-log       # Common: commit history
+bind generic vu view-stage     # Common: staging area
+bind generic vt view-tree      # Moderate: file browser
+bind generic vb view-blob      # Moderate: file content
+bind generic vx view-blame     # Moderate: line-by-line attribution
+bind generic vy view-stash     # Less common: stash management
+bind generic vg view-grep      # Less common: search results
+bind generic vp view-pager     # Less common: generic pager
+bind generic vh view-help      # Least common: help system
 
 # ==============================================================================
 # Options Toggle (o prefix)
@@ -110,16 +111,17 @@ bind generic vh view-help
 
 
 # Display Toggles (Visual Elements)
+# Ordered by frequency of use: most commonly toggled options first
 bind generic o  none
-bind generic on :toggle line-number
-bind generic od :toggle date
-bind generic oa :toggle author
-bind generic og :toggle line-graphics
-bind generic of :toggle file-name
-bind generic os :toggle ignore-space
-bind generic oi :toggle id
-bind generic ot :toggle commit-title-overflow
-bind generic or :toggle commit-title-refs
+bind generic on :toggle line-number           # Most common: line numbers
+bind generic oa :toggle author                # Very common: author display
+bind generic od :toggle date                  # Very common: date display
+bind generic oi :toggle id                    # Common: commit ID display
+bind generic of :toggle file-name             # Common: filename display
+bind generic os :toggle ignore-space          # Common: whitespace handling
+bind generic og :toggle line-graphics         # Moderate: graph display
+bind generic or :toggle commit-title-refs     # Less common: ref display
+bind generic ot :toggle commit-title-overflow # Least common: title overflow
 
 # Administrative Operations (Behavioral)
 bind generic oO :toggle sort-order
@@ -200,39 +202,43 @@ bind status ghpy !gh pr review --approve --body "LGTM"
 
 # GitHub Browsing
 # Opens content in GitHub web interface - behavior varies by view context
-bind main   <C-o> !gh browse %(commit)
-bind refs   <C-o> !gh browse --branch %(branch)
-bind log    <C-o> !gh browse %(commit)
-bind status <C-o> !gh browse %(file)
-bind stage  <C-o> !gh browse %(file)
-bind blob   <C-o> !gh browse %(file):%(lineno)
-bind blame  <C-o> !gh browse %(file):%(lineno)
+# Ordered by view usage priority: most common views first
+bind main   <C-o> !gh browse %(commit)          # Most used view
+bind status <C-o> !gh browse %(file)            # Very common view
+bind refs   <C-o> !gh browse --branch %(branch) # Common view
+bind log    <C-o> !gh browse %(commit)          # Common view
+bind stage  <C-o> !gh browse %(file)            # Common view
+bind blob   <C-o> !gh browse %(file):%(lineno)  # Moderate usage
+bind blame  <C-o> !gh browse %(file):%(lineno)  # Moderate usage
 
 # GitHub URL Copying
 # Copies GitHub URLs to clipboard without opening browser - mirrors <C-o> bindings
 # Useful for sharing links in chat, documentation, or code reviews
-bind main   <C-y> !zsh -i -c 'gh browse -n %(commit) | pbcopy'
-bind refs   <C-y> !zsh -i -c 'gh browse -n --branch %(branch) | pbcopy'
-bind log    <C-y> !zsh -i -c 'gh browse -n %(commit) | pbcopy'
-bind status <C-y> !zsh -i -c 'gh browse -n %(file) | pbcopy'
-bind stage  <C-y> !zsh -i -c 'gh browse -n %(file) | pbcopy'
-bind blob   <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
-bind blame  <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
+# Ordered by view usage priority: most common views first
+bind main   <C-y> !zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Most used view
+bind status <C-y> !zsh -i -c 'gh browse -n %(file) | pbcopy'            # Very common view
+bind refs   <C-y> !zsh -i -c 'gh browse -n --branch %(branch) | pbcopy' # Common view
+bind log    <C-y> !zsh -i -c 'gh browse -n %(commit) | pbcopy'          # Common view
+bind stage  <C-y> !zsh -i -c 'gh browse -n %(file) | pbcopy'            # Common view
+bind blob   <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Moderate usage
+bind blame  <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'  # Moderate usage
 
 # GitHub Selection Utilities (ghf prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
-bind generic ghfi !gh fzf issue
-bind generic ghfr !gh fzf run
-bind generic ghfp !gh fzf pr
+# Ordered by typical workflow usage priority
+bind generic ghfp !gh fzf pr      # Most common: PR management
+bind generic ghfi !gh fzf issue   # Common: issue tracking
+bind generic ghfr !gh fzf run     # Less common: workflow runs
 
 # Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
-bind refs   ghpc !gh pr create %(branch)
-bind refs   ghpr !gh pr review %(branch)
-bind refs   ghpw !gh pr checks %(branch) --watch
-bind refs   ghpy !gh pr review %(branch) --approve --body "LGTM"
-bind refs   ghpm !gh pr merge %(branch) -r -d
-bind status ghpm !gh pr merge -r -d
+# Ordered by typical PR workflow sequence
+bind refs   ghpc !gh pr create %(branch)                               # Step 1: Create PR
+bind refs   ghpr !gh pr review %(branch)                               # Step 2: Review PR
+bind refs   ghpw !gh pr checks %(branch) --watch                       # Step 3: Watch checks
+bind refs   ghpy !gh pr review %(branch) --approve --body "LGTM"       # Step 4: Approve PR
+bind refs   ghpm !gh pr merge %(branch) -r -d                          # Step 5: Merge PR
+bind status ghpm !gh pr merge -r -d                                    # Quick merge from status
 
 # ==============================================================================
 # AI-Powered Operations
@@ -246,9 +252,10 @@ bind status ac !gh opencode commit --edit
 
 # AI Operations by OpenCode
 # Current branch operations (status view) and branch-specific operations (refs view)
-bind status ghopc !gh opencode pr create
-bind status ghopr !gh opencode pr review
-bind status ghope !gh opencode pr explain
-bind refs   ghopc !gh opencode pr create %(branch)
-bind refs   ghopr !gh opencode pr review %(branch)
-bind refs   ghope !gh opencode pr explain %(branch)
+# Ordered by typical AI-assisted workflow sequence
+bind status ghopc !gh opencode pr create                              # Most common: Create PR with AI
+bind status ghopr !gh opencode pr review                              # Common: AI-assisted review
+bind status ghope !gh opencode pr explain                             # Less common: AI explanation
+bind refs   ghopc !gh opencode pr create %(branch)                    # Branch-specific create
+bind refs   ghopr !gh opencode pr review %(branch)                    # Branch-specific review
+bind refs   ghope !gh opencode pr explain %(branch)                   # Branch-specific explain
