@@ -242,7 +242,7 @@ bind status ghpm !gh pr merge -r -d
 
 # AI Commit Generation
 # Generates commit message from staged changes, opens editor for review/editing
-bind status ac !gh opencode commit
+bind status ac !gh opencode commit --edit
 
 # AI Operations by OpenCode
 # Current branch operations (status view) and branch-specific operations (refs view)
