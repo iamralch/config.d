@@ -63,3 +63,21 @@ hsdk-env-fzf() {
 		--color=header:cyan \
 		--bind 'ctrl-o:become(open {3})+abort'
 }
+
+# ------------------------------------------------------------------------------
+# hsdk-env-set
+# ------------------------------------------------------------------------------
+# Interactively selects and sets the HSDK environment for the current shell.
+#
+# This function provides a seamless workflow for switching environments:
+#   1. It calls `hsdk-env-fzf` to display an interactive fuzzy finder.
+#   2. The user selects an environment from the list.
+#   3. The selected environment ID is then passed to `hsdk se` to configure
+#      the shell.
+#
+# Usage:
+#   hsdk-env-set
+# ------------------------------------------------------------------------------
+hsdk-env-set() {
+	hsdk se "$(hsdk-env-fzf)"
+}

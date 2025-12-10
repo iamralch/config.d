@@ -6,7 +6,7 @@
 #
 # Key Features:
 #   - Vim-style navigation (hjkl, gg, G, etc.)
-#   - Organized keybinding prefixes (g=goto, v=view, o=options, s=select, @=diff)
+#   - Organized keybinding prefixes (g=goto, v=view, o=options, @=diff, gh=github)
 #   - Intuitive options: lowercase=display, UPPERCASE=administrative (oS=sort, os=spaces)
 #   - GitHub CLI integration (<C-o>=browse, <C-y>=copy, ghf*=select)
 #   - AI-powered operations (ac=commit, gho*=explain/review/create)
@@ -219,7 +219,7 @@ bind stage  <C-y> !zsh -i -c 'gh browse -n %(file) | pbcopy'
 bind blob   <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
 bind blame  <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
 
-# GitHub Selection Utilities (<C-g>f prefix)
+# GitHub Selection Utilities (ghf prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
 bind generic ghfi !gh fzf issue
 bind generic ghfr !gh fzf run
