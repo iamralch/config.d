@@ -162,7 +162,7 @@ bind main B !git checkout -b "%(prompt New branch name: )"
 bind refs B !git checkout -b "%(prompt New branch name: )"
 
 # Delete branches (local and remote)
-bind refs X ?zsh -i -c 'git-br-delete %(refname)'
+bind refs X ?git delete --branch %(refname)
 
 # ==============================================================================
 # Push & Stash Operations
@@ -189,8 +189,8 @@ bind status c !git commit --signoff
 bind status X !git clean -fd
 
 # GitHub PR Operations for Current Branch
-bind status gpc !zsh -i -c 'gh-pr-create'
-bind status gpr !zsh -i -c 'gh-pr-review' 
+bind status gpc !gh pr create
+bind status gpr !gh pr review
 bind status gpw !gh pr checks --watch
 bind status gpy !gh pr review --approve --body "LGTM"
 
@@ -212,13 +212,13 @@ bind blame  go !gh browse %(file):%(lineno)
 # Copies GitHub URLs to clipboard without opening browser - mirrors <C-g>o bindings
 # Uses gh-browse-url function for consistent visual feedback via gum spinner
 # Useful for sharing links in chat, documentation, or code reviews
-bind main   gy !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
-bind refs   gy !zsh -i -c 'gh-browse-url --branch %(branch) | pbcopy'
-bind log    gy !zsh -i -c 'gh-browse-url %(commit) | pbcopy'
-bind status gy !zsh -i -c 'gh-browse-url %(file) | pbcopy'
-bind stage  gy !zsh -i -c 'gh-browse-url %(file) | pbcopy'
-bind blob   gy !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
-bind blame  gy !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
+bind main   gy !zsh -i -c 'gh browse -n %(commit) | pbcopy'
+bind refs   gy !zsh -i -c 'gh browse -n --branch %(branch) | pbcopy'
+bind log    gy !zsh -i -c 'gh browse -n %(commit) | pbcopy'
+bind status gy !zsh -i -c 'gh browse -n %(file) | pbcopy'
+bind stage  gy !zsh -i -c 'gh browse -n %(file) | pbcopy'
+bind blob   gy !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
+bind blame  gy !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
 
 # GitHub Selection Utilities (<C-g>f prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
@@ -228,8 +228,9 @@ bind generic fgp !gh fzf pr
 
 # Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
-bind refs   gpc !zsh -i -c 'gh-pr-create %(branch)'
-bind refs   gpr !zsh -i -c 'gh-pr-review %(branch)'
+bind refs   gpc !gh pr create %(branch)
+bind refs   gpr !gh pr review %(branch)
+bind refs   gpe !gh pr explain %(branch)
 bind refs   gpw !gh pr checks %(branch) --watch
 bind refs   gpy !gh pr review %(branch) --approve --body "LGTM"
 bind refs   gpm !gh pr merge %(branch) -r -d
@@ -243,23 +244,13 @@ bind status gpm !gh pr merge -r -d
 
 # AI Commit Generation
 # Generates commit message from staged changes, opens editor for review/editing
-bind status ac !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-commit | git-commit'
+bind status ac !gh opencode commit
 
-# AI Code Explanations
-# Generates AI explanations of code changes, opens markdown viewer for reading
-bind main   ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
-bind refs   ae !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-explain | vipe-md'
-bind log    ae !zsh -i -c 'git show %(commit) | git-ai-explain | vipe-md'
-bind status ae !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-explain | vipe-md'
-
-# AI Code Reviews
-# Generates AI code reviews with different submission workflows
-bind status ar !zsh -i -c 'git diff --no-ext-diff --staged | git-ai-review | vipe-md'
-
-# AI-Powered PR Operations
+# AI Operations by OpenCode
 # Current branch operations (status view) and branch-specific operations (refs view)
-bind status gapc !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-describe | gh-pr-create'
-bind status gapr !zsh -i -c 'git diff --no-ext-diff main...HEAD | git-ai-review | gh-pr-review'
-bind refs   gapc !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-describe | gh-pr-create %(branch)'
-bind refs   gapr !zsh -i -c 'git diff --no-ext-diff main...%(branch) | git-ai-review | gh-pr-review %(branch)'  
-
+bind status gapc !gh opencode pr create
+bind status gapr !gh opencode pr review
+bind status gape !gh opencode pr explain
+bind refs   gapc !gh opencode pr create %(branch)
+bind refs   gapr !gh opencode pr review %(branch)
+bind refs   gape !gh opencode pr explain %(branch)
