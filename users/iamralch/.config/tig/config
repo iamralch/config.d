@@ -191,7 +191,7 @@ bind status c !git commit --signoff
 bind status X !git clean -fd
 
 # GitHub PR Operations for Current Branch
-bind status ghpc !gh pr create
+bind status ghpc !gh pr create --assignee @me
 bind status ghpr !gh pr review
 bind status ghpw !gh pr checks --watch
 bind status ghpy !gh pr review --approve --body "LGTM"
@@ -233,7 +233,7 @@ bind generic ghfr !gh fzf run     # Less common: workflow runs
 # Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
 # Ordered by typical PR workflow sequence
-bind refs   ghpc !gh pr create %(branch)                               # Step 1: Create PR
+bind refs   ghpc !gh pr create %(branch) --assignee @me                # Step 1: Create PR
 bind refs   ghpr !gh pr review %(branch)                               # Step 2: Review PR
 bind refs   ghpw !gh pr checks %(branch) --watch                       # Step 3: Watch checks
 bind refs   ghpy !gh pr review %(branch) --approve --body "LGTM"       # Step 4: Approve PR
@@ -253,9 +253,9 @@ bind status ac !gh opencode commit --edit
 # AI Operations by OpenCode
 # Current branch operations (status view) and branch-specific operations (refs view)
 # Ordered by typical AI-assisted workflow sequence
-bind status ghopc !gh opencode pr create                              # Most common: Create PR with AI
+bind status ghopc !gh opencode pr create --assignee @me               # Most common: Create PR with AI
 bind status ghopr !gh opencode pr review                              # Common: AI-assisted review
 bind status ghope !gh opencode pr explain                             # Less common: AI explanation
-bind refs   ghopc !gh opencode pr create %(branch)                    # Branch-specific create
+bind refs   ghopc !gh opencode pr create %(branch) --assignee @me     # Branch-specific create
 bind refs   ghopr !gh opencode pr review %(branch)                    # Branch-specific review
 bind refs   ghope !gh opencode pr explain %(branch)                   # Branch-specific explain
