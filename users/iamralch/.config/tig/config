@@ -189,10 +189,10 @@ bind status c !git commit --signoff
 bind status X !git clean -fd
 
 # GitHub PR Operations for Current Branch
-bind status gpc !gh pr create
-bind status gpr !gh pr review
-bind status gpw !gh pr checks --watch
-bind status gpy !gh pr review --approve --body "LGTM"
+bind status ghpc !gh pr create
+bind status ghpr !gh pr review
+bind status ghpw !gh pr checks --watch
+bind status ghpy !gh pr review --approve --body "LGTM"
 
 # ==============================================================================
 # GitHub Integration
