@@ -190,12 +190,6 @@ bind status A !git commit --signoff --amend
 bind status c !git commit --signoff
 bind status X !git clean -fd
 
-# GitHub PR Operations for Current Branch
-bind status ghpc !gh pr create --assignee @me
-bind status ghpr !gh pr review
-bind status ghpw !gh pr checks --watch
-bind status ghpy !gh pr review --approve --body "LGTM"
-
 # ==============================================================================
 # GitHub Integration
 # ==============================================================================
@@ -230,14 +224,18 @@ bind generic ghfp !gh fzf pr      # Most common: PR management
 bind generic ghfi !gh fzf issue   # Common: issue tracking
 bind generic ghfr !gh fzf run     # Less common: workflow runs
 
-# Pull Request Operations
+# GitHub Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
 # Ordered by typical PR workflow sequence
-bind refs   ghpc !gh pr create %(branch) --assignee @me                # Step 1: Create PR
+bind refs   ghpc !gh pr create %(branch) --assignee @me --editor       # Step 1: Create PR
 bind refs   ghpr !gh pr review %(branch)                               # Step 2: Review PR
 bind refs   ghpw !gh pr checks %(branch) --watch                       # Step 3: Watch checks
 bind refs   ghpy !gh pr review %(branch) --approve --body "LGTM"       # Step 4: Approve PR
 bind refs   ghpm !gh pr merge %(branch) -r -d                          # Step 5: Merge PR
+bind status ghpc !gh pr create --assignee @me --editor
+bind status ghpr !gh pr review
+bind status ghpw !gh pr checks --watch
+bind status ghpy !gh pr review --approve --body "LGTM"
 bind status ghpm !gh pr merge -r -d                                    # Quick merge from status
 
 # ==============================================================================
@@ -253,9 +251,9 @@ bind status ac !gh opencode commit --edit
 # AI Operations by OpenCode
 # Current branch operations (status view) and branch-specific operations (refs view)
 # Ordered by typical AI-assisted workflow sequence
-bind status ghopc !gh opencode pr create --assignee @me               # Most common: Create PR with AI
-bind status ghopr !gh opencode pr review                              # Common: AI-assisted review
-bind status ghope !gh opencode pr explain                             # Less common: AI explanation
-bind refs   ghopc !gh opencode pr create %(branch) --assignee @me     # Branch-specific create
-bind refs   ghopr !gh opencode pr review %(branch)                    # Branch-specific review
-bind refs   ghope !gh opencode pr explain %(branch)                   # Branch-specific explain
+bind status ghopc !gh opencode pr create --assignee @me --editor           # Most common: Create PR with AI
+bind status ghopr !gh opencode pr review                                   # Common: AI-assisted review
+bind status ghope !gh opencode pr explain                                  # Less common: AI explanation
+bind refs   ghopc !gh opencode pr create %(branch) --assignee @me --editor # Branch-specific create
+bind refs   ghopr !gh opencode pr review %(branch)                         # Branch-specific review
+bind refs   ghope !gh opencode pr explain %(branch)                        # Branch-specific explain
