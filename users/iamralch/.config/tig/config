@@ -8,8 +8,8 @@
 #   - Vim-style navigation (hjkl, gg, G, etc.)
 #   - Organized keybinding prefixes (g=goto, v=view, o=options, s=select, @=diff)
 #   - Intuitive options: lowercase=display, UPPERCASE=administrative (oS=sort, os=spaces)
-#   - GitHub CLI integration (<C-g>o=browse, <C-g>y=copy, <C-g>fi/fr/fp=select)
-#   - AI-powered operations (ac=commit, ae=explain, ar=review)
+#   - GitHub CLI integration (<C-o>=browse, <C-y>=copy, ghf*=select)
+#   - AI-powered operations (ac=commit, gho*=explain/review/create)
 #   - Context-aware GitHub browsing (line-specific in blob/blame views)
 #
 # Workflow Integration:
@@ -200,41 +200,39 @@ bind status gpy !gh pr review --approve --body "LGTM"
 
 # GitHub Browsing
 # Opens content in GitHub web interface - behavior varies by view context
-bind main   go !gh browse %(commit)
-bind refs   go !gh browse --branch %(branch)
-bind log    go !gh browse %(commit)
-bind status go !gh browse %(file)
-bind stage  go !gh browse %(file)
-bind blob   go !gh browse %(file):%(lineno)
-bind blame  go !gh browse %(file):%(lineno)
+bind main   <C-o> !gh browse %(commit)
+bind refs   <C-o> !gh browse --branch %(branch)
+bind log    <C-o> !gh browse %(commit)
+bind status <C-o> !gh browse %(file)
+bind stage  <C-o> !gh browse %(file)
+bind blob   <C-o> !gh browse %(file):%(lineno)
+bind blame  <C-o> !gh browse %(file):%(lineno)
 
 # GitHub URL Copying
-# Copies GitHub URLs to clipboard without opening browser - mirrors <C-g>o bindings
-# Uses gh-browse-url function for consistent visual feedback via gum spinner
+# Copies GitHub URLs to clipboard without opening browser - mirrors <C-o> bindings
 # Useful for sharing links in chat, documentation, or code reviews
-bind main   gy !zsh -i -c 'gh browse -n %(commit) | pbcopy'
-bind refs   gy !zsh -i -c 'gh browse -n --branch %(branch) | pbcopy'
-bind log    gy !zsh -i -c 'gh browse -n %(commit) | pbcopy'
-bind status gy !zsh -i -c 'gh browse -n %(file) | pbcopy'
-bind stage  gy !zsh -i -c 'gh browse -n %(file) | pbcopy'
-bind blob   gy !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
-bind blame  gy !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
+bind main   <C-y> !zsh -i -c 'gh browse -n %(commit) | pbcopy'
+bind refs   <C-y> !zsh -i -c 'gh browse -n --branch %(branch) | pbcopy'
+bind log    <C-y> !zsh -i -c 'gh browse -n %(commit) | pbcopy'
+bind status <C-y> !zsh -i -c 'gh browse -n %(file) | pbcopy'
+bind stage  <C-y> !zsh -i -c 'gh browse -n %(file) | pbcopy'
+bind blob   <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
+bind blame  <C-y> !zsh -i -c 'gh browse -n %(file):%(lineno) | pbcopy'
 
 # GitHub Selection Utilities (<C-g>f prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
-bind generic fgi !gh fzf issue
-bind generic fgr !gh fzf run
-bind generic fgp !gh fzf pr
+bind generic ghfi !gh fzf issue
+bind generic ghfr !gh fzf run
+bind generic ghfp !gh fzf pr
 
 # Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
-bind refs   gpc !gh pr create %(branch)
-bind refs   gpr !gh pr review %(branch)
-bind refs   gpe !gh pr explain %(branch)
-bind refs   gpw !gh pr checks %(branch) --watch
-bind refs   gpy !gh pr review %(branch) --approve --body "LGTM"
-bind refs   gpm !gh pr merge %(branch) -r -d
-bind status gpm !gh pr merge -r -d
+bind refs   ghpc !gh pr create %(branch)
+bind refs   ghpr !gh pr review %(branch)
+bind refs   ghpw !gh pr checks %(branch) --watch
+bind refs   ghpy !gh pr review %(branch) --approve --body "LGTM"
+bind refs   ghpm !gh pr merge %(branch) -r -d
+bind status ghpm !gh pr merge -r -d
 
 # ==============================================================================
 # AI-Powered Operations
@@ -248,9 +246,9 @@ bind status ac !gh opencode commit
 
 # AI Operations by OpenCode
 # Current branch operations (status view) and branch-specific operations (refs view)
-bind status gapc !gh opencode pr create
-bind status gapr !gh opencode pr review
-bind status gape !gh opencode pr explain
-bind refs   gapc !gh opencode pr create %(branch)
-bind refs   gapr !gh opencode pr review %(branch)
-bind refs   gape !gh opencode pr explain %(branch)
+bind status ghopc !gh opencode pr create
+bind status ghopr !gh opencode pr review
+bind status ghope !gh opencode pr explain
+bind refs   ghopc !gh opencode pr create %(branch)
+bind refs   ghopr !gh opencode pr review %(branch)
+bind refs   ghope !gh opencode pr explain %(branch)
