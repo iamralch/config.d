@@ -24,7 +24,7 @@
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# aws-s3-bucket-select
+# aws-s3-bucket-fzf
 # ------------------------------------------------------------------------------
 # Interactively select an S3 bucket from the current AWS account.
 #
@@ -40,10 +40,10 @@
 #   - s3:ListAllMyBuckets
 #
 # Example:
-#   bucket=$(aws-s3-bucket-select)
+#   bucket=$(aws-s3-bucket-fzf)
 #   aws s3 ls "s3://$bucket"
 # ------------------------------------------------------------------------------
-aws-s3-bucket-select() {
+aws-s3-bucket-fzf() {
 	local bucket_list
 
 	# Query AWS for all S3 buckets with spinner feedback
@@ -58,7 +58,7 @@ aws-s3-bucket-select() {
 }
 
 # ------------------------------------------------------------------------------
-# aws-logs-group-select
+# aws-logs-group-fzf
 # ------------------------------------------------------------------------------
 # Interactively select a CloudWatch Logs log group.
 #
@@ -73,10 +73,10 @@ aws-s3-bucket-select() {
 #   - logs:DescribeLogGroups
 #
 # Example:
-#   log_group=$(aws-logs-group-select)
+#   log_group=$(aws-logs-group-fzf)
 #   aws logs tail "$log_group" --follow
 # ------------------------------------------------------------------------------
-aws-logs-group-select() {
+aws-logs-group-fzf() {
 	local log_group_list
 
 	# Query AWS for all CloudWatch log groups with spinner feedback
@@ -91,7 +91,7 @@ aws-logs-group-select() {
 }
 
 # ------------------------------------------------------------------------------
-# aws-logs-stream-select
+# aws-logs-stream-fzf
 # ------------------------------------------------------------------------------
 # Interactively select a CloudWatch Logs log stream from a specific log group.
 #
@@ -113,11 +113,11 @@ aws-logs-group-select() {
 #   - logs:DescribeLogStreams
 #
 # Example:
-#   log_group=$(aws-logs-group-select)
-#   log_stream=$(aws-logs-stream-select "$log_group")
+#   log_group=$(aws-logs-group-fzf)
+#   log_stream=$(aws-logs-stream-fzf "$log_group")
 #   aws logs get-log-events --log-group-name "$log_group" --log-stream-name "$log_stream"
 # ------------------------------------------------------------------------------
-aws-logs-stream-select() {
+aws-logs-stream-fzf() {
 	local log_group="${1}"
 	local log_stream_list
 

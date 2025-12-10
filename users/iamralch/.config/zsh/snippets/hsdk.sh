@@ -18,7 +18,7 @@
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
-# hsdk-env-select
+# hsdk-env-fzf
 # ------------------------------------------------------------------------------
 # Interactively select an HSDK environment using fzf with AWS console URLs.
 #
@@ -40,10 +40,10 @@
 #   HSDK_DEFAULT_OUTPUT: Temporarily set to 'json' for structured data retrieval
 #
 # Example:
-#   selected_env=$(hsdk-env-select)
+#   selected_env=$(hsdk-env-fzf)
 #   echo "Selected environment: $selected_env"
 # ------------------------------------------------------------------------------
-hsdk-env-select() {
+hsdk-env-fzf() {
 	local hsdk_env_list
 
 	# Query HSDK for environments and format as tab-separated values:
