@@ -222,9 +222,9 @@ bind blame  gy !zsh -i -c 'gh-browse-url %(file):%(lineno) | pbcopy'
 
 # GitHub Selection Utilities (<C-g>f prefix)
 # Interactive selection of GitHub entities using fuzzy finder (fzf)
-bind generic fgi !zsh -i -c 'gh-issue-select'
-bind generic fgr !zsh -i -c 'gh-run-select'
-bind generic fgp !zsh -i -c 'gh-pr-select'
+bind generic fgi !gh fzf issue
+bind generic fgr !gh fzf run
+bind generic fgp !gh fzf pr
 
 # Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
