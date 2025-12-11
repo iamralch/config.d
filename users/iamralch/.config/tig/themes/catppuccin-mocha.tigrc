@@ -1,0 +1,93 @@
+# ─────────────────────────────────────────────
+# Catppuccin Mocha-ish theme for tig
+# ─────────────────────────────────────────────
+# Valid colors in tig: black, red, green, yellow, blue, magenta, cyan,
+# white, default :contentReference[oaicite:0]{index=0}
+#
+# This theme assumes:
+#   bg      = Catppuccin base
+#   white   = text
+#   blue    = primary accent
+#   cyan    = secondary accent
+#   magenta = mauve/pink-ish accent
+#   green   = added/ok
+#   red     = removed/error
+#   yellow  = warning/changed
+
+# ── General ──────────────────────────────────
+color default          white   default
+color cursor           black   cyan
+color cursor-blur      black   white     
+color title-focus      black   cyan
+color title-blur       white   default   
+color delimiter        magenta default
+color author           cyan    default
+color date             blue    default
+color line-number      yellow  default
+color mode             cyan    default   bold
+
+# ── Main view (commit list) ──────────────────
+color main-commit      white   default
+color main-head        green   default   bold
+color main-tag         yellow  default   bold
+color main-local-tag   cyan    default   bold
+color main-remote      magenta default   bold
+color main-ref         cyan    default
+color graph-commit     blue    default
+
+# ── Status view ──────────────────────────────
+color status.header    blue    default   bold
+color status.section   cyan    default   bold
+
+# staged / unstaged / untracked
+color stat_staged      green   default   bold
+color stat_unstaged    yellow  default   bold
+color stat_untracked   red     default   bold
+
+# ── Diff view ────────────────────────────────
+# hunk header + file header
+color diff-header          magenta default   bold
+color diff-index           cyan    default
+color diff-chunk           blue    default   bold
+
+# added / removed lines
+color diff-add             green   default
+color diff-del             red     default
+
+# if you use diff-highlight integration
+color diff-add-highlight   green   default   bold
+color diff-del-highlight   red     default   bold
+
+# extra diff metadata
+color diff_oldmode         yellow  default
+color diff_newmode         yellow  default
+color "deleted file mode"  red     default
+color "copy from"          cyan    default
+color "copy to"            cyan    default
+color "rename from"        cyan    default
+color "rename to"          cyan    default
+color diff_similarity      yellow  default
+color "dissimilarity"      yellow  default
+color "diff_tree"          blue    default
+color diff-stat            cyan    default
+
+# ── Commit headers / trailers ────────────────
+color commit           cyan    default
+color committer        magenta default
+
+color "Signed-off-by:" yellow  default
+color "Acked-by"       yellow  default
+color "Tested-by"      yellow  default
+color "Reviewed-by"    yellow  default
+color "Reported-by:"   yellow  default
+color "Author:"        cyan    default
+color "Commit:"        magenta default
+color "AuthorDate:"    blue    default
+color "CommitDate:"    blue    default
+color "Date:"          blue    default
+
+# ── Tree view ────────────────────────────────
+color tree.directory   cyan    default
+
+# ── Search / matches ─────────────────────────
+color search-result    black   yellow   bold

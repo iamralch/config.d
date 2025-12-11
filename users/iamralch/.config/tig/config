@@ -40,7 +40,7 @@ set diff-highlight = true
 # ==============================================================================
 
 # Load GitHub-style theme
-source ~/.config/tig/themes/github.tigrc
+source ~/.config/tig/themes/catppuccin-mocha.tigrc
 
 # ==============================================================================
 # Disable Default View-Switching Bindings
@@ -224,7 +224,7 @@ bind generic ghfp !gh fzf pr      # Most common: PR management
 bind generic ghfi !gh fzf issue   # Common: issue tracking
 bind generic ghfr !gh fzf run     # Less common: workflow runs
 
-# GitHub Pull Request Operations
+# Pull Request Operations
 # PR creation, merging, and review workflows for branch-specific context
 # Ordered by typical PR workflow sequence
 bind refs   ghpc !gh pr create %(branch) --assignee @me --editor       # Step 1: Create PR
