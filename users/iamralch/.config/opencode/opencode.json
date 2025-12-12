@@ -3,7 +3,7 @@
   "theme": "catppuccin",
   "autoupdate": false,
   "mcp": {
-    "sequential-thinking": {
+    "thinking": {
       "type": "local",
       "command": [
         "npx",
