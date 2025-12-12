@@ -191,7 +191,7 @@ _write_env_secrets() {
 		echo "export FIGMA_API_KEY=\"$(op read 'op://Personal/Figma/API Key')\""
 		echo "export CONTEXT7_API_KEY=\"$(op read 'op://Personal/Context7/API Key')\""
 		echo "export FIRECRAWL_API_KEY=\"$(op read 'op://Personal/Firecrawl/API Key')\""
-		echo "export GH_TOKEN=\"$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')\""
+		echo "export GITHUB_TOKEN=\"$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')\""
 	} >"$FILE_PATH"
 }
 
