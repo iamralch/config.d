@@ -55,7 +55,12 @@ bind generic f none  # file/blob view
 bind generic b none  # blame view
 bind generic y none  # stash view
 bind generic c none  # stage view
+
+# Disable <Space>
 bind generic <Space> none
+
+# Reload the when <Space-R> is pressed
+bind generic <Space>r :source ~/.config/tig/config
 
 # ==============================================================================
 # Navigation Keybindings (Vim-style)
