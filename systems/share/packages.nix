@@ -1,7 +1,5 @@
 {
   pkgs,
-  upkgs,
-  extras,
   ...
 }:
 {
@@ -73,8 +71,8 @@
     bun
     pnpm
     yarn
-    upkgs.nodePackages.neovim
-    upkgs.nodejs
+    nodePackages.neovim
+    nodejs
     openssl
     perl
     perlPackages.NeovimExt
@@ -85,7 +83,7 @@
     protobuf
     pstree
     pwgen
-    (upkgs.python313.withPackages (
+    (python313.withPackages (
       ps: with ps; [
         pip
         pipx
@@ -117,8 +115,6 @@
     zip
     zoxide
     zsh
-    extras.ai.spec-kit
-    # extras.ai.opencode
   ];
 
   fonts.packages = with pkgs; [

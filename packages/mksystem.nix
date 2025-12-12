@@ -3,8 +3,6 @@
 
 {
   nixpkgs,
-  nixpkgs-unstable,
-  nix-ai-tools,
   overlays,
   inputs,
 }:
@@ -36,15 +34,6 @@ let
     };
   };
 
-  upkgs = import nixpkgs-unstable {
-    inherit system;
-    inherit (pkgs) config;
-  };
-
-  extras = {
-    # AI tools packages for the system
-    ai = nix-ai-tools.packages.${system};
-  };
 in
 system-manager {
   inherit system;
@@ -52,8 +41,6 @@ system-manager {
   specialArgs = {
     inherit
       inputs
-      extras
-      upkgs
       pkgs
       ;
   };
@@ -77,12 +64,10 @@ system-manager {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        extraSpecialArgs = { inherit inputs extras upkgs; };
+        extraSpecialArgs = { inherit inputs; };
         users.${user} = import ../users/${user}/home.nix {
           inherit
             inputs
-            extras
-            upkgs
             pkgs
             ;
         };

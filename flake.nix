@@ -3,9 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    nix-ai-tools.url = "github:numtide/nix-ai-tools";
 
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
@@ -21,8 +18,6 @@
   outputs =
     {
       nixpkgs,
-      nixpkgs-unstable,
-      nix-ai-tools,
       ...
     }@inputs:
     let
@@ -33,8 +28,6 @@
         inherit
           overlays
           nixpkgs
-          nixpkgs-unstable
-          nix-ai-tools
           inputs
           ;
       };
