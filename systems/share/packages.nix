@@ -11,6 +11,7 @@
     d2
     gum
     mdq
+    glab
     glow
     lnav
     sshfs
