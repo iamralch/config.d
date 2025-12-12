@@ -5,6 +5,7 @@ return {
   -- Completion
   { import = "astrocommunity.completion.copilot-cmp" },
   { import = "astrocommunity.completion.blink-cmp-git" },
+  { import = "astrocommunity.completion.minuet-ai-nvim" },
 
   -- Editing Support
   { import = "astrocommunity.ai.opencode-nvim" },

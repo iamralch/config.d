@@ -22,26 +22,22 @@
     },
     "playwright": {
       "type": "local",
-      "command": ["npx", "-y", "@playwright/mcp"]
-    },
-    "context7": {
-      "type": "local",
-      "command": ["npx", "-y", "@upstash/context7-mcp"]
-    },
-    "serena": {
-      "type": "local",
       "command": [
-        "uvx",
-        "--from",
-        "git+https://github.com/oraios/serena",
-        "serena",
-        "start-mcp-server",
-        "--context",
-        "claude-code",
-        "--project",
-        "${PWD}"
+        "npx",
+        "-y",
+        "@playwright/mcp"
       ]
+    },
+    "github": {
+      "type": "remote",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer {env:GITHUB_TOKEN}"
+      }
     }
   },
-  "plugin": ["opencode-gemini-auth", "opencode-openai-codex-auth"]
+  "plugin": [
+    "opencode-gemini-auth",
+    "opencode-openai-codex-auth"
+  ]
 }
