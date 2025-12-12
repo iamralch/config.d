@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -e
 
 # ==============================================================================
 # SSH Authentication and Tunneling Utilities
@@ -48,10 +48,7 @@
 #   - work: Uses team-em.1password.com account with different vault
 #
 # Environment Variables Set:
-#   - FIGMA_API_KEY: Figma API access token
-#   - CONTEXT7_API_KEY: Context7 service API key
-#   - FIRECRAWL_API_KEY: Firecrawl API access token
-#   - GH_TOKEN: GitHub personal access token
+#   - GITHUB_TOKEN: GitHub personal access token
 #
 # Security Features:
 #   - Temporary files are created with 600 permissions
@@ -76,23 +73,25 @@
 # ------------------------------------------------------------------------------
 ssh-auth() {
 	# Vault Information
-	VAULT_NAME="Private"
-	VAULT_ACCOUNT="my.1password.com"
-	VAULT_ITEM_ID="vxzzdak7qtvnts2rjwwvpcall4"
-	KEY_EXPIRATION="${1:-"1h"}"
+	local vault_name="Private"
+	local vault_account="my.1password.com"
+	local vault_item_id="vxzzdak7qtvnts2rjwwvpcall4"
+	local key_expiration="${1:-"1h"}"
 
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
 		-p | --profile)
 			case "$2" in
 			work)
-				VAULT_ACCOUNT="team-em.1password.com"
-				VAULT_ITEM_ID="6iyzh6xbx3aq3bdgph6jxyz2t4"
-				gum log --level info "🏢 Using work profile (team-em.1password.com)"
+				vault_name="Employee"
+				vault_account="team-em.1password.com"
+				vault_item_id="6iyzh6xbx3aq3bdgph6jxyz2t4"
 				;;
 			personal)
 				# Already set as defaults, just show confirmation
-				gum log --level info "🔑 Using personal profile (my.1password.com)"
+				vault_name="Private"
+				vault_account="my.1password.com"
+				vault_item_id="vxzzdak7qtvnts2rjwwvpcall4"
 				;;
 			*)
 				gum log --level error "Profile '$2' not found"
@@ -103,7 +102,7 @@ ssh-auth() {
 			shift 2
 			;;
 		-e | --expiration)
-			KEY_EXPIRATION="$2"
+			key_expiration="$2"
 			shift 2
 			;;
 		*)
@@ -113,45 +112,64 @@ ssh-auth() {
 	done
 
 	# Key Information
-	KEY_DATA=$(gum spin --title "Retrieving SSH key from $VAULT_ACCOUNT..." -- op item get "$VAULT_ITEM_ID" --account "$VAULT_ACCOUNT" --vault "$VAULT_NAME" --field "private key" --reveal | sed 's/^\"//' | sed 's/\"$//' | sed '/^[[:space:]]*$/d')
+	key_data=$(gum spin --title "Retrieving SSH key from $vault_account..." -- \
+		op item get "$vault_item_id" --account "$vault_account" --vault "$vault_name" --field "private key" --reveal | sed 's/^\"//' | sed 's/\"$//' | sed '/^[[:space:]]*$/d')
 
-	if [[ -z "$KEY_DATA" ]]; then
+	if [[ -z "$key_data" ]]; then
 		gum log --level error "Failed to retrieve SSH key from 1Password"
 		gum log --level warn "Check your 1Password authentication and vault access"
-		gum log --level warn "Run: op signin --account $VAULT_ACCOUNT"
+		gum log --level warn "Run: op signin --account $vault_account"
 		exit 1
 	fi
 
 	# Create a temporary file and ensure it's cleaned up
-	KEY_PATH=$(mktemp)
-	echo "$KEY_DATA" >"$KEY_PATH"
-	chmod 600 "$KEY_PATH"
+	key_path=$(mktemp -t ssh)
+	echo "$key_data" >"$key_path"
+	chmod 600 "$key_path"
 
 	# Add the key with a timeout and delete all others first
 	# ssh-add -D
-	gum spin --title "Adding SSH key to agent (expires: ${KEY_EXPIRATION})..." -- ssh-add -t "${KEY_EXPIRATION}" "$KEY_PATH"
+	gum spin --title "Adding SSH key to agent (expires: ${key_expiration})..." -- ssh-add -t "${key_expiration}" "$key_path"
 
+	# shellcheck disable=SC2181
 	if [[ $? -ne 0 ]]; then
 		gum log --level error "Failed to add SSH key to agent"
 		gum log --level warn "Make sure SSH agent is running: eval \$(ssh-agent)"
-		rm -f "$KEY_PATH"
+		rm -f "$key_path"
 		exit 1
 	fi
 
 	# Cleanup
-	rm -f "$KEY_PATH"
+	rm -f "$key_path"
 
 	# Create file with environment variable exports
-	TMP_CONFIG="${TMPDIR:-/tmp}/config"
+	config_path="$XDG_DATA_HOME/config"
 	# Write the environment secrets
-	gum spin --title "Loading environment secrets..." -- sh -c "_write_env_secrets $TMP_CONFIG"
+	_write_env_secrets "$config_path"
+	# Set the correct permissions
+	chmod 600 "$config_path"
 	# shellcheck disable=SC1090
-	source "$TMP_CONFIG"
+	source "$config_path"
 
 	# Success messages
 	gum log --level info "SSH authentication completed successfully"
-	gum log --level info "SSH key loaded with ${KEY_EXPIRATION} expiration"
+	gum log --level info "SSH key loaded with ${key_expiration} expiration"
 	gum log --level info "Environment secrets loaded"
+}
+
+# ------------------------------------------------------------------------------
+# _read_env_secret
+# ------------------------------------------------------------------------------
+# Helper function to retrieve a single secret from 1Password using a spinner.
+#
+# Arguments:
+#   $1 - The 1Password secret URI (e.g., 'op://vault/item/field')
+#
+# Example:
+#   _read_env_secret 'op://Personal/GitHub/Secrets/GITHUB_TOKEN'
+# ------------------------------------------------------------------------------
+_read_env_secret() {
+	gum spin --title "Retrieving secret from $1..." -- op read "$1"
 }
 
 # ------------------------------------------------------------------------------
@@ -168,10 +186,7 @@ ssh-auth() {
 #   $1 - Output file path where export statements will be written
 #
 # 1Password Items Required:
-#   - op://Personal/Figma/API Key
-#   - op://Personal/Context7/API Key
-#   - op://Personal/Firecrawl/API Key
-#   - op://Personal/GitHub/Secrets/Personal Access Token
+#   - op://Personal/GitHub/Secrets/GITHUB_TOKEN
 #
 # Output Format:
 #   The generated file contains export statements with actual secret values:
@@ -185,14 +200,12 @@ ssh-auth() {
 #   file cannot be created. Errors are handled by the calling function.
 # ------------------------------------------------------------------------------
 _write_env_secrets() {
-	local FILE_PATH="$1"
+	local file_path="$1"
+
 	# Read secrets and write export statements to file
 	{
-		echo "export FIGMA_API_KEY=\"$(op read 'op://Personal/Figma/API Key')\""
-		echo "export CONTEXT7_API_KEY=\"$(op read 'op://Personal/Context7/API Key')\""
-		echo "export FIRECRAWL_API_KEY=\"$(op read 'op://Personal/Firecrawl/API Key')\""
-		echo "export GITHUB_TOKEN=\"$(op read 'op://Personal/GitHub/Secrets/Personal Access Token')\""
-	} >"$FILE_PATH"
+		echo "export GITHUB_TOKEN=\"$(_read_env_secret 'op://Personal/GitHub/Secrets/GITHUB_TOKEN')\""
+	} >"$file_path"
 }
 
 # ------------------------------------------------------------------------------

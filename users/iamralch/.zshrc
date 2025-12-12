@@ -4,7 +4,6 @@
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
 export LC_CTYPE="en_US.UTF-8"
-export TMP_CONFIG="$TMPDIR/config"
 
 # shellcheck disable=SC2155
 export PYTHON_BIN="$(readlink -f /run/current-system/sw/bin/python3)"
@@ -13,6 +12,8 @@ export PYTHONPATH="${PYTHON_BIN}/lib/python3.13/site-packages"
 # Configure the editor
 export EDITOR="nvim"
 # Set the configuration directories
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CONFIG_HOME="$HOME/.config"
 # Set the directory we want to store zinit and plugins
 export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
@@ -29,9 +30,9 @@ if ssh-add -l >/dev/null 2>&1; then
   export GITHUB_PERSONAL_ACCESS_TOKEN="$(gh auth token)"
 fi
 
-if [ -f "$TMP_CONFIG" ]; then
-	# shellcheck disable=SC1090
-	source "$TMP_CONFIG"
+if [ -f "$XDG_DATA_HOME/config" ]; then
+	# shellcheck disable=SC1091
+	source "$XDG_DATA_HOME/config"
 fi
 
 # Set the application configuration files
