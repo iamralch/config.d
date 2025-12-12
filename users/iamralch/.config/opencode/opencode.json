@@ -22,19 +22,11 @@
     },
     "playwright": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@playwright/mcp"
-      ]
+      "command": ["npx", "-y", "@playwright/mcp"]
     },
     "context7": {
       "type": "local",
-      "command": [
-        "npx",
-        "-y",
-        "@upstash/context7-mcp"
-      ]
+      "command": ["npx", "-y", "@upstash/context7-mcp"]
     },
     "serena": {
       "type": "local",
@@ -51,7 +43,5 @@
       ]
     }
   },
-  "plugin": [
-    "opencode-gemini-auth"
-  ]
+  "plugin": ["opencode-gemini-auth", "opencode-openai-codex-auth"]
 }
