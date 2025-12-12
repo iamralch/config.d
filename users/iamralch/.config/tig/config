@@ -172,7 +172,7 @@ bind main B !git checkout -b "%(prompt New branch name: )"
 bind refs B !git checkout -b "%(prompt New branch name: )"
 
 # Delete branches (local and remote)
-bind refs X ?git delete --branch %(refname)
+bind refs X ?git branch -D %(refname)
 
 # ==============================================================================
 # Push & Stash Operations
