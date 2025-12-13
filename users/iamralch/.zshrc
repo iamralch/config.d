@@ -30,9 +30,9 @@ if ssh-add -l >/dev/null 2>&1; then
   export GITHUB_PERSONAL_ACCESS_TOKEN="$(gh auth token)"
 fi
 
-if [ -f "$XDG_DATA_HOME/config" ]; then
+if [ -f "$XDG_DATA_HOME/zinit/config" ]; then
 	# shellcheck disable=SC1091
-	source "$XDG_DATA_HOME/config"
+	source "$XDG_DATA_HOME/zinit/config"
 fi
 
 # Set the application configuration files

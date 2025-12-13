@@ -143,7 +143,7 @@ ssh-auth() {
 	rm -f "$key_path"
 
 	# Create file with environment variable exports
-	config_path="$XDG_DATA_HOME/config"
+	config_path="$XDG_DATA_HOME/zinit/config"
 	# Write the environment secrets
 	_write_env_secrets "$config_path"
 	# Set the correct permissions
