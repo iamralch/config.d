@@ -91,3 +91,86 @@ color tree.directory   cyan    default
 
 # ── Search / matches ─────────────────────────
 color search-result    black   yellow   bold
+
+# ── Additions ────────────────────────────────
+
+# ── General UI ───────────────────────────────
+color status           green   default
+color id               magenta default
+color overflow         red     default
+color header           yellow  default
+color section          cyan    default
+color directory        cyan    default
+color file             default default
+color grep.file        blue    default
+color file-size        default default
+
+# ── Main View ────────────────────────────────
+color main-annotated   yellow  default   bold
+color main-stash       blue    default
+color main-note        blue    default
+color main-prefetch    blue    default
+color main-other       blue    default
+color main-replace     cyan    default
+color main-tracked     yellow  default   bold
+
+# ── Status View ──────────────────────────────
+color stat-none        default default
+
+# ── Help View ────────────────────────────────
+color help-group       blue    default
+color help-action      yellow  default
+
+# ── Diff View Additions ──────────────────────
+color "---"            blue    default
+color "diff --"        yellow  default
+color "--- "           yellow  default
+color "+++ "           yellow  default
+color "@@"             magenta default
+color "+"              green   default
+color " +"             green   default
+color "-"              red     default
+color " -"             red     default
+color "index "         blue    default
+color "similarity "    yellow  default
+color "\ No newline at end of file" blue default
+
+# ── Commit Details Additions ─────────────────
+color "Tagger: "       magenta default
+color "Merge: "        blue    default
+color "TaggerDate: "   blue    default
+color "Refs: "         red     default
+color "Reflog: "       red     default
+color "Reflog message: " yellow  default
+color "stash@{"        magenta default
+color "parent "        blue    default
+color "tree "          blue    default
+color "    Helped-by:"     yellow  default
+color "    Mentored-by:"   yellow  default
+color "    Suggested-by:"  yellow  default
+color "    Cc:"            yellow  default
+color "    Noticed-by:"    yellow  default
+color "    Improved-by:"   yellow  default
+color "    Thanks-to:"     yellow  default
+color "    Based-on-patch-by:" yellow  default
+color "    Contributions-by:"  yellow  default
+color "    Co-authored-by:"    yellow  default
+color "    Requested-by:"      yellow  default
+color "    Original-patch-by:" yellow  default
+color "    Inspired-by:"       yellow  default
+
+# ── Palettes ─────────────────────────────────
+color palette-0        magenta default
+color palette-1        yellow  default
+color palette-2        cyan    default
+color palette-3        green   default
+color palette-4        blue    default
+color palette-5        white   default
+color palette-6        red     default
+color palette-7        magenta default   bold
+color palette-8        yellow  default   bold
+color palette-9        cyan    default   bold
+color palette-10       green   default   bold
+color palette-11       blue    default   bold
+color palette-12       white   default   bold
+color palette-13       red     default   bold
