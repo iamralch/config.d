@@ -6,7 +6,7 @@ _: {
 
   home = {
     # Home Manager
-    stateVersion = "25.05";
+    stateVersion = "25.11";
     # User Packages
     packages = [ ];
   };
