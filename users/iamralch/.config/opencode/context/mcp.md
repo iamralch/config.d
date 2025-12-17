@@ -2,6 +2,21 @@
 
 Guidelines for GitHub operations using the GitHub MCP server tools.
 
+> For state management terminology (Store, Parameters, Prerequisites), see `@{file:context/cmd.md}#state-management`
+
+---
+
+## Issue ID vs Issue Number
+
+GitHub issues have two identifiers:
+
+| Field | Description | Usage |
+|-------|-------------|-------|
+| `id` | Database/node ID (large integer) | Required for `github_sub_issue_write` linking |
+| `number` | Human-readable issue number (#123) | Display, URLs, most API calls |
+
+**Important:** When linking sub-issues, extract both `id` and `number` from the API response. Use `id` for the `sub_issue_id` parameter.
+
 ---
 
 ## Tool Categories
@@ -69,7 +84,7 @@ Call `github_issue_write`:
 - owner: `[owner]`
 - repo: `[repo]`
 - title: `[sub-issue title]`
-- body: [Use appropriate Leaf Issue template based on type - see `@{file:context/pmp.md}#issue-body-formats`]
+- body: Generate using the appropriate Leaf Issue template (`@{file:template/gh.issue.create.feature.md}`, `@{file:template/gh.issue.create.task.md}`, or `@{file:template/gh.issue.create.bug.md}`) based on type. See `@{file:context/pmp.md}#issue-body-formats` for format selection.
 - type: `[issueType]` (silently inferred using Issue Type Detection from `@{file:context/pmp.md}` - no user confirmation for sub-issues)
 
 **On success:** 
@@ -146,21 +161,37 @@ Call `github_sub_issue_write`:
 
 ## Error Handling
 
+### Standard Error Response Pattern
+
+When an API call fails, follow this pattern:
+
+1. **Identify error type** from the response
+2. **Display actionable message** to the user
+3. **Determine if recoverable** (retry vs stop)
+
 ### Authentication Errors
-- "401" or "Unauthorized" → Run `gh auth login`
-- "403" or "Forbidden" → Check repository access permissions
+- "401" or "Unauthorized" → Display: "GitHub authentication required. Run: `gh auth login`" → **STOP**
+- "403" or "Forbidden" → Display: "Access denied. Check repository permissions." → **STOP**
 
 ### Not Found Errors
-- Issue/PR not found → Verify number and repository
-- Repository not found → Check owner/repo spelling, access
+- Issue/PR not found → Display: "Issue #[N] not found in [owner]/[repo]. Verify the issue number exists." → **STOP**
+- Repository not found → Display: "Repository [owner]/[repo] not found. Check spelling and access." → **STOP**
+
+### Rate Limiting
+- "429" or "rate limit" → Display: "GitHub API rate limit reached. Wait a few minutes and retry." → **STOP**
 
 ### Validation Errors
-- Invalid issue type → Use "Feature", "Task", or "Bug" (Title Case, exact match required)
-- Missing required fields → Check tool documentation
+- Invalid issue type → Display: "Invalid issue type. Use 'Feature', 'Task', or 'Bug' (Title Case)." → **STOP**
+- Missing required fields → Display the specific field(s) missing → **STOP**
+
+### Network/Transient Errors
+- Timeout or connection error → Retry once automatically. If second attempt fails, display error and **STOP**.
+
+> **Retry limits:** For transient errors, retry at most once. For all other errors, do not retry automatically.
 
 > **Issue Type Casing:**
 > - API type values: `Feature`, `Task`, `Bug` (Title Case)
-> - Branch prefixes: `feature/`, `task/`, `bug/` (lowercase) - see `@{file:context/git.md}`
+> - Branch prefixes: `feature-`, `task-`, `bug-` (lowercase) - see `@{file:context/git.md}`
 
 ---
 

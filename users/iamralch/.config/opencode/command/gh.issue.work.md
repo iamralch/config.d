@@ -1,12 +1,10 @@
 ---
 description: Execute tasks from the Implementation Plan loaded by /gh.issue.status.
-subtask: true
+agent: dev
 ---
 
-> Follow conversation rules in `@{file:context/cmd.md}`
 > Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
 > Use local git operations as documented in `@{file:context/git.md}`
-> Use project management patterns in `@{file:context/pmp.md}`
 > Supports `--yes` flag per `@{file:context/cmd.md}#global-flags`
 
 ---
@@ -31,8 +29,8 @@ If `/gh.issue.status` was run earlier in this conversation, use that context.
 
 If no context is available, attempt to infer the issue from the current git branch:
 
-1. Get current branch name using `git branch --show-current`
-2. If branch matches pattern `[type]/issue-[number]`, extract the issue number
+1. Get current branch name using **"Get Current Branch"** from `@{file:context/git.md}`
+2. If branch matches pattern `[type]-[number]`, extract the issue number
 3. Silently load context by performing the same data gathering as `/gh.issue.status`:
    - Validate repository (get owner, repo, username)
    - Fetch issue details (title, body, type, state)
@@ -40,6 +38,8 @@ If no context is available, attempt to infer the issue from the current git bran
    - Find associated PR and parse its body (technical approach, implementation plan)
    - Skip user prompts (branch switching, pulling changes)
    - Do not display output - store data for use in this command
+
+> **Session Freshness:** If context was loaded from a previous `/gh.issue.status` in this conversation, verify the PR body hasn't changed on the remote by comparing the stored `prBody` checksum with the current remote. If different, warn: "Implementation plan may have changed since context was loaded. Run `/gh.issue.status` to refresh." Continue with stored context unless user requests refresh.
 
 ### Option C: Prompt user
 
@@ -164,8 +164,10 @@ When implementing a task:
    - Ask: "How would you like to proceed? (skip/retry/escalate)"
    - **STOP and WAIT**
    - If "skip" → Store task ID in `skippedTasks` array (task remains unchecked `[ ]` in PR), move to next task
-   - If "retry" → Attempt implementation again with different approach
+   - If "retry" → Attempt implementation again with different approach (max 2 retries per task; after 2 retries, treat as escalate)
    - If "escalate" → Store task ID in `skippedTasks` array, note the blocker for user follow-up, move to next task
+
+   > **Retry limits:** Each task allows at most 2 retry attempts. Track retry count per task. After the second retry fails, automatically escalate and move to the next task.
 
 5. **Report completion:**
 

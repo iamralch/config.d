@@ -55,8 +55,8 @@ Template for generating Feature GitHub Issue bodies via `/gh.issue.create`.
 - High-level success criteria for the feature
 - Technology-agnostic (no implementation details)
 - Verifiable conditions that indicate the feature is complete
-- **Parent issues:** No Acceptance Criteria section needed - sub-issues contain the real criteria, and GitHub's sub-issue panel shows progress
-- **Leaf issues:** Specific, testable criteria for the individual deliverable (e.g., "User can reset password via email link", "Error message displays when password is invalid")
+- **Parent issues:** Omit this section entirely - sub-issues contain the detailed criteria, and GitHub's sub-issue panel shows progress
+- **Leaf issues:** Include specific, testable criteria for the individual deliverable (e.g., "User can reset password via email link", "Error message displays when password is invalid")
 
 ### Out of Scope
 - Explicitly list what is NOT included

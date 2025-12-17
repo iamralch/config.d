@@ -38,9 +38,7 @@ Template for generating Draft PR bodies via `/gh.issue.develop`.
 - [ ] T006 [Task description] in `path/to/file`
 - [ ] T007 [Task description] in `path/to/file`
 
----
 
-Relates to #[issue_number]
 ```
 
 ---
@@ -94,7 +92,7 @@ Adapt task detail based on feature complexity:
 ### Phase Guidelines
 
 **Phase 1: Setup**
-- **Bootstrapping tasks** (if needed - see `@{file:context/pmp.md}#bootstrapping-detection`)
+- **Bootstrapping tasks** (if needed - see `@{file:context/dev.md}#bootstrapping-detection`)
   - New module/component directory structure
   - New dependencies installation
   - New configuration files
@@ -109,7 +107,7 @@ Adapt task detail based on feature complexity:
 **Phase 2: Core Implementation**
 - Main feature implementation
 - Derived from issue Context + Acceptance Criteria
-- Each task should be completable in one focused session
+- Each task should be completable in one focused session (30-120 minutes)
 - Typically 3-8 tasks depending on complexity (max 8 per phase)
 - **If exceeding 8 tasks:** Create additional phases (Phase 2a, 2b, or "Phase 2: Core - Part 1", "Phase 2: Core - Part 2") to keep each phase focused and reviewable
 
@@ -215,4 +213,3 @@ This is a **Draft PR** created at the start of work:
 - The PR body can be updated anytime
 - When all tasks are complete, mark PR as "Ready for Review"
 - At that point, optionally expand the PR body with more details (testing, impact, etc.)
-

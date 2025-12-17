@@ -1,18 +1,28 @@
 # Command Standards
 
-Shared standards for all `/gh.*` commands.
+Shared technical standards for all `/gh.*` commands.
 
 ---
 
-## Conversation Rules
+## State Management
+
+Throughout these patterns, "Store" means to retain a value in memory for use later in the same command execution. Stored values persist only within the current conversation/command session.
+
+| Instruction | Meaning |
+|-------------|---------|
+| **Store** | Save value for later use in this command session |
+| **Parameters** | Values passed into a pattern from the calling context |
+| **Prerequisites** | Values that must exist before a pattern can execute |
+
+**Example:** `Store: issueType = Feature` means retain `Feature` as `issueType` for subsequent steps.
+
+---
+
+## Core Conversation Principles
 
 > **THIS IS A CONVERSATION, NOT A SCRIPT.**
 
-- Ask **ONE question at a time**
-- **STOP and WAIT** for user response before proceeding
-- **NEVER** assume or infer missing information
-- **NEVER** batch multiple questions together
-- **NEVER** create or modify GitHub resources without explicit confirmation
+All agents must follow these fundamental interaction rules.
 
 ### STOP vs STOP and WAIT
 
@@ -23,9 +33,59 @@ Shared standards for all `/gh.*` commands.
 
 ---
 
-## Draft Review Pattern
+## Global Flags
 
-Before creating any GitHub resource (Issue, Pull Request, Comment), show a draft for review.
+All `/gh.*` commands support these flags:
+
+### `--yes`
+
+Skip all confirmation prompts. Automatically approves:
+- Draft reviews (proceeds as if user said "yes")
+- Push confirmations
+- Merge/close confirmations
+- Branch creation confirmations
+
+**Does NOT skip:**
+- **Validation errors** - Authentication failures, missing repositories, invalid issue numbers
+- **Blocking conditions** - Uncommitted changes that prevent branch operations, missing required data
+- **Q&A questions** - Clarifying questions during issue creation/editing
+- **Confirmations that require user judgment** - Branch switching, pulling changes
+
+**Note:** Some warnings are informational only (e.g., "Your branch is behind remote") and don't block progress. Users can address these conversationally.
+
+### Flag Effects by Command
+
+| Command | `--yes` skips |
+|---------|---------------|
+| `/gh.issue.create` | Draft review confirmation |
+| `/gh.issue.edit` | Draft review confirmation |
+| `/gh.issue.develop` | Draft review, push confirmation |
+| `/gh.issue.status` | *(none - read-only command)* |
+| `/gh.issue.work` | Task confirmations |
+
+---
+
+## Common Command Patterns
+
+These patterns appear across multiple commands. Reference them instead of duplicating.
+
+### Command Header Pattern
+
+All command files should include relevant context references in their header:
+
+```markdown
+> Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
+> Use local git operations as documented in `@{file:context/git.md}`
+```
+
+Add this line if the command supports `--yes` flag:
+```markdown
+> Supports `--yes` flag per `@{file:context/cmd.md}#global-flags`
+```
+
+### Draft Review Pattern
+
+Before creating or modifying any GitHub resource (Issue, Pull Request, Comment), show a draft for review.
 
 **Format:**
 ```markdown
@@ -56,67 +116,15 @@ How would you like to proceed?
 4. Re-present the updated draft
 5. **STOP and WAIT** again for confirmation
 
----
+**Invalid Response Handling:**
 
-## Q&A Rules
+When a STOP and WAIT prompt expects specific responses (e.g., "yes", "edit", "cancel") and the user provides an unrecognized response:
 
-When asking clarifying questions, follow the **Information Gathering Pattern** in `@{file:context/pmp.md}` (includes Q&A depth, answer validation, and common questions by type).
-
----
-
-## Global Flags
-
-All `/gh.*` commands support these flags:
-
-### `--yes`
-
-Skip all confirmation prompts. Automatically approves:
-- Draft reviews (proceeds as if user said "yes")
-- Push confirmations
-- Merge/close confirmations
-- Branch creation confirmations
-
-**Does NOT skip:**
-- **Validation errors** - Authentication failures, missing repositories, invalid issue numbers
-- **Blocking conditions** - Uncommitted changes that prevent branch operations, missing required data
-- **Q&A questions** - Clarifying questions during issue creation/editing
-- **Confirmations that require user judgment** - Branch switching, pulling changes
-
-**Note:** Some warnings are informational only (e.g., "Your branch is behind remote") and don't block progress. Users can address these conversationally.
-
-### Flag Effects by Command
-
-| Command | `--yes` skips |
-|---------|---------------|
-| `/gh.commit` | Draft review confirmation |
-| `/gh.issue.create` | Draft review confirmation |
-| `/gh.issue.edit` | Draft review confirmation |
-| `/gh.issue.develop` | Draft review, push confirmation |
-| `/gh.issue.status` | *(none - read-only command)* |
-| `/gh.issue.work` | Task confirmations |
-| `/gh.pr.create` | Draft review, push confirmation |
-| `/gh.pr.review` | Draft review, event mismatch confirmation |
+1. **Re-prompt once:** "I didn't understand that response. Please choose: [list valid options]"
+2. **STOP and WAIT** again
+3. If second response is also invalid, interpret user intent if clear (e.g., "sure" → "yes", "nevermind" → "cancel"), or ask: "Would you like to cancel this operation? (yes/no)"
 
 ---
-
-## Common Command Patterns
-
-These patterns appear across multiple commands. Reference them instead of duplicating.
-
-### Command Header Pattern
-
-All command files start with this header:
-
-```markdown
-> Follow conversation rules in `@{file:context/cmd.md}`
-> Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
-> Use local git operations as documented in `@{file:context/git.md}`
-```
-
-Add this line if the command supports `--yes` flag:
-```markdown
-> Supports `--yes` flag per `@{file:context/cmd.md}#global-flags`
-```
 
 ### Parse Issue Number Pattern
 
@@ -149,7 +157,7 @@ All commands MUST end with this pattern to prevent unwanted automatic continuati
 ```markdown
 **Command complete.**
 
-> ⛔ **DO NOT CONTINUE AUTOMATICALLY**
+> **DO NOT CONTINUE AUTOMATICALLY**
 > 
 > - Do NOT run any other commands
 > - Do NOT begin implementing tasks

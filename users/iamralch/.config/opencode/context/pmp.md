@@ -1,16 +1,8 @@
-# Project Management Patterns
+# PM Patterns
 
-Shared patterns for issue planning, complexity assessment, and work breakdown.
+Reusable patterns for product management workflows. Referenced by commands and the PM agent.
 
----
-
-## Terminology
-
-| Term | Definition |
-|------|------------|
-| **Leaf issue** | An issue sized for direct implementation (no sub-issues). Work happens here. |
-| **Parent issue** | An issue that coordinates work via sub-issues. Not implemented directly. |
-| **Sub-issue** | A child of a parent issue. Can itself be a leaf or parent (if further broken down). |
+> For state management terminology (Store, Parameters, Prerequisites), see `@{file:context/cmd.md}#state-management`
 
 ---
 
@@ -61,9 +53,11 @@ Evaluate whether an issue has sufficient detail for analysis and breakdown.
 
 | Type | "Rich" (Sufficient Detail) | "Thin" (Needs Enrichment) |
 |------|----------------------------|---------------------------|
-| **Feature** | Has user story OR clear capability + acceptance criteria OR scope definition | Roughly < 50 words, no acceptance criteria, no scope, vague "add X" |
-| **Task** | Has clear objective + target component + success criteria | Roughly < 30 words, vague target, no defined outcome |
-| **Bug** | Has symptom + repro steps OR expected behavior | Roughly < 30 words, no repro steps, just "X is broken" |
+| **Feature** | Has user story OR clear capability + acceptance criteria OR scope definition | < 50 words, no acceptance criteria, no scope, vague "add X" |
+| **Task** | Has clear objective + target component + success criteria | < 30 words, vague target, no defined outcome |
+| **Bug** | Has symptom + repro steps OR expected behavior | < 30 words, no repro steps, just "X is broken" |
+
+> **Word count thresholds:** These are exact minimums. Count all words in the issue body excluding markdown syntax (headers, bullets, backticks). When in doubt, favor "thin" assessment to gather more detail.
 
 ### Assessment Flow
 
@@ -138,9 +132,11 @@ Interactive Q&A to gather sufficient detail for issue creation or enrichment.
 
 | Type | Depth | Question Focus |
 |------|-------|----------------|
-| **Feature** | 3-5 questions | Scope, user stories, acceptance criteria, edge cases |
-| **Task** | 1-2 questions | Objective clarity, boundaries |
-| **Bug** | 2-3 questions | Reproduction steps, environment, expected behavior |
+| **Feature** | 3-5 questions (max 7) | Scope, user stories, acceptance criteria, edge cases |
+| **Task** | 1-2 questions (max 3) | Objective clarity, boundaries |
+| **Bug** | 2-3 questions (max 5) | Reproduction steps, environment, expected behavior |
+
+> **Iteration limits:** Stop Q&A after reaching the maximum questions for the type, even if gaps remain. Proceed with best-effort analysis and note any remaining uncertainties.
 
 ### Rules
 
@@ -234,6 +230,12 @@ Analyze issues to determine if they're appropriately sized for implementation.
 
 > **Note:** "1-3 days" refers to focused developer time for a single contributor. The goal is issues small enough to be completed, reviewed, and merged in one iteration cycle.
 
+### Technical Complexity Factors
+
+For technical assessment of bootstrapping requirements, consult `@{file:context/dev.md}#bootstrapping-detection`.
+
+Bootstrapping signals (e.g., new modules, dependencies, database changes) indicate additional setup work that increases implementation complexity.
+
 ### Assessment by Type
 
 **Feature issues:**
@@ -261,6 +263,8 @@ Analyze issues to determine if they're appropriately sized for implementation.
 | 0-1 signals | **Appropriately sized (leaf issue)** | Ready for implementation - proceed to `/gh.issue.develop` |
 | 2 signals | **Uncertain** | Ask user to decide (see prompt below) |
 | 3+ signals | **Too large** | Offer breakdown |
+
+> **Iteration limits:** If a breakdown is rejected and the user requests modifications, allow up to 3 revision cycles. After the third revision, present final options: accept current breakdown, proceed as single issue, or cancel.
 
 **Uncertain if signals are mixed or borderline:**
 - 2 complexity signals present (borderline case)
@@ -293,6 +297,13 @@ When breaking down large issues into sub-issues:
 | Very large | 4-5 |
 
 **Never exceed 5 sub-issues** - if breakdown analysis identifies more than 5 pieces, create a hierarchy: group related items into 2-4 parent sub-issues, each of which can be further broken down via `/gh.issue.edit` after creation.
+
+### Hierarchy Limits
+
+- **Maximum depth:** 3 levels (grandparent → parent → leaf)
+- **Maximum sub-issues per parent:** 5 (see above)
+
+> **Rationale:** Agile/XP principles favor flat, visible work structures. Deep hierarchies obscure progress and complicate coordination.
 
 ---
 
@@ -341,7 +352,7 @@ Title patterns for issues and sub-issues by type.
 
 **Examples:**
 - `Fix login timeout on slow connections`
-- `Dashboard correctly displays UTC timestamps`
+- `Dashboard displays incorrect UTC timestamps`
 - `API returns 500 when request body is empty`
 - `Search fails when query contains special characters`
 
@@ -350,6 +361,19 @@ Title patterns for issues and sub-issues by type.
 ## Issue Body Formats
 
 Different formats for leaf issues (ready for implementation) vs parent issues (overview with sub-issues).
+
+### Association Principles
+
+**Source of Truth:** All issue associations (parent-child, PR-issue) are managed by the GitHub API and rendered in the UI. The issue/PR body is for descriptive content, not for tracking relationships.
+
+**Golden Rule:** **DO NOT** manually add any text to an issue or PR body to indicate relationships.
+
+**What NOT to Include:**
+- `Part of #[number]`, `Relates to #[number]`, `Parent: #[number]`
+- `Fixes #[number]` (use PR description fields for this)
+- `Sub-issues:` followed by a list
+
+**Rationale:** Manual references become outdated if relationships change, create visual clutter, and are redundant with the UI. The API is the only reliable source of truth.
 
 ### Leaf Issue Format
 
@@ -384,8 +408,9 @@ Parent issues provide an overview and reference their sub-issues. Use this forma
 ```
 
 > **Notes:**
+> - **IMPORTANT:** The body of a parent issue MUST NOT contain an "Acceptance Criteria" section. This content must be distributed to the sub-issues.
 > - Overview and Scope are required; Non-Functional Requirements (NFRs) and Out of Scope are optional
-> - GitHub's sub-issue panel shows linked sub-issues and progress
+> - **DO NOT** manually add a list of sub-issues to the parent body. GitHub's sub-issue panel shows linked sub-issues and their progress automatically.
 > - For all issue types (Feature, Task, Bug), GitHub's native sub-issue tracking automatically displays the breakdown and completion progress
 
 ### Choosing the Format
@@ -592,47 +617,6 @@ Bugs are typically leaf issues. If analysis reveals multiple distinct bugs bundl
 
 ---
 
-## Breakdown Path Selection
-
-When breakdown is needed, select the appropriate flow based on `issueType`.
-
-**Process:**
-
-1. **Infer sub-issue types** for all proposed sub-issues:
-   - Follow the **Sub-issue Type Inference** pattern
-
-2. **Select breakdown flow** based on `issueType`:
-
-   **If Feature:**
-   - Follow **Breakdown Flow: Feature**
-   - Present with options: "yes" / "edit" / "cancel" (or "single" for `/gh.issue.create`)
-
-   **If Task:**
-   - Follow **Breakdown Flow: Task**
-   - Present with options: "yes" / "edit" / "cancel" (or "single" for `/gh.issue.create`)
-
-   **If Bug:**
-   - Follow **Breakdown Flow: Bug**
-   - Present with options: "umbrella" / "task" / "cancel"
-
-3. **Handle responses** as defined in each flow
-
-### Response Handling Summary
-
-| Issue Type | Response | Action |
-|------------|----------|--------|
-| Feature/Task | "yes" | Execute breakdown |
-| Feature/Task | "edit" | Modify and re-present |
-| Feature/Task | "single" | Create as single issue (create only) |
-| Feature/Task | "cancel" | Print manual commands, STOP |
-| Bug | "umbrella" | Execute breakdown (keep as parent) |
-| Bug | "task" | Display task conversion guidance, STOP |
-| Bug | "cancel" | Print manual commands, STOP |
-
-**Usage:** Both `/gh.issue.create` and `/gh.issue.edit` use this pattern to handle breakdown consistently.
-
----
-
 ## Sub-issue Type Inference
 
 When generating a breakdown, each sub-issue should have its type inferred from its title.
@@ -686,6 +670,7 @@ Loop through each sub-issue (index `i`):
    - repo: `[repo]`
    - title: `subIssueTitles[i]`
    - body: `subIssueBodies[i]` (if available) or generate using appropriate Leaf Issue template based on `subIssueTypes[i]`
+   > **Note:** The body of a sub-issue MUST NOT contain references to its parent (e.g., "Part of #123"). Linking is handled by the API.
    - type: `subIssueTypes[i]`
 
 2. **Link to parent**
@@ -927,80 +912,13 @@ Execute sub-issue creation after user confirms a breakdown with "yes".
    - subIssueTitles: from prerequisites
    - subIssueTypes: from prerequisites
 
-3. **Update parent with sub-issue references**
 
-   Call `github_issue_write` with:
-   - method: "update"
-   - owner: `[owner]`
-   - repo: `[repo]`
-   - issue_number: `[parentIssueNumber]`
-   - body: parent body with sub-issue numbers filled in
 
-4. **Report results**
+3. **Report results**
 
    Follow the **Report Sub-issue Creation Pattern** above.
 
 **STOP**
-
----
-
-## Bootstrapping Detection
-
-Identify when an issue requires foundational setup work before implementation can begin.
-
-**Usage:**
-- **Complexity assessment:** Estimate from issue description to determine if breakdown is needed
-- **Implementation planning:** Scan codebase to generate Phase 1 setup tasks
-
-### Bootstrapping Signals
-
-| Signal | What to Look For | Examples |
-|--------|------------------|----------|
-| **New module/component** | Feature mentions area that doesn't exist in codebase | "Add authentication system" (no auth/ directory exists) |
-| **New dependencies** | Feature requires external libraries not in manifest | "Use Redis for caching" (no redis in package.json) |
-| **New configuration** | Feature needs env vars, config files, or setup | "Connect to Stripe API" (no Stripe config exists) |
-| **Greenfield area** | No existing code in this domain/layer | "Add GraphQL API" (no GraphQL code exists) |
-| **Database changes** | New tables, migrations, or schema updates needed | "Store user preferences" (no preferences table) |
-| **API integrations** | Third-party service integration required | "Send emails via SendGrid" (no email service) |
-
-### Impact on Complexity Assessment
-
-**Bootstrapping increases implementation complexity:**
-- **Without bootstrapping:** Feature builds on existing foundation → Lower complexity
-- **With bootstrapping:** Feature requires foundation building → Higher complexity
-
-**When assessing issue size:**
-- Count bootstrapping tasks as part of total work
-- Each bootstrapping signal typically adds 1-3 setup tasks
-- Multiple signals may compound (e.g., new module + new dependency + config)
-
-**Example:**
-- "Add password reset endpoint" (existing auth system) → Simple (3-5 tasks)
-- "Add authentication system with password reset" (no auth) → Complex (12+ tasks, includes bootstrapping)
-
-### Impact on Implementation Plan
-
-**Phase 1: Setup must include bootstrapping tasks when detected:**
-
-| Signal Detected | Phase 1 Tasks |
-|-----------------|---------------|
-| **New module/component** | Create directory structure, base files, exports |
-| **New dependencies** | Add to package manifest, install, verify compatibility |
-| **New configuration** | Create config files, add env var templates, update docs |
-| **Greenfield area** | Set up layer structure, establish patterns, add integration points |
-| **Database changes** | Create migration files, update schema, add seed data |
-| **API integrations** | Add client library, create service wrapper, add credentials management |
-
-**Bootstrapping tasks ALWAYS come first in Phase 1:**
-- You can't implement features without the foundation
-- Setup tasks block core implementation tasks
-- Order: Bootstrapping → Code-level setup → Core implementation
-
-**Task format examples:**
-- `- [ ] T001 Create directory structure in \`src/features/auth/\`` (bootstrapping)
-- `- [ ] T002 Install dependencies: passport, jsonwebtoken in \`package.json\`` (bootstrapping)
-- `- [ ] T003 Create config/auth.ts for auth configuration` (bootstrapping)
-- `- [ ] T004 Create AuthService interface in \`src/features/auth/types.ts\`` (code-level setup)
 
 ---
 

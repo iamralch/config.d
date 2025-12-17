@@ -1,12 +1,11 @@
 ---
 description: Edit, analyze, or break down an existing GitHub Issue.
-subtask: true
+agent: pm
 ---
 
-> Follow conversation rules in `@{file:context/cmd.md}`
 > Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
 > Use local git operations as documented in `@{file:context/git.md}`
-> Use project management patterns in `@{file:context/pmp.md}`
+> For technical complexity, consult `@{file:context/dev.md}#bootstrapping-detection`
 > Supports `--yes` flag per `@{file:context/cmd.md}#global-flags`
 
 ---
@@ -44,6 +43,13 @@ Follow the **Fetch Issue Pattern** in `@{file:context/mcp.md}`.
 **Additional handling for this command:**
 
 After fetching, store: issue title, body, state, and type for later use.
+
+**If issue is closed:**
+- Warn: "**Note:** Issue #[issue_number] is closed. Edits will still apply, but the issue may already be resolved."
+- Ask: "Continue editing? (yes/no)"
+- **STOP and WAIT**
+- If "no" → **STOP**
+- If "yes" → Continue
 
 **Determine issue type:**
 
@@ -146,6 +152,8 @@ Based on Q&A responses, generate a new issue body:
 - For refinement: Q&A focuses on what user wants to change
 
 ### 6d. Review Enriched Content
+
+> **If `--yes` flag is set:** Skip this prompt and proceed directly to step 7 (Update Issue).
 
 Present the enriched issue for approval:
 

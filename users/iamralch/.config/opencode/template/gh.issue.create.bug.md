@@ -11,6 +11,10 @@ Template for generating Bug GitHub Issues via `/gh.issue.create`.
 
 [Brief description of the bug - what's broken]
 
+## Severity
+
+[Critical / High / Medium / Low]
+
 ## Steps to Reproduce
 
 1. [First step]
@@ -57,6 +61,12 @@ Template for generating Bug GitHub Issues via `/gh.issue.create`.
 - One sentence describing what's broken
 - Focus on the symptom, not the cause
 - Be specific about what fails
+
+### Severity
+- **Critical**: System unusable, data loss, security vulnerability, no workaround
+- **High**: Major feature broken, significant impact, workaround is painful
+- **Medium**: Feature partially broken, moderate impact, workaround exists
+- **Low**: Minor issue, cosmetic, edge case, easy workaround
 
 ### Steps to Reproduce
 - Numbered list, specific steps

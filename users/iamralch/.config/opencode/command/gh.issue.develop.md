@@ -1,12 +1,11 @@
 ---
 description: Start work on a GitHub Issue by creating a branch, generating an implementation plan, and creating a draft PR.
-subtask: true
+agent: dev
 ---
 
-> Follow conversation rules in `@{file:context/cmd.md}`
 > Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
 > Use local git operations as documented in `@{file:context/git.md}`
-> Use project management patterns in `@{file:context/pmp.md}`
+> For sub-issue checks, use `@{file:context/pmp.md}#check-for-existing-sub-issues`
 > Supports `--yes` flag per `@{file:context/cmd.md}#global-flags`
 
 ---
@@ -63,6 +62,13 @@ After fetching:
 
 - Extract the specification sections from the body (sections vary by issue type - see `@{file:template/gh.issue.create.feature.md}`, `@{file:template/gh.issue.create.task.md}`, `@{file:template/gh.issue.create.bug.md}`)
 - Store the issue title, type, and body for later use
+
+**If issue is closed:**
+- Warn: "**Note:** Issue #[issue_number] is closed."
+- Ask: "Starting work on a closed issue is unusual. Continue anyway? (yes/no)"
+- **STOP and WAIT**
+- If "no" → **STOP**
+- If "yes" → Continue
 
 **Required sections by type:**
 | Type | Required Sections |
@@ -122,7 +128,7 @@ Please:
 **STOP** - Cannot proceed without issue type.
 ```
 
-**Branch naming:** See **Branch Naming Convention** in `@{file:context/git.md}`
+**Branch naming:** See `@{file:context/git.md}#branch-naming-convention`
 
 ---
 
@@ -134,7 +140,12 @@ Call `github_list_pull_requests` with:
 - repo: repository name
 - state: "open"
 
-Search for a PR where `head.ref` (the branch name) matches the expected branch name `[type]/issue-[number]`.
+**On error:**
+- If 401/403 → Display auth error and **STOP**
+- If other error → Display error message and **STOP**
+
+**On success:**
+Search for a PR where `head.ref` (the branch name) matches the expected branch name `[type]-[number]`.
 
 **If multiple PRs match** (edge case - shouldn't normally happen):
 
@@ -201,7 +212,6 @@ Follow the template structure and guidelines in `@{file:template/gh.issue.develo
 1. **Context** - Copy from issue's Context section
 2. **Technical Approach** - From codebase scan
 3. **Implementation Plan** - Derive tasks from issue spec (see template for task generation guidelines)
-4. **Issue Link** - `Relates to #[issue_number]`
 
 **Refer to `@{file:template/gh.issue.develop.md}` for:**
 
@@ -225,6 +235,8 @@ Store the generated PR body for review in Step 9.
 
 ## 9. Draft Review (MANDATORY - STOP AND WAIT)
 
+> **If `--yes` flag is set:** Skip this prompt and proceed directly to Phase 3 (step 10).
+
 > ⚠️ **NO ACTIONS HAVE BEEN EXECUTED YET**
 >
 > Steps 1-8 only gathered information. The following actions will ONLY happen after you confirm with "yes".
@@ -236,7 +248,7 @@ Present a summary of all planned actions and the PR body:
 
 **Actions that WILL be executed upon confirmation:**
 
-1. Create branch: `[type]/issue-[number]` and check it out
+1. Create branch: `[type]-[number]` and check it out
 2. Create empty commit: `git commit --allow-empty -m "Start work on #[issue_number]"`
 3. Push branch to remote with upstream tracking
 4. Assign issue to: @[username]
@@ -284,6 +296,12 @@ Follow the **Draft Review Pattern** "edit" handling in `@{file:context/cmd.md}#d
 
 Follow the branch operations documented in `@{file:context/git.md}`.
 
+### 10.0 Get Default Branch
+
+Use the **"Get Default Branch"** operation from `@{file:context/git.md}` to determine `[default-branch]`.
+
+Store the result as `defaultBranch` for use in subsequent steps.
+
 ### 10.1 Check for Uncommitted Changes
 
 Use the **"Check for Uncommitted Changes"** operation from `@{file:context/git.md}`.
@@ -295,58 +313,39 @@ Use the **"Check for Uncommitted Changes"** operation from `@{file:context/git.m
 - Display: "Please commit or stash your changes before starting work on this issue."
 - **STOP** - Branch creation requires a clean working directory
 
-### 10.2 Check if Branch Already Exists
+### 10.2 Create Branch with Issue Link
 
-Use the **"Check if Branch Exists"** operation from `@{file:context/git.md}`.
+Use **"Create and Checkout Branch Linked to Issue"** from `@{file:context/git.md}`.
 
-**If branch exists locally:**
+**If success:** Continue to step 11
 
-- Display: "Branch `[branch-name]` already exists."
-- Ask: "Would you like to check out the existing branch? (yes/no)"
-- **STOP and WAIT**
-- If "yes" → Checkout the branch, then check if branch has commits: `git log [default-branch]..[branch-name] --oneline`
-  - If commits exist → Skip to step 14 (Create Draft PR). Issue assignment is skipped because work already started on this branch.
-  - If no commits → Continue to step 11
-- If "no" → **STOP**
+**If error contains "already exists":** Continue to step 10.3
 
-**If branch exists only on remote:**
+**If other error:** Display error, suggest manual fallback, **STOP**
 
-- Checkout and track the remote branch using: `git checkout -b [branch-name] origin/[branch-name]`
-- Before creating Draft PR, check for existing closed/merged PRs for this branch:
-  - Call `github_list_pull_requests` with state: `"closed"` and filter by head branch
-  - If a closed PR exists, warn: "A closed PR (#[number]) exists for this branch."
-  - Ask: "Would you like to: A) Create a new PR anyway, B) Reopen the existing PR, C) Cancel"
+### 10.3 Handle Existing Branch (Fallback)
+
+**Step 1:** Use **"Check if Branch Exists"** from `@{file:context/git.md}` to determine location (local/remote/both).
+
+**Step 2:** Use **"Switch to Existing Branch"** from `@{file:context/git.md}` to checkout.
+
+- If local only: Ask user to confirm checkout first. If "no" → **STOP**
+
+**Step 3 (remote branches only):** Check for closed PR:
+
+- Call `github_list_pull_requests` with state: `"closed"`, filter by head branch
+- If closed PR found:
+  - Warn: "A closed PR (#[number]) exists for this branch."
+  - Ask: "A) Create new PR anyway, B) Reopen existing PR, C) Cancel"
   - **STOP and WAIT**
-  - If "A" → Continue to step 14 (Create Draft PR)
-  - If "B" → Use `github_update_pull_request` to reopen, display "PR #[number] reopened. Run `/gh.issue.status #[issue_number]` to continue.", then **STOP**
+  - If "A" → Continue to step 4
+  - If "B" → Reopen via `github_update_pull_request`, display success, **STOP**
   - If "C" → **STOP**
-- If no closed PR exists:
-  - Check if branch already has commits: `git log origin/[default-branch]..[branch-name] --oneline`
-  - If commits exist → Skip steps 11, 12, and 13 - continue directly to step 14 (Create Draft PR). These steps are skipped because work already started on this branch.
-  - If no commits → Continue to step 11 (Create Empty Commit)
 
-### 10.3 Create New Branch with Issue Link
+**Step 4:** Use **"Check Branch Has Commits"** from `@{file:context/git.md}`.
 
-Use the **"Create and Checkout Branch Linked to Issue"** operation from `@{file:context/git.md}`.
-
-This creates a branch that's formally linked to the issue in GitHub using `gh issue develop`.
-
-**If success:**
-
-- Note the branch name
-- Proceed to step 11
-
-**If error (branch already exists remotely):**
-
-- The command will fail with a clear error message
-- Display: "Branch already exists on remote. Use step 10.2 logic to handle."
-- **STOP**
-
-**If error (other - e.g., network issues, permission denied, unexpected failures):**
-
-- Display the error message
-- Suggest fallback: `git checkout -b [branch-name]` followed by `git push -u origin [branch-name]` (see `@{file:context/git.md}#branch-operations`)
-- **STOP** and ask user how to proceed
+- If commits exist → Skip to step 14 (Create Draft PR)
+- If no commits → Continue to step 11 (Create Empty Commit)
 
 ---
 
@@ -380,7 +379,9 @@ Use **"Push Branch with Upstream"** operation.
 
 **If push fails:**
 
-- Display error and **STOP**
+- Display error
+- For common push errors, see **"Common Errors"** in `@{file:context/git.md}#common-errors`
+- **STOP**
 
 **If success:**
 

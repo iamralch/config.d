@@ -2,6 +2,8 @@
 
 Guidelines for local git operations using Bash commands. These operations complement the GitHub MCP tools which handle remote API operations.
 
+> For state management terminology (Store, Parameters, Prerequisites), see `@{file:context/cmd.md}#state-management`
+
 ---
 
 ## Repository Validation Workflow
@@ -68,7 +70,13 @@ git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/ori
 git ls-remote --symref origin HEAD | grep 'ref:' | sed 's@.*refs/heads/@@' | sed 's@\t.*@@'
 ```
 
-If both fail, assume "main" but warn the user that the default branch could not be determined.
+**Final fallback:** If both commands fail, check which common default branch exists:
+
+```bash
+git rev-parse --verify origin/main 2>/dev/null && echo "main" || (git rev-parse --verify origin/master 2>/dev/null && echo "master")
+```
+
+If none exist, use "main" as the default but warn the user: "Could not determine default branch. Assuming 'main'."
 
 ### Get Current Branch
 
@@ -86,9 +94,9 @@ git branch --show-current
 
 | Issue Type | Branch Pattern | Example |
 |------------|----------------|---------|
-| Feature | `feature/issue-[issue_number]` | `feature/issue-42` |
-| Task | `task/issue-[issue_number]` | `task/issue-15` |
-| Bug | `bug/issue-[issue_number]` | `bug/issue-99` |
+| Feature | `feature-[issue_number]` | `feature-42` |
+| Task | `task-[issue_number]` | `task-15` |
+| Bug | `bug-[issue_number]` | `bug-99` |
 
 **Note:** Type prefix is always lowercase (`feature`, `task`, `bug`). Convert the issue type from the API (e.g., "Feature") to lowercase for the branch prefix.
 
@@ -108,7 +116,7 @@ DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
 
 **Create linked branch:**
 ```bash
-gh issue develop [issue_number] --name "feature/issue-[issue_number]" --base $DEFAULT_BRANCH --checkout
+gh issue develop [issue_number] --name "feature-[issue_number]" --base $DEFAULT_BRANCH --checkout
 ```
 
 **Benefits:**
@@ -123,7 +131,7 @@ gh issue develop [issue_number] --name "feature/issue-[issue_number]" --base $DE
 ```bash
 DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
 DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
-gh issue develop 42 --name "feature/issue-42" --base $DEFAULT_BRANCH --checkout
+gh issue develop 42 --name "feature-42" --base $DEFAULT_BRANCH --checkout
 ```
 
 **If branch already exists:**
@@ -134,20 +142,20 @@ gh issue develop 42 --name "feature/issue-42" --base $DEFAULT_BRANCH --checkout
 
 ```bash
 # Local branch
-git branch --list "feature/issue-42"
+git branch --list "feature-42"
 
 # Remote branch
-git branch -r --list "origin/feature/issue-42"
+git branch -r --list "origin/feature-42"
 
 # All typed branches for an issue
-git branch --list "feature/issue-42" "task/issue-42" "bug/issue-42"
-git branch -r --list "origin/feature/issue-42" "origin/task/issue-42" "origin/bug/issue-42"
+git branch --list "feature-42" "task-42" "bug-42"
+git branch -r --list "origin/feature-42" "origin/task-42" "origin/bug-42"
 ```
 
 **If branch exists with wrong type prefix:**
-- Example: Issue is Bug but `feature/issue-42` exists (wrong type)
-- Warn: "Branch `feature/issue-42` exists but issue type is Bug (expected `bug/issue-42`)."
-- Ask: "Would you like to: A) Use existing branch anyway, B) Create correct branch `bug/issue-42`, C) Cancel"
+- Example: Issue is Bug but `feature-42` exists (wrong type)
+- Warn: "Branch `feature-42` exists but issue type is Bug (expected `bug-42`)."
+- Ask: "Would you like to: A) Use existing branch anyway, B) Create correct branch `bug-42`, C) Cancel"
 - **STOP and WAIT**
 - If "A" → Use existing branch (accept type mismatch)
 - If "B" → Create new branch with correct type prefix (the incorrect branch will remain and can be deleted manually later)
@@ -157,21 +165,37 @@ git branch -r --list "origin/feature/issue-42" "origin/task/issue-42" "origin/bu
 
 Parse current branch name:
 ```
-feature/issue-42 → 42
-task/issue-15 → 15
-bug/issue-99 → 99
+feature-42 → 42
+task-15 → 15
+bug-99 → 99
 ```
 
-Pattern: `[type]/issue-[issue_number]` where type is `feature`, `task`, or `bug`
+Pattern: `[type]-[issue_number]` where type is `feature`, `task`, or `bug`
 
 ### Switch to Existing Branch
 
 ```bash
 # Local branch exists
-git checkout feature/issue-42
+git checkout feature-42
 
 # Remote only - create local tracking branch
-git checkout -b feature/issue-42 origin/feature/issue-42
+git checkout -b feature-42 origin/feature-42
+```
+
+### Check Branch Has Commits
+
+Check if a branch has commits beyond the default branch:
+
+```bash
+git log [default-branch]..[branch-name] --oneline
+```
+
+- **Empty output** → Branch has no commits (empty or just created)
+- **Non-empty output** → Branch has existing work
+
+**For remote comparison:**
+```bash
+git log origin/[default-branch]..[branch-name] --oneline
 ```
 
 ---
@@ -181,7 +205,7 @@ git checkout -b feature/issue-42 origin/feature/issue-42
 ### Push Branch with Upstream
 
 ```bash
-git push -u origin feature/issue-42
+git push -u origin feature-42
 ```
 
 The `-u` flag sets up tracking so future `git push` works without specifying remote/branch.
@@ -203,7 +227,7 @@ git status --porcelain
 
 ```bash
 git fetch origin
-git rev-list --count HEAD..origin/feature/issue-42
+git rev-list --count HEAD..origin/feature-42
 ```
 
 - `0` → Up to date
@@ -338,8 +362,61 @@ git fetch origin
 ### Pull Latest Changes
 
 ```bash
-git pull origin feature/issue-42
+git pull origin feature-42
 ```
+
+---
+
+## Merge Conflict Handling
+
+When a git operation (pull, merge, rebase) results in conflicts:
+
+### Detect Conflicts
+
+```bash
+git status --porcelain | grep '^UU\|^AA\|^DD'
+```
+
+- `UU` = Both modified (most common)
+- `AA` = Both added
+- `DD` = Both deleted
+
+### Resolution Flow
+
+1. **Detect conflict state:**
+   ```bash
+   git status
+   ```
+   Look for "Unmerged paths" section.
+
+2. **If conflicts detected:**
+   - List conflicting files to the user
+   - **STOP and WAIT** - Ask: "Merge conflicts detected in [N] files. Would you like me to attempt automatic resolution, or will you resolve manually?"
+   - If "automatic" → Attempt resolution (favor incoming changes or contextual merge)
+   - If "manual" → Display file list and **STOP**
+
+3. **After resolution:**
+   ```bash
+   git add <resolved-files>
+   git commit -m "Resolve merge conflicts"
+   ```
+
+### Abort Operations
+
+If conflicts cannot be resolved:
+
+```bash
+# Abort merge
+git merge --abort
+
+# Abort rebase  
+git rebase --abort
+
+# Abort pull (if mid-merge)
+git merge --abort
+```
+
+> **Note:** Always warn the user before aborting, as this discards in-progress merge work.
 
 ---
 
@@ -382,10 +459,10 @@ Use `github_list_pull_requests` per `@{file:context/mcp.md}#tool-selection-guide
 - Filter by `base: "[baseBranch]"` to match target branch
 - Filter by `state: "open"` to find active PRs
 
-**Example:** Find open PR for `feature/issue-42` targeting `main`:
+**Example:** Find open PR for `feature-42` targeting `main`:
 - owner: repository owner
 - repo: repository name
-- head: `owner:feature/issue-42`
+- head: `owner:feature-42`
 - base: `main`
 - state: `open`
 

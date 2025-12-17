@@ -1,12 +1,11 @@
 ---
 description: Create a GitHub Issue with a polished specification through interactive Q&A.
-subtask: true
+agent: pm
 ---
 
-> Follow conversation rules in `@{file:context/cmd.md}`
 > Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
 > Use local git operations as documented in `@{file:context/git.md}`
-> Use project management patterns in `@{file:context/pmp.md}`
+> For technical complexity, consult `@{file:context/dev.md}#bootstrapping-detection`
 > Supports `--yes` flag per `@{file:context/cmd.md}#global-flags`
 
 ---
@@ -211,14 +210,14 @@ Fill in:
 
 - Overview: High-level description from user's input (2-3 sentences)
 - Scope: What this parent issue covers at a high level
-- Sub-issues: List from breakdown (will be updated with actual numbers after creation)
-- Acceptance Criteria: Parent-level criteria
 
 **Continue to step 8 (Draft Review).**
 
 ---
 
 ## 8. Draft Review (Mandatory)
+
+> **If `--yes` flag is set:** Skip this prompt and proceed directly to step 9 (Create GitHub Issue).
 
 Present the complete draft following `@{file:context/cmd.md}#draft-review-pattern`:
 

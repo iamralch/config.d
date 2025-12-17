@@ -1,12 +1,10 @@
 ---
 description: Load and display context for an issue - specification, hierarchy, and implementation plan (if PR exists).
-subtask: true
+agent: dev
 ---
 
-> Follow conversation rules in `@{file:context/cmd.md}`
 > Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
 > Use local git operations as documented in `@{file:context/git.md}`
-> Use project management patterns in `@{file:context/pmp.md}`
 
 ---
 
@@ -83,6 +81,11 @@ Call `github_issue_read` with:
 - repo: `[repo]`
 - issue_number: `[issueNumber]`
 
+**On error:**
+- If 401/403 → Display auth error and **STOP**
+- If 404 → Treat as no sub-issues (set `hasChildren = false`)
+- If other error → Display error message and **STOP**
+
 **If sub-issues exist:**
 
 - Store: `subIssues = [{number, title, state}, ...]`
@@ -118,7 +121,12 @@ Call `github_list_pull_requests` with:
 - repo: `[repo]`
 - state: `"open"`
 
-**Filter results:** Find PR where `head.ref` (the branch name field) matches pattern `[type]/issue-[issueNumber]` where type is `feature`, `task`, or `bug`
+**On error:**
+- If 401/403 → Display auth error and **STOP**
+- If other error → Display error message and **STOP**
+
+**On success:**
+Filter results: Find PR where `head.ref` (the branch name field) matches pattern `[type]-[issueNumber]` where type is `feature`, `task`, or `bug`
 
 **If matching PR found:**
 
@@ -141,22 +149,29 @@ Use branch operations from `@{file:context/git.md}`.
 
 **Get current branch and compare with PR branch (`prBranch`):**
 
-**If already on correct branch:** Continue to step 7
+Store: `currentBranch` = result of "Get Current Branch" operation
+
+**If already on correct branch (`currentBranch == prBranch`):**
+
+- Set `onCorrectBranch = true`
+- Continue to step 7
 
 **If on different branch:**
 
+- Set `onCorrectBranch = false`
 - Ask: "Switch to branch `[prBranch]`? (yes/no)"
 - **STOP and WAIT**
-- If yes → Checkout using **"Switch to Existing Branch"** operation, then continue to step 7
-- If no → Continue to step 7 (stay on current branch)
+- If yes → Checkout using **"Switch to Existing Branch"** operation, set `onCorrectBranch = true`, then continue to step 7
+- If no → Continue to step 7 (stay on current branch, `onCorrectBranch` remains false)
 
 **If branch doesn't exist locally:**
 
+- Set `onCorrectBranch = false`
 - Warn: "Branch `[prBranch]` not found locally."
 - Ask: "Would you like me to check it out? (yes/no)"
 - **STOP and WAIT**
-- If yes → Execute: `git checkout -b [prBranch] origin/[prBranch]`, then continue to step 7
-- If no → Continue to step 7 (don't block context display)
+- If yes → Use **"Switch to Existing Branch"** (remote only) from `@{file:context/git.md}`, set `onCorrectBranch = true`, then continue to step 7
+- If no → Continue to step 7 (don't block context display, `onCorrectBranch` remains false)
 
 ---
 
@@ -229,6 +244,8 @@ Display context automatically based on issue role.
 [If hasPR:]
 **PR:** #[prNumber] - [prTitle] ([if prDraft: "Draft", else: "Open"])
 **Branch:** `[prBranch]`
+[If hasPR AND onCorrectBranch = false:]
+**Note:** You are on branch `[currentBranch]`, expected `[prBranch]`
 ```
 
 ---
