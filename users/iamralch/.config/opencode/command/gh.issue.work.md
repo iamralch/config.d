@@ -1,5 +1,6 @@
 ---
 description: Execute tasks from the Implementation Plan loaded by /gh.issue.status.
+subtask: true
 ---
 
 > Follow conversation rules in `@{file:context/cmd.md}`
@@ -57,6 +58,7 @@ Or run `/gh.issue.status #[issue_number]` first to load full context.
 ### Required Context
 
 After loading, verify you have:
+
 - Issue specification (title, body, type)
 - PR details (number, title, body)
 - Implementation plan (tasks with status)
@@ -70,10 +72,12 @@ After loading, verify you have:
 ## 2. Parse Options
 
 **Options for this command:**
+
 - No flag - Guided mode (default): confirms before and after each task
 - `--yes` - Auto mode: executes all pending tasks without confirmation
 
 **Store:**
+
 - `mode` = "guided" | "auto"
 
 ---
@@ -93,6 +97,7 @@ Work on this task? (yes/skip/done)
 **STOP and WAIT** for response.
 
 **If "yes":**
+
 1. Implement the task (see Step 4)
 2. Ask: "T003 complete. Mark as done? (yes/no)"
 3. **STOP and WAIT**
@@ -101,14 +106,17 @@ Work on this task? (yes/skip/done)
 6. Move to next pending task
 
 **If "skip":**
+
 - Store task ID in `skippedTasks` array
 - Move to next pending task without implementing
 - If no more pending tasks remain, go to Step 6 (Summary)
 
 **If "done":**
+
 - Exit loop, go to Step 6 (Summary)
 
 **When all tasks processed:**
+
 - Go to Step 6 (Summary)
 
 ---
@@ -132,6 +140,7 @@ Loop through pending tasks in order:
 5. Move to next pending task
 
 **When all tasks complete:**
+
 - Go to Step 6 (Summary)
 
 ---
@@ -159,10 +168,12 @@ When implementing a task:
    - If "escalate" → Store task ID in `skippedTasks` array, note the blocker for user follow-up, move to next task
 
 5. **Report completion:**
+
    ```markdown
    **Implemented T003:** Create UserModel in `src/models/user.ts`
-   
+
    **Changes made:**
+
    - `src/models/user.ts`: Created UserModel class with validation
    - `src/models/index.ts`: Added export for UserModel
    ```
@@ -174,32 +185,32 @@ When implementing a task:
 To mark a task complete in the Pull Request body:
 
 1. **Get the current PR body content**
-   
+
    Call `github_pull_request_read` with:
    - method: `"get"`
    - owner: repository owner
    - repo: repository name
    - pullNumber: the PR number
-   
+
    Extract the `body` field from the response.
 
 2. **Find and update the task line**
-   
+
    In the `## Implementation Plan` section, find: `- [ ] T003 ...`
    Replace `[ ]` with `[x]`: `- [x] T003 ...`
-   
+
    **If task ID not found:**
    - Warn: "Task [ID] not found in PR body. The PR may have been modified or task ID is incorrect."
    - Ask: "Continue without updating the checkbox? (yes/no)"
    - If "yes" → Continue to next task
    - If "no" → **STOP**
-   
+
    **If task already marked complete (`[x]`):**
    - Display: "Task [ID] already marked complete. Skipping update."
    - Continue to next task
 
 3. **Save the updated PR body**
-   
+
    Call `github_update_pull_request` with:
    - owner: repository owner
    - repo: repository name
@@ -222,18 +233,22 @@ When implementation session ends (user says "done" or all tasks complete):
 **Progress:** [completed]/[total] tasks
 
 **Completed this session:**
+
 - [x] T003 Create UserModel in `src/models/user.ts`
 - [x] T004 Create AuthService in `src/services/auth.ts`
 
 **Remaining:**
+
 - [ ] T005 Wire AuthService to controller in `src/controllers/auth.ts`
 
 **Skipped:**
+
 - [ ] T006 Add unit tests (if any were skipped)
 
 ---
 
 **Next steps:**
+
 - Run `/gh.issue.work` to continue implementation
 - Run `git commit` to save your progress
 - When all tasks complete, run `gh pr ready` then `gh pr merge`

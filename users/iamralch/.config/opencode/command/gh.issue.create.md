@@ -1,5 +1,6 @@
 ---
 description: Create a GitHub Issue with a polished specification through interactive Q&A.
+subtask: true
 ---
 
 > Follow conversation rules in `@{file:context/cmd.md}`
@@ -37,10 +38,12 @@ Follow the **Repository Validation Workflow** in `@{file:context/git.md}`.
 Check if the user input contains `--parent #N`:
 
 **Accepted formats:**
+
 - `--parent #42` or `--parent 42`
 - `--parent https://github.com/owner/repo/issues/42`
 
 **If `--parent` flag is found:**
+
 - Extract the parent issue number
 - Validate parent exists by calling `github_issue_read` with:
   - method: "get"
@@ -68,6 +71,7 @@ Use the type indicators and detection flow from `@{file:context/pmp.md}#issue-ty
 ## 3. Get Description (if needed)
 
 **If description is empty or was only a type indicator:**
+
 - Based on `issueType`, ask the appropriate question:
   - Feature: "What feature would you like to create an issue for?"
   - Task: "What task or maintenance work needs to be done?"
@@ -103,6 +107,7 @@ Use the Q&A depth, rules, and common questions from `@{file:context/pmp.md}#info
 ### Assessment
 
 Analyze the extracted key concepts and Q&A responses using the **Complexity Signals** from `@{file:context/pmp.md}`:
+
 - Multiple independent deliverables?
 - Broad scope across multiple components?
 - Estimated effort exceeds 1-3 days?
@@ -113,15 +118,18 @@ Analyze the extracted key concepts and Q&A responses using the **Complexity Sign
 Follow the **Decision Flow** from `@{file:context/pmp.md}#decision-flow`:
 
 **If appropriately sized (leaf issue):**
+
 - Store: `isLeaf = true`
 - Continue to step 7a (Generate Leaf Draft)
 
 **If too large:**
+
 - Store: `isLeaf = false`
 - Store: `needsBreakdown = true`
 - Continue to step 7b (Generate Parent + Breakdown)
 
 **If uncertain:**
+
 - Follow the uncertain prompt from `@{file:context/pmp.md}#decision-flow`
 - If "A" → Store `isLeaf = false`, `needsBreakdown = true`. Continue to step 7b.
 - If "B" → Store `isLeaf = true`. Continue to step 7a.
@@ -142,15 +150,16 @@ Follow the **Issue Title Patterns** in `@{file:context/pmp.md}#issue-title-patte
 
 Based on `issueType`, use the appropriate template:
 
-| Type | Template |
-|------|----------|
+| Type    | Template                                      |
+| ------- | --------------------------------------------- |
 | Feature | `@{file:template/gh.issue.create.feature.md}` |
-| Task | `@{file:template/gh.issue.create.task.md}` |
-| Bug | `@{file:template/gh.issue.create.bug.md}` |
+| Task    | `@{file:template/gh.issue.create.task.md}`    |
+| Bug     | `@{file:template/gh.issue.create.bug.md}`     |
 
 Fill each section with concrete details derived from the user's description and Q&A responses.
 
 **Include Clarifications section (only if Q&A occurred in step 5):**
+
 - Add the Q&A log in a collapsible `<details>` block
 - Format: Q: [question] → A: [answer]
 
@@ -165,6 +174,7 @@ Fill each section with concrete details derived from the user's description and 
 Follow the **Breakdown Presentation Pattern** in `@{file:context/pmp.md}`.
 
 **Parameters:**
+
 - `issueType`: from step 2
 - `issueContext`: "This issue"
 - `allowSingleOption`: `true`
@@ -172,14 +182,14 @@ Follow the **Breakdown Presentation Pattern** in `@{file:context/pmp.md}`.
 
 ### Command-Specific Response Handling
 
-| Response | Action |
-|----------|--------|
-| **"yes"** (Feature/Task) | Store: `autoCreateSubIssues = true`, `subIssueTitles`, and `subIssueTypes` arrays from breakdown. Continue to step 7c. |
-| **"umbrella"** (Bug) | Store: `autoCreateSubIssues = true`, `subIssueTitles`, and `subIssueTypes` arrays from breakdown. Continue to step 7c. |
-| **"single"** | User chose not to break down. Store: `isLeaf = true`, `needsBreakdown = false`. Continue to step 7a (Generate Leaf Draft). |
-| **"task"** (Bug) | Display guidance to create as Task instead. **STOP** |
-| **"edit"** | Ask "What would you like to change?", **STOP and WAIT**, apply changes, re-present. |
-| **"cancel"** | Display: "Cancelled. No issue created." **STOP** |
+| Response                 | Action                                                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| **"yes"** (Feature/Task) | Store: `autoCreateSubIssues = true`, `subIssueTitles`, and `subIssueTypes` arrays from breakdown. Continue to step 7c.     |
+| **"umbrella"** (Bug)     | Store: `autoCreateSubIssues = true`, `subIssueTitles`, and `subIssueTypes` arrays from breakdown. Continue to step 7c.     |
+| **"single"**             | User chose not to break down. Store: `isLeaf = true`, `needsBreakdown = false`. Continue to step 7a (Generate Leaf Draft). |
+| **"task"** (Bug)         | Display guidance to create as Task instead. **STOP**                                                                       |
+| **"edit"**               | Ask "What would you like to change?", **STOP and WAIT**, apply changes, re-present.                                        |
+| **"cancel"**             | Display: "Cancelled. No issue created." **STOP**                                                                           |
 
 ---
 
@@ -198,6 +208,7 @@ Parent titles should be broader than sub-issue titles.
 Use the **Parent Issue Format** template from `@{file:context/pmp.md}#parent-issue-format`.
 
 Fill in:
+
 - Overview: High-level description from user's input (2-3 sentences)
 - Scope: What this parent issue covers at a high level
 - Sub-issues: List from breakdown (will be updated with actual numbers after creation)
@@ -224,6 +235,7 @@ Present the complete draft following `@{file:context/cmd.md}#draft-review-patter
 [Generated parent body - full content]
 
 **Sub-issues to be created:**
+
 1. [Sub-issue title 1] ([Type])
 2. [Sub-issue title 2] ([Type])
 3. [Sub-issue title 3] ([Type])
@@ -231,6 +243,7 @@ Present the complete draft following `@{file:context/cmd.md}#draft-review-patter
 ---
 
 How would you like to proceed?
+
 - **"yes"** → Create the parent issue and all sub-issues
 - **"edit"** → Tell me what to change
 - **"cancel"** → Abort without creating
@@ -251,6 +264,7 @@ How would you like to proceed?
 ---
 
 How would you like to proceed?
+
 - **"yes"** → Create the Issue
 - **"edit"** → Tell me what to change
 - **"cancel"** → Abort without creating
@@ -263,6 +277,7 @@ How would you like to proceed?
 **If "yes":** Continue to step 9 (Create GitHub Issue).
 
 **If "cancel":**
+
 - Display: "Cancelled. No issue created."
 - **STOP**
 
@@ -277,6 +292,7 @@ After receiving explicit confirmation ("yes"):
 ### 9a. Create the Issue
 
 Call `github_issue_write` with:
+
 - method: "create"
 - owner: repository owner
 - repo: repository name
@@ -287,6 +303,7 @@ Call `github_issue_write` with:
 **Handle the response:**
 
 **If success:**
+
 - Extract from response:
   - `createdIssueId` - the `id` field (database/node ID) - used for API linking
   - `createdIssueNumber` - the `number` field (issue number) - used for display
@@ -295,6 +312,7 @@ Call `github_issue_write` with:
 - Continue to step 9b
 
 **If error:**
+
 - Display the error message from the response
 - Suggest remediation steps based on error
 - **STOP**
@@ -306,6 +324,7 @@ Call `github_issue_write` with:
 **If `parentIssueNumber` was set in step 2:**
 
 Call `github_sub_issue_write` with:
+
 - method: "add"
 - owner: repository owner
 - repo: repository name
@@ -313,6 +332,7 @@ Call `github_sub_issue_write` with:
 - sub_issue_id: createdIssueId (must be the `id` field, not `number`)
 
 **If linking fails:**
+
 - Display warning: "Issue #[createdIssueNumber] was created but could not be linked to parent #[parentIssueNumber]"
 - Display error details
 - Continue (issue was still created successfully)
@@ -326,6 +346,7 @@ Call `github_sub_issue_write` with:
 Follow the **Execute Breakdown Pattern** (for `/gh.issue.create`) in `@{file:context/pmp.md}`:
 
 **Parameters:**
+
 - parentIssueNumber: `createdIssueNumber` (from step 9a)
 - subIssueTitles: from step 7b
 - subIssueTypes: from step 7b
@@ -348,6 +369,7 @@ Based on `parentIssueNumber`, `needsBreakdown`, `autoCreateSubIssues`, provide a
 **Linked as sub-issue of:** #[parentIssueNumber]
 
 **Next steps:**
+
 - Review the issue on GitHub
 - Run `/gh.issue.edit #[issue_number]` if you need to refine or break down further
 - Run `/gh.issue.develop #[issue_number]` when ready to start work
@@ -358,6 +380,7 @@ Based on `parentIssueNumber`, `needsBreakdown`, `autoCreateSubIssues`, provide a
 Follow the **Report Sub-issue Creation Pattern** in `@{file:context/pmp.md}`:
 
 **Parameters:**
+
 - parentIssueNumber: `createdIssueNumber` (from step 9a)
 - createdSubIssues: from step 9c
 - failedSubIssues: from step 9c
@@ -370,6 +393,7 @@ Follow the **Report Sub-issue Creation Pattern** in `@{file:context/pmp.md}`:
 **URL:** [url]
 
 **Next steps:**
+
 - Review the issue on GitHub
 - Run `/gh.issue.develop #[issue_number]` to create a branch, Draft PR, and start work
 ```

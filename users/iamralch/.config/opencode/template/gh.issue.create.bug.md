@@ -92,4 +92,4 @@ Template for generating Bug GitHub Issues via `/gh.issue.create`.
 
 ## Notes
 
-- For parent bugs (umbrella issues) with sub-issues, GitHub's native sub-issue tracking displays the breakdown
+- See `@{file:context/pmp.md}#parent-issue-format` for parent issue handling and GitHub's sub-issue tracking

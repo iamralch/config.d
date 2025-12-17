@@ -18,6 +18,15 @@ Generate a clear, professional pull-request description based on git changes.
 - **Replace all HTML comments** (`<!-- ... -->`) with actual content based on the git diff
 - **Replace all placeholder text** (e.g., `[PR Title - ...]`, `path/to/tests`) with real values
 - For sections not applicable to this PR, write "N/A" or "None" - do not leave placeholders
+- **Wrap the entire PR content in HTML comment delimiters** for extraction:
+
+```
+<!-- PR_CONTENT_START -->
+# PR Title here
+
+PR body content here...
+<!-- PR_CONTENT_END -->
+```
 
 ### Format Specifications
 
@@ -157,3 +166,11 @@ Generate a clear, professional pull-request description based on git changes.
 
 ### Checklist
 - Self-review checklist before requesting review
+
+---
+
+## Input
+
+The git diff and commit log are provided as attached files.
+
+Generate the PR title and description now.

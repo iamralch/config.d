@@ -386,6 +386,7 @@ Parent issues provide an overview and reference their sub-issues. Use this forma
 > **Notes:**
 > - Overview and Scope are required; Non-Functional Requirements (NFRs) and Out of Scope are optional
 > - GitHub's sub-issue panel shows linked sub-issues and progress
+> - For all issue types (Feature, Task, Bug), GitHub's native sub-issue tracking automatically displays the breakdown and completion progress
 
 ### Choosing the Format
 

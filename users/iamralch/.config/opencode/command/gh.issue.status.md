@@ -1,10 +1,12 @@
 ---
 description: Load and display context for an issue - specification, hierarchy, and implementation plan (if PR exists).
+subtask: true
 ---
 
 > Follow conversation rules in `@{file:context/cmd.md}`
 > Use GitHub MCP tools as documented in `@{file:context/mcp.md}`
 > Use local git operations as documented in `@{file:context/git.md}`
+> Use project management patterns in `@{file:context/pmp.md}`
 
 ---
 
@@ -39,6 +41,7 @@ Follow the **Parse Issue Number Pattern** in `@{file:context/cmd.md}`.
 Follow the **Fetch Issue Pattern** in `@{file:context/mcp.md}`.
 
 **Store:**
+
 - `issueTitle` - Issue title
 - `issueBody` - Issue body (the specification)
 - `issueState` - open/closed
@@ -46,6 +49,7 @@ Follow the **Fetch Issue Pattern** in `@{file:context/mcp.md}`.
 - `issueUrl` - Issue URL
 
 **If issue is closed:**
+
 - Warn: "Note: This issue is closed."
 - (Continue anyway - user may want to review)
 
@@ -60,28 +64,33 @@ Check if the issue is part of a hierarchy (has parent or has children).
 Use the **Get Parent Issue** operation from `@{file:context/git.md}`.
 
 **If parent exists (200 response):**
+
 - Store: `parentIssueNumber`, `parentIssueTitle`, `parentIssueState`
 - Recursively check for grandparent using the same operation
 - Store the full chain: `issueHierarchy = [grandparent, parent, current]`
 - Stop when you get a 404 (no parent), after 10 levels (prevent excessive recursion), or if an issue number repeats (circular reference detected)
 
 **If no parent (404 response):**
+
 - Set `hasParent = false`
 
 ### 4b. Check for Sub-issues (Children)
 
 Call `github_issue_read` with:
+
 - method: `"get_sub_issues"`
 - owner: `[owner]`
 - repo: `[repo]`
 - issue_number: `[issueNumber]`
 
 **If sub-issues exist:**
+
 - Store: `subIssues = [{number, title, state}, ...]`
 - Calculate: `closedSubIssues`, `totalSubIssues`, `subIssueProgress`
 - Set `hasChildren = true`
 
 **If no sub-issues:**
+
 - Set `hasChildren = false`
 
 ### 4c. Determine Issue Role
@@ -96,6 +105,7 @@ Call `github_issue_read` with:
 ## 5. Find Associated PR
 
 **If `issueRole = "parent"`:**
+
 - Skip PR lookup (parent issues don't have PRs)
 - Set `hasPR = false`
 - Continue to step 8
@@ -103,6 +113,7 @@ Call `github_issue_read` with:
 **If `issueRole = "leaf"` OR `issueRole = "standalone"`:**
 
 Call `github_list_pull_requests` with:
+
 - owner: `[owner]`
 - repo: `[repo]`
 - state: `"open"`
@@ -110,11 +121,13 @@ Call `github_list_pull_requests` with:
 **Filter results:** Find PR where `head.ref` (the branch name field) matches pattern `[type]/issue-[issueNumber]` where type is `feature`, `task`, or `bug`
 
 **If matching PR found:**
+
 - Store: `prNumber`, `prTitle`, `prBranch`, `prBody`, `prUrl`, `prDraft`
 - Set `hasPR = true`
 - Continue to step 6
 
 **If no open PR found:**
+
 - Set `hasPR = false`
 - Skip to step 8
 
@@ -131,12 +144,14 @@ Use branch operations from `@{file:context/git.md}`.
 **If already on correct branch:** Continue to step 7
 
 **If on different branch:**
+
 - Ask: "Switch to branch `[prBranch]`? (yes/no)"
 - **STOP and WAIT**
 - If yes → Checkout using **"Switch to Existing Branch"** operation, then continue to step 7
 - If no → Continue to step 7 (stay on current branch)
 
 **If branch doesn't exist locally:**
+
 - Warn: "Branch `[prBranch]` not found locally."
 - Ask: "Would you like me to check it out? (yes/no)"
 - **STOP and WAIT**
@@ -156,6 +171,7 @@ Use sync operations from `@{file:context/git.md}`.
 **Fetch latest:** Use **"Fetch Latest from Remote"**
 
 **Check if behind remote:**
+
 - If behind → Warn: "Your branch is {count} commit(s) behind origin."
 - Ask: "Pull latest changes? (yes/no)"
 - **STOP and WAIT**
@@ -163,6 +179,7 @@ Use sync operations from `@{file:context/git.md}`.
 - If no → Continue to step 7b without pulling (local state may differ from remote; changes made locally won't include remote updates)
 
 **Check for uncommitted changes:**
+
 - If dirty → Warn: "You have uncommitted local changes."
 - (Continue anyway - informational only)
 
@@ -171,10 +188,12 @@ Use sync operations from `@{file:context/git.md}`.
 Search PR body for `## Technical Approach` section.
 
 **If found:**
+
 - Extract stack, key files, and design decisions
 - Set `hasApproach = true`
 
 **If not found:**
+
 - Set `hasApproach = false`
 
 ### 7c. Parse Implementation Plan
@@ -182,6 +201,7 @@ Search PR body for `## Technical Approach` section.
 Search PR body for `## Implementation Plan` section.
 
 **If found:**
+
 - Extract phases and tasks
 - Parse task status: `- [ ]` = pending, `- [x]` = complete
 - Calculate: `completedTasks`, `totalTasks`, `progress`
@@ -189,6 +209,7 @@ Search PR body for `## Implementation Plan` section.
 - Set `hasPlan = true`
 
 **If not found:**
+
 - Set `hasPlan = false`
 
 ---
@@ -232,6 +253,7 @@ Display context automatically based on issue role.
 ---
 
 **Next steps:**
+
 - Run `/gh.issue.status #[sub-issue]` on individual sub-issues to see their context
 - Run `/gh.issue.develop #[sub-issue]` on a sub-issue to start work
 ```
@@ -310,7 +332,7 @@ No hierarchy section. Continue to **Specification Section** below.
 
 ### Technical Approach
 
-*No Technical Approach defined in PR.*
+_No Technical Approach defined in PR._
 ```
 
 ---
@@ -327,10 +349,12 @@ No hierarchy section. Continue to **Specification Section** below.
 **Progress:** [completedTasks]/[totalTasks] tasks ([progress]%)
 
 **Completed:**
+
 - [x] T001 [Description]
 - [x] T002 [Description]
 
 **Remaining:**
+
 - [ ] T003 [Description] ← Next
 - [ ] T004 [Description]
 ```
@@ -342,7 +366,7 @@ No hierarchy section. Continue to **Specification Section** below.
 
 ### Implementation Plan
 
-*No Implementation Plan found in PR.*
+_No Implementation Plan found in PR._
 ```
 
 ---
@@ -373,6 +397,7 @@ Run `/gh.issue.work` to continue implementation.
 **All tasks complete!**
 
 Ready to finalize:
+
 1. Run `gh pr ready` to mark PR as ready for review
 2. After review, run `gh pr merge` to merge
 ```

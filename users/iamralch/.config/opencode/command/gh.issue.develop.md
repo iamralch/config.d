@@ -1,5 +1,6 @@
 ---
 description: Start work on a GitHub Issue by creating a branch, generating an implementation plan, and creating a draft PR.
+subtask: true
 ---
 
 > Follow conversation rules in `@{file:context/cmd.md}`
@@ -59,6 +60,7 @@ Follow the **Fetch Issue Pattern** in `@{file:context/mcp.md}`.
 **Additional handling for this command:**
 
 After fetching:
+
 - Extract the specification sections from the body (sections vary by issue type - see `@{file:template/gh.issue.create.feature.md}`, `@{file:template/gh.issue.create.task.md}`, `@{file:template/gh.issue.create.bug.md}`)
 - Store the issue title, type, and body for later use
 
@@ -72,6 +74,7 @@ After fetching:
 > **Note:** Other template sections (e.g., Environment, Additional Context for bugs) are recommended but not required for validation.
 
 **If body is missing required sections:**
+
 - Warn: "This issue doesn't appear to have a standard specification format."
 - Ask: "Would you like to proceed anyway? (yes/no)"
 - **STOP and WAIT**
@@ -99,10 +102,12 @@ Use the `/gh.issue.develop` variant of the pattern output.
 Check if the issue has a type assigned. **Issue type is required** for branch creation.
 
 **Check issue type from the fetched issue data:**
+
 - If `type` field exists and is valid (Feature, Task, Bug) → Store type for branch creation
 - If `type` is null, empty, or invalid → **STOP** and prompt user
 
 **If no valid type is found:**
+
 ```markdown
 **Cannot create branch: Issue #[issue_number] doesn't have a type assigned.**
 
@@ -110,6 +115,7 @@ Issue type is required to create a properly named branch.
 Valid types: Feature, Task, Bug
 
 Please:
+
 1. Edit the issue on GitHub to assign a type, OR
 2. Ensure the issue was created with a type
 
@@ -123,6 +129,7 @@ Please:
 ## 6. Check for Existing PR
 
 Call `github_list_pull_requests` with:
+
 - owner: repository owner
 - repo: repository name
 - state: "open"
@@ -130,19 +137,22 @@ Call `github_list_pull_requests` with:
 Search for a PR where `head.ref` (the branch name) matches the expected branch name `[type]/issue-[number]`.
 
 **If multiple PRs match** (edge case - shouldn't normally happen):
+
 - Use the most recently updated PR
 - Warn: "Multiple PRs found for this branch. Using the most recent: #[prNumber]"
 
 **If PR already exists:**
+
 - Display: "**A Pull Request already exists for Issue #[issue_number]**"
 - Display PR URL, title, and status
-- Ask: "Would you like to:\n  A) View the existing PR\n  B) Continue anyway (will create duplicate PR)\n  C) Cancel"
+- Ask: "Would you like to:\n A) View the existing PR\n B) Continue anyway (will create duplicate PR)\n C) Cancel"
 - **STOP and WAIT**
 - If "A" → Display PR details and **STOP**
 - If "B" → Continue to step 7
 - If "C" → **STOP**
 
 **If no PR exists:**
+
 - Continue to step 7
 
 ---
@@ -153,22 +163,24 @@ Analyze the existing codebase to understand the tech stack and patterns.
 
 **Detect tech stack by checking for:**
 
-| File | Check | Indicates |
-|------|-------|-----------|
-| `package.json` | Read dependencies, scripts | Node.js/Bun, frameworks, test runner |
-| `bun.lockb` | Exists | Bun runtime |
-| `tsconfig.json` | Read config | TypeScript settings |
-| `go.mod` | Read module | Go project |
-| `Cargo.toml` | Read package | Rust project |
-| `pyproject.toml` | Read config | Python project |
-| `.opencode/` | Exists | OpenCode project |
+| File             | Check                      | Indicates                            |
+| ---------------- | -------------------------- | ------------------------------------ |
+| `package.json`   | Read dependencies, scripts | Node.js/Bun, frameworks, test runner |
+| `bun.lockb`      | Exists                     | Bun runtime                          |
+| `tsconfig.json`  | Read config                | TypeScript settings                  |
+| `go.mod`         | Read module                | Go project                           |
+| `Cargo.toml`     | Read package               | Rust project                         |
+| `pyproject.toml` | Read config                | Python project                       |
+| `.opencode/`     | Exists                     | OpenCode project                     |
 
 **Identify project structure:**
+
 - Source directory: `src/`, `lib/`, `pkg/`, `internal/`
 - Test directory: `tests/`, `test/`, `__tests__/`
 - Existing patterns: API style, module organization
 
 **Look for similar existing features:**
+
 - How are similar problems solved in this codebase?
 - What patterns should be followed for consistency?
 
@@ -179,6 +191,7 @@ Analyze the existing codebase to understand the tech stack and patterns.
 Follow the template structure and guidelines in `@{file:template/gh.issue.develop.md}`.
 
 **Inputs from previous steps:**
+
 - Issue body (Step 3) → Context section
 - Codebase scan (Step 7) → Technical Approach (Stack, Key Files, Design Decisions)
 - Issue specification (Step 3) → Implementation Plan tasks
@@ -191,6 +204,7 @@ Follow the template structure and guidelines in `@{file:template/gh.issue.develo
 4. **Issue Link** - `Relates to #[issue_number]`
 
 **Refer to `@{file:template/gh.issue.develop.md}` for:**
+
 - Complete body structure
 - Section formatting guidelines
 - Task derivation from issue sections
@@ -212,7 +226,7 @@ Store the generated PR body for review in Step 9.
 ## 9. Draft Review (MANDATORY - STOP AND WAIT)
 
 > ⚠️ **NO ACTIONS HAVE BEEN EXECUTED YET**
-> 
+>
 > Steps 1-8 only gathered information. The following actions will ONLY happen after you confirm with "yes".
 
 Present a summary of all planned actions and the PR body:
@@ -221,6 +235,7 @@ Present a summary of all planned actions and the PR body:
 **Ready to start work on Issue #[issue_number]: [title]**
 
 **Actions that WILL be executed upon confirmation:**
+
 1. Create branch: `[type]/issue-[number]` and check it out
 2. Create empty commit: `git commit --allow-empty -m "Start work on #[issue_number]"`
 3. Push branch to remote with upstream tracking
@@ -235,6 +250,7 @@ Present a summary of all planned actions and the PR body:
 ---
 
 How would you like to proceed?
+
 - **"yes"** → Execute all actions and create Draft PR
 - **"edit"** → Modify the PR body
 - **"cancel"** → Abort without making changes
@@ -246,10 +262,12 @@ How would you like to proceed?
 Follow the **Draft Review Pattern** "edit" handling in `@{file:context/cmd.md}#draft-review-pattern`.
 
 **If "cancel":**
+
 - Display: "Cancelled. No changes made."
 - **STOP**
 
 **If "yes":**
+
 - Continue to Phase 3
 
 **NEVER proceed without explicit "yes".**
@@ -271,6 +289,7 @@ Follow the branch operations documented in `@{file:context/git.md}`.
 Use the **"Check for Uncommitted Changes"** operation from `@{file:context/git.md}`.
 
 **If uncommitted changes exist:**
+
 - Display: "You have uncommitted changes in your working directory."
 - Suggest: `git stash` or `git commit -am "WIP"`
 - Display: "Please commit or stash your changes before starting work on this issue."
@@ -281,6 +300,7 @@ Use the **"Check for Uncommitted Changes"** operation from `@{file:context/git.m
 Use the **"Check if Branch Exists"** operation from `@{file:context/git.md}`.
 
 **If branch exists locally:**
+
 - Display: "Branch `[branch-name]` already exists."
 - Ask: "Would you like to check out the existing branch? (yes/no)"
 - **STOP and WAIT**
@@ -290,6 +310,7 @@ Use the **"Check if Branch Exists"** operation from `@{file:context/git.md}`.
 - If "no" → **STOP**
 
 **If branch exists only on remote:**
+
 - Checkout and track the remote branch using: `git checkout -b [branch-name] origin/[branch-name]`
 - Before creating Draft PR, check for existing closed/merged PRs for this branch:
   - Call `github_list_pull_requests` with state: `"closed"` and filter by head branch
@@ -311,15 +332,18 @@ Use the **"Create and Checkout Branch Linked to Issue"** operation from `@{file:
 This creates a branch that's formally linked to the issue in GitHub using `gh issue develop`.
 
 **If success:**
+
 - Note the branch name
 - Proceed to step 11
 
 **If error (branch already exists remotely):**
+
 - The command will fail with a clear error message
 - Display: "Branch already exists on remote. Use step 10.2 logic to handle."
 - **STOP**
 
 **If error (other - e.g., network issues, permission denied, unexpected failures):**
+
 - Display the error message
 - Suggest fallback: `git checkout -b [branch-name]` followed by `git push -u origin [branch-name]` (see `@{file:context/git.md}#branch-operations`)
 - **STOP** and ask user how to proceed
@@ -337,10 +361,12 @@ git commit --allow-empty -m "Start work on #[issue_number]"
 ```
 
 **If success:**
+
 - Note commit SHA
 - Proceed to step 12
 
 **If error:**
+
 - Display error message
 - **STOP**
 
@@ -353,9 +379,11 @@ Use push operations from `@{file:context/git.md}`.
 Use **"Push Branch with Upstream"** operation.
 
 **If push fails:**
+
 - Display error and **STOP**
 
 **If success:**
+
 - Proceed to step 13
 
 ---
@@ -365,6 +393,7 @@ Use **"Push Branch with Upstream"** operation.
 Get current user from step 1 (`github_get_me` result).
 
 Call `github_issue_write` with:
+
 - method: "update"
 - owner: repository owner
 - repo: repository name
@@ -372,10 +401,12 @@ Call `github_issue_write` with:
 - assignees: [current username]
 
 **If success:**
+
 - Note the assignee username
 - Proceed to step 14
 
 **If error:**
+
 - Warn: "Could not assign issue to you: [error message]"
 - Note: This is non-blocking, continue to step 14
 
@@ -384,6 +415,7 @@ Call `github_issue_write` with:
 ## 14. Create Draft PR
 
 Call `github_create_pull_request` with:
+
 - owner: `[owner]`
 - repo: `[repo]`
 - title: `[issueTitle]`
@@ -393,11 +425,13 @@ Call `github_create_pull_request` with:
 - draft: `true`
 
 **If PR creation fails:**
+
 - Display the error message
 - Provide troubleshooting guidance
 - **STOP**
 
 **If success:**
+
 - Extract PR number and URL from response
 - Proceed to step 15
 
@@ -408,15 +442,18 @@ Call `github_create_pull_request` with:
 After PR creation, assign the current user to the PR.
 
 Run Bash command:
+
 ```bash
 gh pr edit [prNumber] --add-assignee "@me"
 ```
 
 **If success:**
+
 - Note the assignment
 - Proceed to step 16
 
 **If error:**
+
 - Warn: "Could not assign PR to you: [error message]"
 - Note: This is non-blocking, continue to step 16
 
@@ -434,6 +471,7 @@ Present the final success summary:
 **Draft PR:** [PR URL]
 
 **What you can do next:**
+
 - Review the implementation plan in the PR
 - Run `/gh.issue.work` to begin implementing tasks
 - Run `/gh.issue.status` later to restore context
@@ -443,4 +481,3 @@ Present the final success summary:
 ---
 
 Follow the **Command Completion Pattern** in `@{file:context/cmd.md}`.
-

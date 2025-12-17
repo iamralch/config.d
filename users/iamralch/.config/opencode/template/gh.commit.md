@@ -18,10 +18,16 @@ Your goals are:
 ### Output Requirements
 
 - Do **not** include any introduction, preamble, meta-commentary, or sentences such as "Let me review…" or "Here is the commit message…"
-- The output **must start directly with the commit message text**
 - Return only the raw commit message (subject + blank line + body)
 - Do **not** wrap the output in a code block or any other markdown formatting
 - The output should be plain text suitable for direct use with `git commit -m`
+- **Wrap the commit message in HTML comment delimiters** for extraction:
+
+```
+<!-- COMMIT_MESSAGE_START -->
+<your commit message here>
+<!-- COMMIT_MESSAGE_END -->
+```
 
 ### Format Specifications
 
@@ -168,3 +174,11 @@ chore: update dependencies and tooling
 - Update eslint configuration for new rules
 - Pin node version to 20.x in CI
 ```
+
+---
+
+## Input
+
+The staged changes are provided as an attached file.
+
+Generate the commit message now.

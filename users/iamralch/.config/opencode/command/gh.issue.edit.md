@@ -1,5 +1,6 @@
 ---
 description: Edit, analyze, or break down an existing GitHub Issue.
+subtask: true
 ---
 
 > Follow conversation rules in `@{file:context/cmd.md}`
@@ -85,6 +86,7 @@ Evaluate whether the issue has sufficient detail for analysis using the "thin" v
 **Issue #[issue_number] lacks sufficient detail for analysis.**
 
 Would you like me to ask clarifying questions to enrich this issue?
+
 - **"yes"** → Start Q&A to gather more details
 - **"no"** → Proceed with best-effort analysis (complexity assessment may be less accurate)
 ```
@@ -100,6 +102,7 @@ Would you like me to ask clarifying questions to enrich this issue?
 **Issue #[issue_number] is well-structured.**
 
 Would you like to:
+
 - **"continue"** → Analyze if this issue needs breakdown into sub-issues
 - **"refine"** → Improve or change the content through Q&A first
 ```
@@ -126,6 +129,7 @@ Extract what information exists and identify gaps.
 Follow the **Information Gathering Pattern** in `@{file:context/pmp.md}`.
 
 **For refinement of rich issues:**
+
 - Acknowledge existing content when asking questions
 - Example: "The current acceptance criteria are: [X]. Would you like to keep, modify, or replace them?"
 - Focus questions on sections the user wants to change
@@ -157,6 +161,7 @@ Present the enriched issue for approval:
 ---
 
 How would you like to proceed?
+
 - **"yes"** → Update the issue on GitHub
 - **"edit"** → Tell me what to change
 - **"skip"** → Keep original content, proceed with analysis (note: "skip" keeps content and continues; "cancel" aborts the command entirely)
@@ -165,12 +170,14 @@ How would you like to proceed?
 **STOP and WAIT**
 
 **If "yes":**
+
 - Continue to step 7 (Update Issue)
 
 **If "edit":**
 Follow the **Draft Review Pattern** "edit" handling in `@{file:context/cmd.md}#draft-review-pattern`.
 
 **If "skip":**
+
 - Continue to step 8 without updating
 
 ---
@@ -180,6 +187,7 @@ Follow the **Draft Review Pattern** "edit" handling in `@{file:context/cmd.md}#d
 **Only if enrichment was approved**
 
 Call `github_issue_write` with:
+
 - method: "update"
 - owner: repository owner
 - repo: repository name
@@ -187,11 +195,13 @@ Call `github_issue_write` with:
 - body: the approved enriched body
 
 **If success:**
+
 - Update `originalBody` with the new body
 - Display: "Issue #[issue_number] updated."
 - Continue to step 8
 
 **If error:**
+
 - Display warning and error details
 - Continue to step 8 with original content
 
@@ -216,13 +226,16 @@ Analyze the issue using the complexity signals and assessment by type.
 Follow the **Decision Flow** from `@{file:context/pmp.md}`:
 
 **If appropriately sized (leaf issue):**
+
 - Continue to step 11 (Report Success)
 
 **If too large:**
+
 - Continue to step 10 (Breakdown Path)
 
 **If uncertain:**
 Follow the **Decision Flow** "uncertain" handling in `@{file:context/pmp.md}#decision-flow`:
+
 - If "A" (breakdown) → Continue to step 10 (Breakdown Path)
 - If "B" (proceed) → Continue to step 11 (Report Success)
 
@@ -233,6 +246,7 @@ Follow the **Decision Flow** "uncertain" handling in `@{file:context/pmp.md}#dec
 Follow the **Breakdown Presentation Pattern** in `@{file:context/pmp.md}`.
 
 **Parameters:**
+
 - `issueType`: from step 3
 - `issueContext`: "Issue #[issue_number]"
 - `allowSingleOption`: `false`
@@ -240,19 +254,20 @@ Follow the **Breakdown Presentation Pattern** in `@{file:context/pmp.md}`.
 
 ### Command-Specific Response Handling
 
-| Response | Action |
-|----------|--------|
-| **"yes"** (Feature/Task) | Continue to step 10a (Execute Breakdown). |
-| **"umbrella"** (Bug) | Continue to step 10a (Execute Breakdown). |
-| **"task"** (Bug) | Display task conversion guidance. **STOP** |
-| **"edit"** | Ask "What would you like to change?", **STOP and WAIT**, apply changes, re-present. |
-| **"cancel"** | Follow **Print Sub-issue Commands Pattern** in `@{file:context/pmp.md}`. **STOP** |
+| Response                 | Action                                                                              |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| **"yes"** (Feature/Task) | Continue to step 10a (Execute Breakdown).                                           |
+| **"umbrella"** (Bug)     | Continue to step 10a (Execute Breakdown).                                           |
+| **"task"** (Bug)         | Display task conversion guidance. **STOP**                                          |
+| **"edit"**               | Ask "What would you like to change?", **STOP and WAIT**, apply changes, re-present. |
+| **"cancel"**             | Follow **Print Sub-issue Commands Pattern** in `@{file:context/pmp.md}`. **STOP**   |
 
 ### 10a. Execute Breakdown
 
 Follow the **Execute Breakdown Pattern** (for `/gh.issue.edit`) in `@{file:context/pmp.md}`:
 
 **Parameters:**
+
 - parentIssueNumber: `issue_number` (from step 2)
 - subIssueTitles: from breakdown
 - subIssueTypes: from breakdown
@@ -260,6 +275,7 @@ Follow the **Execute Breakdown Pattern** (for `/gh.issue.edit`) in `@{file:conte
 - originalBody: `originalBody` (from step 3)
 
 This will:
+
 1. Redistribute content from the leaf issue to sub-issues
 2. Convert the parent to **Parent Issue Format**
 3. Create sub-issues with extracted content
@@ -284,6 +300,7 @@ No breakdown needed. Run `/gh.issue.develop #[issue_number]` to create a branch,
 Follow the **Report Sub-issue Creation Pattern** in `@{file:context/pmp.md}`:
 
 **Parameters:**
+
 - parentIssueNumber: from step 2
 - createdSubIssues: from step 10a
 - failedSubIssues: from step 10a

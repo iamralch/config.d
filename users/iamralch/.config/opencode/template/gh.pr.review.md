@@ -23,6 +23,14 @@ Your goals are:
 - **Omit sections with no findings** entirely rather than writing "None" for every empty section
 - When omitting sections, also omit the `---` separator that would precede the omitted section
 - The `## Summary & Outcome` section is always required
+- **Wrap the entire review content in HTML comment delimiters** for extraction:
+
+```
+<!-- REVIEW_CONTENT_START -->
+## Summary & Outcome
+...
+<!-- REVIEW_CONTENT_END -->
+```
 
 ### Format Specifications
 
@@ -191,3 +199,11 @@ Always try to highlight something positive:
 - Solid tests
 - Good naming or comments
 - Careful handling of tricky cases
+
+---
+
+## Input
+
+The pull request diff is provided as an attached file.
+
+Generate the code review now.

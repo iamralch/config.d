@@ -53,5 +53,5 @@ Template for generating Task/Chore GitHub Issues via `/gh.issue.create`.
 
 ## Notes
 
-- For parent tasks with sub-issues, GitHub's native sub-issue tracking displays the breakdown
+- See `@{file:context/pmp.md}#parent-issue-format` for parent issue handling and GitHub's sub-issue tracking
 - Sub-issues can be any type (Task, Feature, or Bug) based on the work needed
