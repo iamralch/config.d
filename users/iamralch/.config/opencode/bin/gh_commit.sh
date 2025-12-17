@@ -1,19 +1,6 @@
 #!/bin/bash
 # Commit-related functions for gh-opencode
 
-# Extract commit message from dry-run output
-#
-# Parses the output from `opencode run --command="gh.commit"` with --dry-run flag
-# and extracts the commit message between the delimiters.
-#
-# Usage: _extract_commit_message "$dry_run_output"
-_extract_commit_message() {
-	local output="$1"
-
-	# Extract content between <!-- COMMIT_MESSAGE_START --> and <!-- COMMIT_MESSAGE_END -->
-	echo "$output" | sed -n '/<!-- COMMIT_MESSAGE_START -->/,/<!-- COMMIT_MESSAGE_END -->/p' | sed '1d;$d'
-}
-
 # Filter out OpenCode-managed arguments for commit
 #
 # Removes arguments that OpenCode manages internally (-m, --message, -F, --file, --model)
@@ -77,8 +64,8 @@ _get_commit_model() {
 # Main commit command implementation
 #
 # Creates a git commit with an AI-generated message based on staged changes.
-# Uses opencode run with --command="gh.commit" and --dry-run to generate the message,
-# then executes git commit with the generated message.
+# Uses opencode run with the template content directly injected into the prompt,
+# and passes the staged diff as a file attachment.
 #
 # Usage: _gh_commit [GIT_COMMIT_OPTIONS] [--model MODEL]
 # Example: _gh_commit --signoff --no-verify
@@ -86,36 +73,57 @@ _get_commit_model() {
 _gh_commit() {
 	local args=("$@")
 	local clean_args
-	local dry_run_output
+	local output
 	local commit_message
 	local model
+	local diff_file
+	local template_dir
 
-	# Extract model from arguments (or use default)
-	model="anthropic/claude-3-5-haiku-latest"
+	# Template directory (relative to source_dir from main script)
+	template_dir=$(_get_template_dir)
+
+	# Model for commit message generation
+	model="google/gemini-2.5-flash"
 
 	# Filter out OpenCode-managed arguments
 	local filtered_output
 	filtered_output=$(_filter_gh_commit_args "${args[@]}")
 	IFS=$'\n' read -rd '' -a clean_args <<<"$filtered_output" || true
 
-	# Generate commit message using opencode run with dry-run
-	dry_run_output=$(gum spin --title "Generating Git commit message with OpenCode..." -- \
-		opencode run \
-		--command="gh.commit" \
+	# Create temporary file for diff
+	diff_file=$(_create_temp_file "gh-opencode-diff")
+	# shellcheck disable=SC2064
+	trap "rm -f '$diff_file'" RETURN
+
+	# Get staged diff
+	if ! git diff --staged >"$diff_file"; then
+		gum log --level=error "Failed to get staged changes"
+		return 1
+	fi
+
+	# Check if there are staged changes
+	_require_file_not_empty "$diff_file" "No staged changes found. Please stage your changes with 'git add' first." || return 1
+
+	# Build the prompt from template
+	local prompt
+	prompt="$(cat "$template_dir/gh.commit.md")"
+
+	# Generate commit message using opencode run
+	output=$(gum spin --title "Generating Git commit message with OpenCode..." -- \
+		opencode run "$prompt" \
+		--file="$diff_file" \
 		--model="$model" \
-		--agent="build" \
-		--log-level="ERROR" \
-		-- "--dry-run")
+		--log-level="ERROR")
 
 	# Check execution success
 	# shellcheck disable=SC2181
-	if [ $? -ne 0 ]; then
+	if [[ $? -ne 0 ]]; then
 		gum log --level=error "Failed to generate commit message"
 		return 1
 	fi
 
-	# Extract commit message from dry-run output
-	commit_message=$(_extract_commit_message "$dry_run_output")
+	# Extract commit message from output
+	commit_message=$(_extract_delimited_content "$output" "COMMIT_MESSAGE")
 
 	# Validate we got a commit message
 	if [[ -z "$commit_message" ]]; then

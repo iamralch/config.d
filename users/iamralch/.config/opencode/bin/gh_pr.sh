@@ -115,32 +115,6 @@ _get_pr_body() {
 	echo "$body_file"
 }
 
-# Extract PR content from dry-run output
-#
-# Parses the output from `opencode run --command="gh.pr.create"` with --dry-run flag
-# and extracts the PR content between the delimiters.
-#
-# Usage: _extract_pr_content "$dry_run_output"
-_extract_pr_content() {
-	local output="$1"
-
-	# Extract content between <!-- PR_CONTENT_START --> and <!-- PR_CONTENT_END -->
-	echo "$output" | sed -n '/<!-- PR_CONTENT_START -->/,/<!-- PR_CONTENT_END -->/p' | sed '1d;$d'
-}
-
-# Extract review content from dry-run output
-#
-# Parses the output from `opencode run --command="gh.pr.review"` with --dry-run flag
-# and extracts the review content between the delimiters.
-#
-# Usage: _extract_review_content "$dry_run_output"
-_extract_review_content() {
-	local output="$1"
-
-	# Extract content between <!-- REVIEW_CONTENT_START --> and <!-- REVIEW_CONTENT_END -->
-	echo "$output" | sed -n '/<!-- REVIEW_CONTENT_START -->/,/<!-- REVIEW_CONTENT_END -->/p' | sed '1d;$d'
-}
-
 # Filter out OpenCode-managed arguments for PR create
 #
 # Removes PR create arguments that OpenCode handles (title, body, fill flags, model)
@@ -215,21 +189,29 @@ _filter_gh_pr_review_args() {
 # PR Create implementation
 #
 # Creates a GitHub PR with AI-generated title and description.
-# Uses opencode run with --command="gh.pr.create" and --dry-run to generate content,
-# then executes gh pr create with the generated content.
+# Uses opencode run with the template content directly injected into the prompt,
+# and passes the git diff and commit log as file attachments.
 # Falls back to manual PR creation if AI generation fails.
 #
 # Usage: _gh_pr_create [GH_PR_CREATE_OPTIONS] [--model MODEL]
 _gh_pr_create() {
 	local args=("$@")
 	local clean_args
-	local dry_run_output
+	local output
 	local pr_content
 	local title
 	local body_file
 	local model
+	local diff_file
+	local log_file
+	local template_dir
+	local base_branch
+	local head_branch
 
-	# Extract model from arguments (or use default)
+	# Template directory (relative to source_dir from main script)
+	template_dir=$(_get_template_dir)
+
+	# Model for PR content generation
 	model="github-copilot/claude-sonnet-4"
 
 	# Filter out OpenCode-managed arguments
@@ -237,25 +219,66 @@ _gh_pr_create() {
 	filtered_output=$(_filter_gh_pr_create_args "${args[@]}")
 	IFS=$'\n' read -rd '' -a clean_args <<<"$filtered_output" || true
 
-	# Generate PR content using opencode run with dry-run
-	dry_run_output=$(gum spin --title "Generating GitHub Pull Request with OpenCode..." -- \
-		opencode run \
-		--command="gh.pr.create" \
+	# Determine base and head branches
+	head_branch=$(git rev-parse --abbrev-ref HEAD)
+	base_branch=$(git rev-parse --abbrev-ref origin/HEAD 2>/dev/null | sed 's|origin/||' || echo "main")
+
+	# Check for --base flag in args to override default
+	local i=0
+	while [[ $i -lt ${#args[@]} ]]; do
+		if [[ "${args[$i]}" == "--base" ]] && [[ $((i + 1)) -lt ${#args[@]} ]]; then
+			base_branch="${args[$((i + 1))]}"
+			break
+		fi
+		((i++))
+	done
+
+	# Create temporary files for diff and log
+	diff_file=$(_create_temp_file "gh-opencode-pr-diff")
+	log_file=$(_create_temp_file "gh-opencode-pr-log")
+	# shellcheck disable=SC2064
+	trap "rm -f '$diff_file' '$log_file'" RETURN
+
+	# Get diff between base and head
+	# shellcheck disable=SC2140
+	if ! git diff "origin/$base_branch"..."$head_branch" >"$diff_file" 2>/dev/null; then
+		# Fallback: try without origin prefix
+		if ! git diff "$base_branch"..."$head_branch" >"$diff_file" 2>/dev/null; then
+			gum log --level=error "Failed to get diff between $base_branch and $head_branch"
+			return 1
+		fi
+	fi
+
+	# Check if there are changes
+	_require_file_not_empty "$diff_file" "No changes between $base_branch and $head_branch" || return 1
+
+	# Get commit log
+	# shellcheck disable=SC2140
+	git log --oneline "origin/$base_branch".."$head_branch" >"$log_file" 2>/dev/null ||
+		git log --oneline "$base_branch".."$head_branch" >"$log_file" 2>/dev/null || true
+
+	# Build the prompt from template
+	local prompt
+	prompt="$(cat "$template_dir/gh.pr.create.md")"
+
+	# Generate PR content using opencode run
+	output=$(gum spin --title "Generating GitHub Pull Request with OpenCode..." -- \
+		opencode run "$prompt" \
+		--file="$diff_file" \
+		--file="$log_file" \
 		--model="$model" \
-		--agent="build" \
-		--log-level="ERROR" \
-		-- "--dry-run")
+		--log-level="ERROR")
 
 	# Check execution success
 	# shellcheck disable=SC2181
-	if [ $? -ne 0 ]; then
+	if [[ $? -ne 0 ]]; then
 		gum log --level=warn "AI content generation failed. Falling back to manual PR creation."
 		gh pr create "${clean_args[@]}"
 		return 1
 	fi
 
-	# Extract PR content from dry-run output
-	pr_content=$(_extract_pr_content "$dry_run_output")
+	# Extract PR content from output
+	pr_content=$(_extract_delimited_content "$output" "PR_CONTENT")
 
 	if [[ -z "$pr_content" ]]; then
 		gum log --level=warn "Failed to extract PR content. Falling back to manual PR creation."
@@ -278,8 +301,8 @@ _gh_pr_create() {
 # PR Review implementation
 #
 # Submits a GitHub PR review with AI-generated feedback.
-# Uses opencode run with --command="gh.pr.review" and --dry-run to generate content,
-# then executes gh pr review with the generated content.
+# Uses opencode run with the template content directly injected into the prompt,
+# and passes the PR diff as a file attachment.
 # Auto-detects PR number from current branch if not provided.
 #
 # Usage: _gh_pr_review [PR_NUMBER] [GH_PR_REVIEW_OPTIONS] [--model MODEL]
@@ -287,12 +310,17 @@ _gh_pr_review() {
 	local args=("$@")
 	local clean_args
 	local pr_number
-	local dry_run_output
+	local output
 	local review_content
 	local review_file
 	local model
+	local diff_file
+	local template_dir
 
-	# Extract model from arguments (or use default)
+	# Template directory (relative to source_dir from main script)
+	template_dir=$(_get_template_dir)
+
+	# Model for PR review generation
 	model="github-copilot/claude-sonnet-4"
 
 	# Extract PR number from arguments or auto-detect
@@ -312,25 +340,40 @@ _gh_pr_review() {
 	filtered_output=$(_filter_gh_pr_review_args "${args[@]}")
 	IFS=$'\n' read -rd '' -a clean_args <<<"$filtered_output" || true
 
-	# Generate review content using opencode run with dry-run
-	# Pass PR number as argument to the command
-	dry_run_output=$(gum spin --title "Generating GitHub Pull Request review with OpenCode..." -- \
-		opencode run \
-		--command="gh.pr.review" \
+	# Create temporary file for PR diff
+	diff_file=$(_create_temp_file "gh-opencode-review-diff")
+	# shellcheck disable=SC2064
+	trap "rm -f '$diff_file'" RETURN
+
+	# Get PR diff using gh cli (--patch for full patch format)
+	if ! gh pr diff "$pr_number" --patch >"$diff_file" 2>/dev/null; then
+		gum log --level=error "Failed to get diff for PR #$pr_number"
+		return 1
+	fi
+
+	# Check if there's content
+	_require_file_not_empty "$diff_file" "No changes found in PR #$pr_number" || return 1
+
+	# Build the prompt from template
+	local prompt
+	prompt="$(cat "$template_dir/gh.pr.review.md")"
+
+	# Generate review content using opencode run
+	output=$(gum spin --title "Generating GitHub Pull Request review with OpenCode..." -- \
+		opencode run "$prompt" \
+		--file="$diff_file" \
 		--model="$model" \
-		--agent="build" \
-		--log-level="ERROR" \
-		-- "$pr_number --dry-run")
+		--log-level="ERROR")
 
 	# Check execution success
 	# shellcheck disable=SC2181
-	if [ $? -ne 0 ]; then
+	if [[ $? -ne 0 ]]; then
 		gum log --level=error "Failed to generate AI review. Aborting."
 		return 1
 	fi
 
-	# Extract review content from dry-run output
-	review_content=$(_extract_review_content "$dry_run_output")
+	# Extract review content from output
+	review_content=$(_extract_delimited_content "$output" "REVIEW_CONTENT")
 
 	if [[ -z "$review_content" ]]; then
 		gum log --level=error "Failed to extract review content from OpenCode output"
@@ -338,7 +381,7 @@ _gh_pr_review() {
 	fi
 
 	# Create review file from content
-	review_file=$(mktemp).md
+	review_file=$(_create_temp_file "gh-opencode-review")
 	echo "$review_content" >"$review_file"
 	trap 'rm -f "$review_file"' EXIT INT TERM
 
