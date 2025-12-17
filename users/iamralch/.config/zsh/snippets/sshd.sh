@@ -205,6 +205,7 @@ _write_env_secrets() {
 	# Read secrets and write export statements to file
 	{
 		echo "export GITHUB_TOKEN=\"$(_read_env_secret 'op://Personal/GitHub/Secrets/GITHUB_TOKEN')\""
+		echo "export GOOGLE_CLOUD_PROJECT=\"hippo-dev-analytics\""
 	} >"$file_path"
 }
 
