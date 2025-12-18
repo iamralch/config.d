@@ -4,39 +4,25 @@
 }:
 {
   environment.systemPackages = with pkgs; [
-    gh
-    sd
-    d2
-    gum
-    mdq
-    glab
-    glow
-    lnav
-    sshfs
-    usql
-    stow
-    nixd
-    nixfmt-rfc-style
-    deadnix
-    exiftool
-    moreutils
-    statix
     atlas
     atuin
     awscli2
-    entr
     bat
     bat-extras.core
-    quartoMinimal
     bottom
     buf
     bun
+    bun
     cfssl
     curl
+    d2
+    deadnix
     delta
     deno
     direnv
     dotnet-sdk
+    entr
+    exiftool
     exiftool
     extract_url
     eza
@@ -46,31 +32,37 @@
     fish
     fpp
     fzf
+    gh
     ghostscript
     git
     git-lfs
-    jjui
-    jujutsu
+    glab
+    glow
     gnumake
     gnused
     go
     google-cloud-sdk
+    gum
     htop
     hurl
     imagemagick
     jdk
+    jjui
     jq
-    lazyjj
-    lazygit
+    jujutsu
     julia-bin
+    lazygit
+    lazyjj
+    lnav
     lua51Packages.lua
     lua51Packages.luarocks
+    mdq
     mermaid-cli
+    moreutils
     neovim
+    nixd
+    nixfmt-rfc-style
     nmap
-    bun
-    pnpm
-    yarn
     nodePackages.neovim
     nodejs
     openssl
@@ -79,8 +71,9 @@
     php
     php84Packages.composer
     pnpm
-    pspg
+    pnpm
     protobuf
+    pspg
     pstree
     pwgen
     (python313.withPackages (
@@ -90,13 +83,18 @@
         pynvim
       ]
     ))
+    quartoMinimal
     readline
     ripgrep
     ruby
     rustup
+    sd
     silver-searcher
     sqlc
+    sshfs
     starship
+    statix
+    stow
     terraform
     terraform-docs
     tig
@@ -104,11 +102,14 @@
     tree
     typescript
     unzip
+    upterm
+    usql
     uv
     vifm
     vivid
     watch
     wget
+    yarn
     yt-dlp
     zig
     zinit

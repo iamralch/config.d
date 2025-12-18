@@ -90,3 +90,8 @@ style = 'yellow inverted'
 variable = 'TF_VAR_dns_name'
 format = 'in [$env_value]($style) '
 style = 'bright-blue bold'
+
+[env_var.UPTERM_ADMIN_SOCKET]
+variable = 'UPTERM_ADMIN_SOCKET'
+format = '[$env_value]($style) '
+style = 'bright-red inverted'

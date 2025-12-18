@@ -35,5 +35,7 @@ set -g renumber-windows on
 set -s escape-time 10
 set -sg repeat-time 600
 
-# kitty
+# clipboard management
 set -gq allow-passthrough on
+# upterm
+set -ga update-environment " UPTERM_ADMIN_SOCKET"
