@@ -17,8 +17,8 @@ export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CONFIG_HOME="$HOME/.config"
 # Set the directory we want to store zinit and plugins
 export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
-# Disable any telemetry
-export VECTORCODE_LOG_LEVEL="ERROR"
+# Hardcoded project configuration
+export GOOGLE_CLOUD_PROJECT="hippo-dev-analytics"
 
 # shellcheck disable=SC2155
 export GOPATH="$HOME/.local/share/go"
@@ -28,11 +28,6 @@ export GOPRIVATE="github.com/clichepress/*,github.com/hellohippo/*"
 if ssh-add -l >/dev/null 2>&1; then
   # shellcheck disable=SC2155
   export GITHUB_PERSONAL_ACCESS_TOKEN="$(gh auth token)"
-fi
-
-if [ -f "$XDG_DATA_HOME/zinit/config" ]; then
-	# shellcheck disable=SC1091
-	source "$XDG_DATA_HOME/zinit/config"
 fi
 
 # Set the application configuration files
@@ -82,6 +77,9 @@ for snippet in "$HOME/.config/zsh/snippets/"*.sh; do
   # shellcheck disable=SC1090
   [ -r "$snippet" ] && source "$snippet"
 done
+
+# Load secrets from macOS Keychain (populated by ssh-auth)
+_export_env_secrets
 
 # Load completions
 autoload -Uz compinit && compinit

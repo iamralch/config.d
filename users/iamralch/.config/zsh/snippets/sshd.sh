@@ -1,27 +1,13 @@
 #!/bin/bash -e
 
-# ==============================================================================
-# SSH Authentication and Tunneling Utilities
-# ==============================================================================
-# Shell functions for managing SSH authentication using 1Password and creating
-# SSH tunnels for development purposes. Features interactive UI with progress
-# indicators and structured logging for enhanced user experience.
-#
-# Dependencies:
-#   - op: 1Password CLI tool
-#   - ssh: OpenSSH client
-#   - gum: Charm CLI styling and interaction tool
-#   - mktemp: Temporary file creation utility
-#
-# Authentication:
-#   Requires 1Password CLI authentication:
-#   - op signin
-#   - Valid 1Password account access
-#
-# Usage:
-#   Source this file in your shell configuration:
-#   source ~/.config/zsh/snippets/sshd.sh
-# ==============================================================================
+# ------------------------------------------------------------------------------
+# Environment Secrets Configuration
+# ------------------------------------------------------------------------------
+# Service name for macOS Keychain storage
+ENV_SECRETS_VAULT="env-secrets"
+# List of environment variable names to store/retrieve from keychain
+# These must match field names under op://Personal/GitHub/Secrets/
+ENV_SECRETS_KEYS=("GITHUB_TOKEN")
 
 # ------------------------------------------------------------------------------
 # ssh-auth
@@ -29,8 +15,8 @@
 # Authenticate SSH using keys stored in 1Password and load environment secrets.
 #
 # This function retrieves SSH private keys from 1Password vaults, adds them to
-# the SSH agent with configurable expiration times, and loads various API keys
-# and secrets into environment variables.
+# the SSH agent with configurable expiration times, and stores various API keys
+# and secrets in macOS Keychain for secure retrieval.
 #
 # The function supports multiple profiles (personal/work) with different
 # 1Password vaults and can set custom key expiration times.
@@ -48,13 +34,13 @@
 #   - work: Uses team-em.1password.com account with different vault
 #
 # Environment Variables Set:
-#   - GITHUB_TOKEN: GitHub personal access token
+#   - GITHUB_TOKEN: GitHub personal access token (via ENV_SECRETS_KEYS)
 #
 # Security Features:
 #   - Temporary files are created with 600 permissions
 #   - SSH keys are automatically cleaned up after loading
 #   - Keys expire after specified time period
-#   - Secrets are loaded into temporary config file with actual values
+#   - Secrets are stored in macOS Keychain (encrypted at rest)
 #   - 1Password CLI handles secure secret retrieval
 #   - Environment variables are exported directly to current shell
 #
@@ -72,33 +58,15 @@
 #   ssh-auth --profile work -e 8h      # Load work SSH key for 8 hours
 # ------------------------------------------------------------------------------
 ssh-auth() {
-	# Vault Information
-	local vault_name="Private"
-	local vault_account="my.1password.com"
-	local vault_item_id="vxzzdak7qtvnts2rjwwvpcall4"
-	local key_expiration="${1:-"1h"}"
+	# Default values
+	local profile="personal"
+	local key_expiration="1h"
 
+	# Parse arguments
 	while [[ $# -gt 0 ]]; do
 		case "$1" in
 		-p | --profile)
-			case "$2" in
-			work)
-				vault_name="Employee"
-				vault_account="team-em.1password.com"
-				vault_item_id="6iyzh6xbx3aq3bdgph6jxyz2t4"
-				;;
-			personal)
-				# Already set as defaults, just show confirmation
-				vault_name="Private"
-				vault_account="my.1password.com"
-				vault_item_id="vxzzdak7qtvnts2rjwwvpcall4"
-				;;
-			*)
-				gum log --level error "Profile '$2' not found"
-				gum log --level warn "Available profiles: work, personal"
-				exit 1
-				;;
-			esac
+			profile="$2"
 			shift 2
 			;;
 		-e | --expiration)
@@ -106,10 +74,31 @@ ssh-auth() {
 			shift 2
 			;;
 		*)
+			gum log --level warn "Unknown option: $1"
 			shift
 			;;
 		esac
 	done
+
+	# Configure vault based on profile
+	local vault_name vault_account vault_item_id
+	case "$profile" in
+	work)
+		vault_name="Employee"
+		vault_account="team-em.1password.com"
+		vault_item_id="6iyzh6xbx3aq3bdgph6jxyz2t4"
+		;;
+	personal)
+		vault_name="Private"
+		vault_account="my.1password.com"
+		vault_item_id="vxzzdak7qtvnts2rjwwvpcall4"
+		;;
+	*)
+		gum log --level error "Profile '$profile' not found"
+		gum log --level warn "Available profiles: work, personal"
+		return 1
+		;;
+	esac
 
 	# Key Information
 	key_data=$(gum spin --title "Retrieving SSH key from $vault_account..." -- \
@@ -119,7 +108,7 @@ ssh-auth() {
 		gum log --level error "Failed to retrieve SSH key from 1Password"
 		gum log --level warn "Check your 1Password authentication and vault access"
 		gum log --level warn "Run: op signin --account $vault_account"
-		exit 1
+		return 1
 	fi
 
 	# Create a temporary file and ensure it's cleaned up
@@ -136,25 +125,21 @@ ssh-auth() {
 		gum log --level error "Failed to add SSH key to agent"
 		gum log --level warn "Make sure SSH agent is running: eval \$(ssh-agent)"
 		rm -f "$key_path"
-		exit 1
+		return 1
 	fi
 
 	# Cleanup
 	rm -f "$key_path"
 
-	# Create file with environment variable exports
-	config_path="$XDG_DATA_HOME/zinit/config"
-	# Write the environment secrets
-	_write_env_secrets "$config_path"
-	# Set the correct permissions
-	chmod 600 "$config_path"
-	# shellcheck disable=SC1090
-	source "$config_path"
+	# Store environment secrets in macOS Keychain
+	_write_env_secrets
+	# Load secrets into current shell
+	_export_env_secrets
 
 	# Success messages
 	gum log --level info "SSH authentication completed successfully"
 	gum log --level info "SSH key loaded with ${key_expiration} expiration"
-	gum log --level info "Environment secrets loaded"
+	gum log --level info "Environment secrets stored in Keychain"
 }
 
 # ------------------------------------------------------------------------------
@@ -173,40 +158,65 @@ _read_env_secret() {
 }
 
 # ------------------------------------------------------------------------------
+# _export_env_secrets
+# ------------------------------------------------------------------------------
+# Export environment secrets from macOS Keychain into the current shell.
+#
+# This function retrieves secrets that were previously stored by ssh-auth
+# from the macOS Keychain and exports them as environment variables.
+#
+# The secrets are stored under the service name defined in ENV_SECRETS_SERVICE
+# with account names matching the environment variable names in ENV_SECRETS_KEYS.
+#
+# If no secrets are found (e.g., ssh-auth hasn't been run yet), a warning
+# message is printed to stderr, but the function continues silently.
+#
+# Example:
+#   _export_env_secrets    # Load all configured secrets from keychain
+# ------------------------------------------------------------------------------
+_export_env_secrets() {
+	local loaded=0
+
+	for key in "${ENV_SECRETS_KEYS[@]}"; do
+		local value
+		if value=$(security find-generic-password -s "$ENV_SECRETS_VAULT" -a "$key" -w 2>/dev/null); then
+			export "$key=$value"
+			((loaded++))
+		fi
+	done
+
+	if [[ $loaded -eq 0 ]]; then
+		gum log --level warn "No environment secrets found in Keychain. Run 'ssh-auth' to load them."
+	fi
+}
+
+# ------------------------------------------------------------------------------
 # _write_env_secrets
 # ------------------------------------------------------------------------------
-# Helper function to retrieve environment secrets from 1Password and write them
-# to a configuration file with actual values.
+# Helper function to retrieve environment secrets from 1Password and store them
+# in macOS Keychain.
 #
 # This internal function is called by ssh-auth to handle the environment variable
-# loading process. It retrieves API keys and tokens from 1Password Personal vault
-# and writes export statements with the actual secret values to the specified file.
+# storage process. It retrieves API keys and tokens from 1Password Personal vault
+# and stores them in macOS Keychain under the ENV_SECRETS_SERVICE service name.
 #
-# Arguments:
-#   $1 - Output file path where export statements will be written
+# The function iterates over ENV_SECRETS_KEYS array and for each key:
+#   1. Reads the secret from 1Password at op://Personal/GitHub/Secrets/<key>
+#   2. Stores it in Keychain with -U flag (update if exists, create if not)
 #
 # 1Password Items Required:
-#   - op://Personal/GitHub/Secrets/GITHUB_TOKEN
-#
-# Output Format:
-#   The generated file contains export statements with actual secret values:
-#   export FIGMA_API_KEY="actual_figma_token_here"
-#   export CONTEXT7_API_KEY="actual_context7_key_here"
-#   export FIRECRAWL_API_KEY="actual_firecrawl_token_here"
-#   export GH_TOKEN="actual_github_token_here"
+#   - op://Personal/GitHub/Secrets/<ENV_VAR_NAME> for each key in ENV_SECRETS_KEYS
 #
 # Error Handling:
-#   Function will fail if any 1Password read operation fails or if the output
-#   file cannot be created. Errors are handled by the calling function.
+#   Function will fail if any 1Password read operation fails or if the keychain
+#   operation fails. Errors are handled by the calling function.
 # ------------------------------------------------------------------------------
 _write_env_secrets() {
-	local file_path="$1"
-
-	# Read secrets and write export statements to file
-	{
-		echo "export GITHUB_TOKEN=\"$(_read_env_secret 'op://Personal/GitHub/Secrets/GITHUB_TOKEN')\""
-		echo "export GOOGLE_CLOUD_PROJECT=\"hippo-dev-analytics\""
-	} >"$file_path"
+	for name in "${ENV_SECRETS_KEYS[@]}"; do
+		local value
+		value=$(_read_env_secret "op://Personal/GitHub/Secrets/$name")
+		security add-generic-password -U -s "$ENV_SECRETS_VAULT" -a "$name" -w "$value"
+	done
 }
 
 # ------------------------------------------------------------------------------
