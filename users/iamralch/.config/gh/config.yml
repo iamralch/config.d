@@ -8,14 +8,15 @@ prompt: enabled
 pager:
 # Aliases allow you to create nicknames for gh commands
 aliases:
-    co: pr checkout
-    pc: pr create --fill
-    pm: pr merge
-    pv: pr view
-    pw: pr review
-    pd: pr diff
-    st: pr status
-    ib: issue list --label="bug"
+  co: pr checkout
+  pc: pr create --fill
+  pm: pr merge
+  pv: pr view
+  pw: pr review
+  pd: pr diff
+  st: pr status
+  ib: issue list --label="bug"
+  oc: opencode
 # The path to a unix socket through which send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
 http_unix_socket:
 # What web browser gh should use when opening URLs. If blank, will refer to environment.
