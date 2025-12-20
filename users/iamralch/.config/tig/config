@@ -38,6 +38,15 @@ set line-graphics = utf-8
 # Enable syntax highlighting for diffs
 set diff-highlight = true
 
+# Set default split orientation to horizontal
+set vertical-split = no
+
+# Set default split width for better readability
+set split-view-width = 60%
+
+# Set default split height for better readability
+set split-view-height = 80%
+
 # ==============================================================================
 # Theme & Extensions
 # ==============================================================================
