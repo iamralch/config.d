@@ -23,7 +23,7 @@ color title-blur       white   black
 color delimiter        magenta default
 color author           cyan    default
 color date             blue    default
-color line-number      yellow  default
+color line-number      black   default
 color mode             cyan    default   bold
 
 # ── Main view (commit list) ──────────────────
