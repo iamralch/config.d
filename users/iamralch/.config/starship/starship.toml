@@ -1,3 +1,5 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
 scan_timeout = 30
 command_timeout = 1000
 
@@ -57,7 +59,7 @@ symbol = ' '
 format = '[󰄽 $all_status$ahead_behind 󰄾]($style) '
 
 [golang]
-symbol = ' '
+symbol = ' '
 
 [dotnet]
 symbol = ' '
@@ -70,21 +72,21 @@ disabled = false
 
 [custom.git_user]
 command = 'git config user.email'
-format = 'as [$symbol ($output)]($style) '
+format = 'as [$symbol($output)]($style) '
 ignore_timeout = true
-symbol = ''
+symbol = ' '
 when = true
 
 [env_var.HSDK_ENV_ID]
 variable = 'HSDK_ENV_ID'
-format = '[$symbol  $env_value]($style) '
-style = 'yellow bold'
-symbol = ""
+format = '[$symbol$env_value]($style) '
+style = 'bright-red bold'
+symbol = ' '
 
 [env_var.HSDK_ENV_ALIAS]
 variable = 'HSDK_ENV_ALIAS'
 format = '[$env_value]($style) '
-style = 'yellow inverted'
+style = 'bright-red inverted'
 
 [env_var.TF_VAR_dns_name]
 variable = 'TF_VAR_dns_name'
@@ -94,4 +96,4 @@ style = 'bright-blue bold'
 [env_var.UPTERM_ADMIN_SOCKET]
 variable = 'UPTERM_ADMIN_SOCKET'
 format = '[$env_value]($style) '
-style = 'bright-red inverted'
+style = 'bright-yellow inverted'
