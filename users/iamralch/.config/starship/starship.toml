@@ -39,8 +39,8 @@ disabled = false
 disabled = false
 format = '[$symbol$allowed]($style) '
 symbol = ''
-allowed_msg = " "
-denied_msg = " "
+allowed_msg = " "
+denied_msg = " "
 
 [aws]
 symbol = ' '
@@ -74,14 +74,14 @@ disabled = false
 command = 'git config user.email'
 format = 'as [$symbol($output)]($style) '
 ignore_timeout = true
-symbol = ' '
+symbol = '  '
 when = true
 
 [env_var.HSDK_ENV_ID]
 variable = 'HSDK_ENV_ID'
 format = '[$symbol$env_value]($style) '
 style = 'bright-red bold'
-symbol = ' '
+symbol = '  '
 
 [env_var.HSDK_ENV_ALIAS]
 variable = 'HSDK_ENV_ALIAS'
@@ -92,8 +92,3 @@ style = 'bright-red inverted'
 variable = 'TF_VAR_dns_name'
 format = 'in [$env_value]($style) '
 style = 'bright-blue bold'
-
-[env_var.UPTERM_ADMIN_SOCKET]
-variable = 'UPTERM_ADMIN_SOCKET'
-format = '[$env_value]($style) '
-style = 'bright-yellow inverted'
