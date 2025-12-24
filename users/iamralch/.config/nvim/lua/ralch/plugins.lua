@@ -3,7 +3,6 @@ return {
   "AstroNvim/astrocommunity",
 
   -- Completion
-  { import = "astrocommunity.completion.minuet-ai-nvim" },
   { import = "astrocommunity.completion.blink-cmp-git" },
   { import = "astrocommunity.completion.copilot-lua-cmp" },
 
