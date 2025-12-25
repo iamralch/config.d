@@ -262,16 +262,16 @@ bind status ghpm !gh pr merge -r -d                                    # Quick m
 # AI-Powered Operations
 # ==============================================================================
 # AI-assisted workflows for commit generation, code explanations, and reviews
-# All operations use OpenCode AI with interactive editing capabilities
+# All operations use assistant AI with interactive editing capabilities
 
 # AI Commit Generation
 # Generates commit message from staged changes, opens editor for review/editing
-bind status ac !gh opencode commit --edit
+bind status ac !gh assistant commit --edit
 
-# AI Operations by OpenCode
+# AI Operations by assistant
 # Current branch operations (status view) and branch-specific operations (refs view)
 # Ordered by typical AI-assisted workflow sequence
-bind status ghopc !gh opencode pr create --assignee @me --editor           # Most common: Create PR with AI
-bind status ghopr !gh opencode pr review                                   # Common: AI-assisted review
-bind refs   ghopc !gh opencode pr create %(branch) --assignee @me --editor # Branch-specific create
-bind refs   ghopr !gh opencode pr review %(branch)                         # Branch-specific review
+bind status ghopc !gh assistant pr create --assignee @me --editor           # Most common: Create PR with AI
+bind status ghopr !gh assistant pr review                                   # Common: AI-assisted review
+bind refs   ghopc !gh assistant pr create %(branch) --assignee @me --editor # Branch-specific create
+bind refs   ghopr !gh assistant pr review %(branch)                         # Branch-specific review
