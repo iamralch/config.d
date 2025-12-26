@@ -271,7 +271,7 @@ bind status ac !gh assistant commit --edit
 # AI Operations by assistant
 # Current branch operations (status view) and branch-specific operations (refs view)
 # Ordered by typical AI-assisted workflow sequence
-bind status ghopc !gh assistant pr create --assignee @me --editor           # Most common: Create PR with AI
-bind status ghopr !gh assistant pr review                                   # Common: AI-assisted review
-bind refs   ghopc !gh assistant pr create %(branch) --assignee @me --editor # Branch-specific create
-bind refs   ghopr !gh assistant pr review %(branch)                         # Branch-specific review
+bind status ghapc !gh assistant pr create --assignee @me --editor           # Most common: Create PR with AI
+bind status ghapr !gh assistant pr review                                   # Common: AI-assisted review
+bind refs   ghapc !gh assistant pr create %(branch) --assignee @me --editor # Branch-specific create
+bind refs   ghapr !gh assistant pr review %(branch)                         # Branch-specific review
