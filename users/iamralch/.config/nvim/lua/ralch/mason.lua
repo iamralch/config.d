@@ -28,11 +28,9 @@ return {
         "jupytext",
         "hadolint",
         "sqlfluff",
-        "pyright",
         "stylua",
         "hclfmt",
         "vale",
-        "ruff",
 
         -- install debuggers
         "debugpy",
@@ -76,7 +74,6 @@ return {
       opts.sources = require("astrocore").list_insert_unique(opts.sources, {
         -- formatting
         null_ls.builtins.formatting.buf,
-        null_ls.builtins.formatting.isort,
         null_ls.builtins.formatting.shfmt,
         null_ls.builtins.formatting.hclfmt,
         null_ls.builtins.formatting.yamlfmt,
