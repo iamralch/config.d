@@ -1,6 +1,5 @@
 {
   "ui": {
-    "theme": "$HOME/.config/gemini/themes/catppuccin-mocha.json",
     "hideBanner": true,
     "hideTips": true,
     "useFullWidth": true,
@@ -25,25 +24,28 @@
       "showColor": true
     }
   },
-  "context": {
-    "fileName": ["AGENTS.md", "CLAUDE.md", "GEMINI.md"]
-  },
   "mcpServers": {
     "sequential-thinking": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "filesystem": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "~/Projects"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "~/Projects"
+      ]
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"]
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp"]
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
     }
   }
 }

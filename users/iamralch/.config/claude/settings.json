@@ -3,9 +3,7 @@
     "allow": [
       "Edit(~/Projects/**)",
       "mcp__filesystem",
-      "mcp__playwright",
-      "mcp__context7",
-      "mcp__serena"
+      "mcp__playwright"
     ],
     "deny": [
       "Read(~/Desktop/**)",

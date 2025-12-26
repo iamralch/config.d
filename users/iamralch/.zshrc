@@ -112,3 +112,7 @@ function zvm_after_init() {
 
 # Options
 setopt PROMPT_SUBST
+
+export GEMINI_CLI_SYSTEM_SETTINGS_PATH="$HOME/.config/gemini/settings.json"
+# Aliases
+alias claude="claude --settings ~/.config/claude/settings.json --mcp-config ~/.config/claude/mcp.json"
