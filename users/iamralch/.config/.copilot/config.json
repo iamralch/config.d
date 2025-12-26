@@ -1,6 +1,16 @@
 {
   "banner": "never",
-  "theme": "auto",
+  "render_markdown": true,
   "screen_reader": false,
-  "render_markdown": true
+  "theme": "auto",
+  "last_logged_in_user": {
+    "host": "https://github.com",
+    "login": "iamralch"
+  },
+  "logged_in_users": [
+    {
+      "host": "https://github.com",
+      "login": "iamralch"
+    }
+  ]
 }
