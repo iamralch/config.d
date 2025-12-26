@@ -1,13 +1,12 @@
 return {
   -- Core
-  "AstroNvim/astrocommunity",
+  { "AstroNvim/astrocommunity" },
 
   -- Completion
   { import = "astrocommunity.completion.blink-cmp-git" },
-  { import = "astrocommunity.completion.copilot-lua-cmp" },
+  { import = "astrocommunity.completion.copilot-lua" },
 
   -- Editing Support
-  { import = "astrocommunity.ai.opencode-nvim" },
   { import = "astrocommunity.editing-support.refactoring-nvim" },
 
   -- Code Runner
