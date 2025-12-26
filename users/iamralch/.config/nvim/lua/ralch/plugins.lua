@@ -70,4 +70,7 @@ return {
   -- Workflow
   { import = "astrocommunity.workflow.hardtime-nvim" },
   { import = "astrocommunity.workflow.precognition-nvim" },
+
+  -- Extra plugins
+  { import = "ralch.extra" },
 }
