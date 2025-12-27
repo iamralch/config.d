@@ -13,12 +13,13 @@ format:
 .PHONY: install
 # install nix and homebrew (Darwin only)
 install:
-	@if [ "$$(uname -s)" != "Darwin" ]; then \
+	@if [ "$$(uname -s)" == "Darwin" ]; then \
+		curl -fsSL https://install.determinate.systems/nix | bash -s -- install --determinate && \
+		curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash \
+	else \
 		echo "ERROR: install is only supported on Darwin"; \
 		exit 1; \
-	fi && \
-	curl -fsSL https://install.determinate.systems/nix | bash -s -- install --determinate && \
-	curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
+	fi
 
 .PHONY: update
 # update the machine: make update host=<hostname>
