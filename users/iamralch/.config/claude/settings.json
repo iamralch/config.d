@@ -1,11 +1,9 @@
 {
   "permissions": {
-    "allow": [
-      "Edit(~/Projects/**)",
-      "mcp__filesystem",
-      "mcp__playwright"
-    ],
+    "allow": ["Edit(~/Projects/**)", "mcp__filesystem", "mcp__playwright"],
     "deny": [
+      "Bash(sudo:*)",
+      "Bash(rm -rf:*)",
       "Read(~/Desktop/**)",
       "Read(~/Documents/**)",
       "Read(~/Downloads/**)",
@@ -17,5 +15,6 @@
     "type": "command",
     "command": "npx -y @owloops/claude-powerline@latest --theme=rose-pine"
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "includeCoAuthoredBy": false
 }
