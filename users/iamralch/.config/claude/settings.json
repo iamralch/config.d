@@ -21,7 +21,7 @@
     "command": "npx -y @owloops/claude-powerline@latest --theme=rose-pine"
   },
   "extraKnownMarketplaces": {
-    "claude-contrib-mcp": {
+    "claude-mcp": {
       "source": {
         "source": "github",
         "repo": "claude-contrib/claude-mcp"
@@ -29,9 +29,9 @@
     }
   },
   "enabledPlugins": {
-    "filesystem-mcp@claude-contrib-mcp": true,
-    "playwright-mcp@claude-contrib-mcp": true,
-    "thinking-mcp@claude-contrib-mcp": true
+    "thinking-mcp@claude-mcp": true,
+    "filesystem-mcp@claude-mcp": true,
+    "playwright-mcp@claude-mcp": true
   },
   "alwaysThinkingEnabled": true,
   "includeCoAuthoredBy": false

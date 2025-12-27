@@ -1,5 +1,9 @@
 { lib, ... }:
 
+let
+  mkCopy = import ../../packages/mkcopy.nix { inherit lib; };
+  mkSymlink = import ../../packages/mksymlink.nix { inherit lib; };
+in
 {
   # Support
   xdg.enable = true;
@@ -10,16 +14,13 @@
     # User Packages
     packages = [ ];
 
-    # User Files
-    file = {
-      ".claude/settings.json".source = ./.config/claude/settings.json;
-      ".gemini/settings.json".source = ./.config/gemini/settings.json;
-    };
-    # Symlink dotfiles to home directory
     activation = {
-      linkDotfiles = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        ${../../scripts/symlink.sh} "${./.}" "$DRY_RUN_CMD"
-      '';
+      # Symlink directories (bypasses Nix store)
+      zshrc = mkSymlink "users/iamralch/.zshrc" "$HOME/.zshrc";
+      config = mkSymlink "users/iamralch/.config" "$HOME/.config";
+      # Copy files (activate the settings)
+      claude = mkCopy "users/iamralch/.config/claude/settings.json" "$HOME/.claude/settings.json";
+      gemini = mkCopy "users/iamralch/.config/gemini/settings.json" "$HOME/.gemini/settings.json";
     };
   };
 }

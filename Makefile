@@ -30,11 +30,9 @@ endif
 # update the machine
 update:
 ifeq ($(OS_TYPE),Linux)
-	nixos-rebuild switch --flake .#$(OS_HOST)
+	nixos-rebuild switch --flake .#$(OS_HOST) --impure
 else ifeq ($(OS_TYPE),Darwin)
-	darwin-rebuild switch --flake .#$(OS_HOST)
-	# nix run nix-darwin/nix-darwin-25.05#darwin-rebuild -- switch --flake .#$(OS_HOST)
+	darwin-rebuild switch --flake .#$(OS_HOST) --impure
 else
 	$(call not_supported)
 endif
-
