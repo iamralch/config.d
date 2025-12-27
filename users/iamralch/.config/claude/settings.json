@@ -1,6 +1,11 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "allow": ["Edit(~/Projects/**)", "mcp__filesystem", "mcp__playwright"],
+    "allow": [
+      "Edit(~/Projects/**)",
+      "mcp__filesystem",
+      "mcp__playwright"
+    ],
     "deny": [
       "Bash(sudo:*)",
       "Bash(rm -rf:*)",
@@ -15,20 +20,19 @@
     "type": "command",
     "command": "npx -y @owloops/claude-powerline@latest --theme=rose-pine"
   },
-  "alwaysThinkingEnabled": true,
-  "includeCoAuthoredBy": false,
-  "mcpServers": {
-    "sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "~/Projects"]
-    },
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"]
+  "extraKnownMarketplaces": {
+    "claude-contrib-mcp": {
+      "source": {
+        "source": "github",
+        "repo": "claude-contrib/claude-mcp"
+      }
     }
-  }
+  },
+  "enabledPlugins": {
+    "filesystem-mcp@claude-contrib-mcp": true,
+    "playwright-mcp@claude-contrib-mcp": true,
+    "thinking-mcp@claude-contrib-mcp": true
+  },
+  "alwaysThinkingEnabled": true,
+  "includeCoAuthoredBy": false
 }
