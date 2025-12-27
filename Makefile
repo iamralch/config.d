@@ -35,12 +35,3 @@ update:
 		echo "ERROR: update is not supported on $$(uname -s)"; \
 		exit 1; \
 	fi
-
-.PHONY: docker
-# build docker image: make docker image=<image-name>
-docker:
-	@if [ -z "$(image)" ]; then \
-		echo "ERROR: image is required. Usage: make docker image=<image-name>"; \
-		exit 1; \
-	fi && \
-	nix build .#dockerConfigurations.$(image) 

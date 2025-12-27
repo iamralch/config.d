@@ -9,11 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -28,15 +23,20 @@
       ...
     }@inputs:
     let
+      # System Constants
+      inherit (import ./modules/const.nix) systems;
+
       # Overlays is the list of overlays we want to apply from flake inputs.
       overlays = import ./overlays/default.nix;
 
+      # Make host function to create a nix Darwin host configuration
       mkHost = import ./packages/mkhost.nix {
         inherit overlays nixpkgs inputs;
       };
 
-      mkImage = import ./packages/mkimage.nix {
-        inherit overlays nixpkgs inputs;
+      # Make Shell function to create a development shell
+      mkShell = import ./packages/mkshell.nix {
+        inherit overlays nixpkgs;
       };
 
     in
@@ -51,9 +51,8 @@
         user = "iamralch";
       };
 
-      dockerConfigurations.oci-docker-prv = mkImage "oci-docker-prv" {
-        system = "aarch64-linux";
-        user = "iamralch";
-      };
+      devShells = nixpkgs.lib.genAttrs systems (system: {
+        default = mkShell system;
+      });
     };
 }
