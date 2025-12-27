@@ -1,38 +1,46 @@
-OS_TYPE := $(shell uname -s)
-OS_HOST := $(host)
-
-define not_supported
-	@echo "ERROR: $@ - $(OS_TYPE) is not supported"
-endef
-
 .PHONY: format
-# format the machine
+# format the machine (Linux only)
 format:
-ifeq ($(OS_TYPE),Linux)
-	nix --experimental-features "nix-command flakes" \
-		run github:nix-community/disko/latest -- --mode destroy,format,mount ./systems/nixos/partitions.nix
-  # generate the configuration
-	nixos-generate-config --root /mnt
-else
-	$(call not_supported)
-endif
+	@if [ "$$(uname -s)" = "Linux" ]; then \
+		nix --experimental-features "nix-command flakes" \
+			run github:nix-community/disko/latest -- --mode destroy,format,mount ./systems/nixos/partitions.nix && \
+		nixos-generate-config --root /mnt; \
+	else \
+		echo "ERROR: format is only supported on Linux"; \
+		exit 1; \
+	fi
 
 .PHONY: install
-# install the machine
+# install nix and homebrew (Darwin only)
 install:
-	curl -fsSL https://install.determinate.systems/nix | bash -s -- install --determinate
-
-ifeq ($(OS_TYPE),Darwin)
+	@if [ "$$(uname -s)" != "Darwin" ]; then \
+		echo "ERROR: install is only supported on Darwin"; \
+		exit 1; \
+	fi && \
+	curl -fsSL https://install.determinate.systems/nix | bash -s -- install --determinate && \
 	curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
-endif
 
 .PHONY: update
-# update the machine
+# update the machine: make update host=<hostname>
 update:
-ifeq ($(OS_TYPE),Linux)
-	nixos-rebuild switch --flake .#$(OS_HOST) --impure
-else ifeq ($(OS_TYPE),Darwin)
-	darwin-rebuild switch --flake .#$(OS_HOST) --impure
-else
-	$(call not_supported)
-endif
+	@if [ -z "$(host)" ]; then \
+		echo "ERROR: host is required. Usage: make update host=<hostname>"; \
+		exit 1; \
+	fi
+	@if [ "$$(uname -s)" = "Linux" ]; then \
+		nixos-rebuild switch --flake .#$(host) --impure; \
+	elif [ "$$(uname -s)" = "Darwin" ]; then \
+		darwin-rebuild switch --flake .#$(host) --impure; \
+	else \
+		echo "ERROR: update is not supported on $$(uname -s)"; \
+		exit 1; \
+	fi
+
+.PHONY: docker
+# build docker image: make docker image=<image-name>
+docker:
+	@if [ -z "$(image)" ]; then \
+		echo "ERROR: image is required. Usage: make docker image=<image-name>"; \
+		exit 1; \
+	fi && \
+	nix build .#dockerConfigurations.$(image) 

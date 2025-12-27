@@ -1,5 +1,5 @@
-# This function creates a NixOS system based on our VM setup for a
-# particular architecture.
+# This function creates a NixOS/Darwin host based on the
+# provided configuration.
 
 {
   nixpkgs,
@@ -15,18 +15,15 @@ name:
 
 let
   isDarwin = nixpkgs.lib.hasSuffix "darwin" system;
-
-  # System Modules
   system-name = if isDarwin then "macos" else "nixos";
-  # System builder function
+
   system-manager = if isDarwin then inputs.nix-darwin.lib.darwinSystem else nixpkgs.lib.nixosSystem;
-  # Home Manager
-  host-name = name;
+
   home-manager =
     if isDarwin then inputs.home-manager.darwinModules else inputs.home-manager.nixosModules;
 
   pkgs = import nixpkgs {
-    inherit system;
+    inherit system overlays;
     config = {
       allowUnfree = true;
       allowBroken = true;
@@ -34,41 +31,28 @@ let
     };
   };
 
+  # Read-only pkgs module path
+  readOnlyPkgs = "${nixpkgs}/nixos/modules/misc/nixpkgs/read-only.nix";
+
 in
 system-manager {
   inherit system;
 
-  specialArgs = {
-    inherit
-      inputs
-      pkgs
-      ;
-  };
-
   modules = [
-    # Apply our overlays. Overlays are keyed by system type so we have
-    # to go through and apply our system type. We do this first so
-    # the overlays are available globally.
-    { nixpkgs.overlays = overlays; }
-
-    # system configuration
+    { nixpkgs.pkgs = pkgs; }
     ../systems/share
     ../systems/${system-name}
-    # host configuration
-    ../hosts/${host-name}.nix
-    # user configuration
+    ../hosts/${name}.nix
     ../users/${user}/${system-name}.nix
-    # home-manager configuration
     home-manager.home-manager
     {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        extraSpecialArgs = {
-          inherit inputs pkgs;
-        };
-        users.${user} = ../users/${user}/home.nix;
+        extraSpecialArgs = { };
+        users.${user} = ../users/${user}/home/${system-name}.nix;
       };
     }
-  ];
+  ]
+  ++ (if isDarwin then [ inputs.determinate.darwinModules.default ] else [ readOnlyPkgs ]);
 }

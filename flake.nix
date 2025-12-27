@@ -9,10 +9,17 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
   };
 
   outputs =
@@ -24,23 +31,28 @@
       # Overlays is the list of overlays we want to apply from flake inputs.
       overlays = import ./overlays/default.nix;
 
-      mkSystem = import ./packages/mksystem.nix {
-        inherit
-          overlays
-          nixpkgs
-          inputs
-          ;
+      mkHost = import ./packages/mkhost.nix {
+        inherit overlays nixpkgs inputs;
+      };
+
+      mkImage = import ./packages/mkimage.nix {
+        inherit overlays nixpkgs inputs;
       };
 
     in
     {
-      darwinConfigurations.bm-macbook-pro-m1-prv = mkSystem "bm-macbook-pro-m1-prv" {
+      darwinConfigurations.bm-macbook-pro-m1-prv = mkHost "bm-macbook-pro-m1-prv" {
         system = "aarch64-darwin";
         user = "iamralch";
       };
 
-      darwinConfigurations.bm-macbook-pro-m1-wrk = mkSystem "bm-macbook-pro-m1-wrk" {
+      darwinConfigurations.bm-macbook-pro-m1-wrk = mkHost "bm-macbook-pro-m1-wrk" {
         system = "aarch64-darwin";
+        user = "iamralch";
+      };
+
+      dockerConfigurations.oci-docker-prv = mkImage "oci-docker-prv" {
+        system = "aarch64-linux";
         user = "iamralch";
       };
     };
