@@ -38,7 +38,3 @@ else
 	$(call not_supported)
 endif
 
-.PHONY: home
-# update the home
-home:
-	stow -v -t $(HOME) -d users/$(USER) --ignore=.*\.nix .

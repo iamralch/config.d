@@ -94,7 +94,6 @@
     sshfs
     starship
     statix
-    stow
     terraform
     terraform-docs
     tig

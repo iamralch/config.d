@@ -64,13 +64,10 @@ system-manager {
       home-manager = {
         useGlobalPkgs = true;
         useUserPackages = true;
-        extraSpecialArgs = { inherit inputs; };
-        users.${user} = import ../users/${user}/home.nix {
-          inherit
-            inputs
-            pkgs
-            ;
+        extraSpecialArgs = {
+          inherit inputs pkgs;
         };
+        users.${user} = ../users/${user}/home.nix;
       };
     }
   ];
