@@ -1,10 +1,12 @@
 # config.d
 
-My NixOS Configuration
+NixOS Configuration
 
 ## Getting Started
 
 ```bash
-# update the host
+# Clone the repository
+git clone --recurse-submodules git@github.com:iamralch/nix.d.git
+# Update the workstation
 make update host=<TARGET_HOST>
 ```
