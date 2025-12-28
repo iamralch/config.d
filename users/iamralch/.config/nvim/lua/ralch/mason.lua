@@ -23,7 +23,6 @@ return {
         "markdownlint-cli2",
         "golangci-lint",
         "prettierd",
-        "swiftlint",
         "yamlfmt",
         "jupytext",
         "hadolint",
