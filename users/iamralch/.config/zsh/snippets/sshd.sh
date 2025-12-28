@@ -269,7 +269,7 @@ ssh-tunnel() {
 }
 
 # ------------------------------------------------------------------------------
-# ssh-docker
+# ssh-devpod
 # ------------------------------------------------------------------------------
 # SSH into a DevPod development container.
 #
@@ -291,11 +291,11 @@ ssh-tunnel() {
 #   - SSH config populated by DevPod (entries like: <workspace>.devpod)
 #
 # Example:
-#   ssh-docker                              # Connect to DevPod for current directory
-#   ssh-docker ~/Projects/myapp             # Connect to DevPod for 'myapp' project
-#   ssh-docker /path/to/project-name        # Connect to 'project-name.devpod'
+#   ssh-devpod                              # Connect to DevPod for current directory
+#   ssh-devpod ~/Projects/myapp             # Connect to DevPod for 'myapp' project
+#   ssh-devpod /path/to/project-name        # Connect to 'project-name.devpod'
 # ------------------------------------------------------------------------------
-ssh-docker() {
+ssh-devpod() {
 	local target_dir="${1:-$PWD}"
 	local target_host
 
