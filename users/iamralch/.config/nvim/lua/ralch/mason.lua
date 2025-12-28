@@ -23,6 +23,8 @@ return {
         "markdownlint-cli2",
         "golangci-lint",
         "prettierd",
+        "terraform",
+        -- "swiftlint",
         "yamlfmt",
         "jupytext",
         "hadolint",
@@ -39,7 +41,9 @@ return {
         "tree-sitter-cli",
         "goimports",
         "sqlfluff",
+        -- "tectonic",
         "impl",
+        "buf",
       },
     },
   },
@@ -47,6 +51,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
+        -- "latex",
         "lua",
         "norg",
         "regex",
