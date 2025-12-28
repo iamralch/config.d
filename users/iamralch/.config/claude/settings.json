@@ -5,13 +5,16 @@
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(sudo:*)",
+      "Bash(grep:*)",
       "Bash(rm -rf:*)"
     ],
     "allow": [
+      "Bash(cat:*)",
+      "Bash(grep:*)",
       "Read(~/Projects/**)",
       "Edit(~/Projects/**)",
-      "mcp__plugin_thinking",
-      "mcp__plugin_playwright"
+      "mcp__plugin_thinking-*",
+      "mcp__plugin_playwright-*"
     ],
     "deny": [
       "Read(~/**)"
