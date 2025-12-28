@@ -12,8 +12,8 @@ window-padding-balance = true
 window-inherit-font-size = false
 
 # font configuration
-font-family = "VictorMono NF"
-font-style = "semibold"
+font-family = "JetBrainsMono NF"
+font-style = "regular"
 font-size = 16.0
 
 # cursor configuration
