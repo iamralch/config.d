@@ -39,7 +39,6 @@ return {
         "tree-sitter-cli",
         "goimports",
         "sqlfluff",
-        "tectonic",
         "impl",
       },
     },
@@ -48,7 +47,6 @@ return {
     "nvim-treesitter/nvim-treesitter",
     opts = {
       ensure_installed = {
-        "latex",
         "lua",
         "norg",
         "regex",

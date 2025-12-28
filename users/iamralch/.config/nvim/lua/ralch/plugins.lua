@@ -35,7 +35,6 @@ return {
   { import = "astrocommunity.pack.docker" },
   { import = "astrocommunity.pack.fish" },
   { import = "astrocommunity.pack.go" },
-  { import = "astrocommunity.pack.jj" },
   { import = "astrocommunity.pack.harper" },
   { import = "astrocommunity.pack.hurl" },
   { import = "astrocommunity.pack.html-css" },
@@ -50,7 +49,6 @@ return {
   { import = "astrocommunity.pack.terraform" },
   { import = "astrocommunity.pack.toml" },
   { import = "astrocommunity.pack.typescript" },
-  { import = "astrocommunity.pack.xml" },
   { import = "astrocommunity.pack.yaml" },
   { import = "astrocommunity.pack.zig" },
 
