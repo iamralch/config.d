@@ -3,9 +3,9 @@ return {
   -- Use mason-tool-installer for automatically installing Mason packages
   {
     "WhoIsSethDaniel/mason-tool-installer.nvim",
-    opts = {
+    opts = function(_, opts)
       -- Make sure to use the names found in `:Mason`
-      ensure_installed = {
+      opts.ensure_installed = {
         -- install language servers
         "typescript-language-server",
         "lua-language-server",
@@ -24,7 +24,6 @@ return {
         "golangci-lint",
         "prettierd",
         "terraform",
-        -- "swiftlint",
         "yamlfmt",
         "jupytext",
         "hadolint",
@@ -41,17 +40,24 @@ return {
         "tree-sitter-cli",
         "goimports",
         "sqlfluff",
-        -- "tectonic",
         "impl",
         "buf",
-      },
-    },
+      }
+
+      -- Add packages that are only available outside DevPod
+      if vim.env.DEVPOD ~= "true" then
+        vim.list_extend(opts.ensure_installed, {
+          "swiftlint",
+          "tectonic",
+        })
+      end
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = {
-      ensure_installed = {
-        -- "latex",
+    opts = function(_, opts)
+      opts.ensure_installed = opts.ensure_installed or {}
+      vim.list_extend(opts.ensure_installed, {
         "lua",
         "norg",
         "regex",
@@ -59,8 +65,15 @@ return {
         "typst",
         "vim",
         "vue",
-      },
-    },
+      })
+
+      -- Add parsers that are only available outside DevPod
+      if vim.env.DEVPOD ~= "true" then
+        vim.list_extend(opts.ensure_installed, {
+          "latex",
+        })
+      end
+    end,
   },
   {
     "nvimtools/none-ls.nvim",

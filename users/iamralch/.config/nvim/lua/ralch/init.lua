@@ -27,7 +27,7 @@ require("lazy").setup({
         g = {
           -- Use nix-managed Python with pynvim and pip installed
           -- Configured in systems/share/packages.nix with python313.withPackages
-          python3_host_prog = "/run/current-system/sw/bin/python3",
+          python3_host_prog = vim.env.DEVPOD ~= "true" and "/run/current-system/sw/bin/python3" or nil,
         },
       },
     },
