@@ -37,5 +37,3 @@ set -sg repeat-time 600
 
 # clipboard management
 set -gq allow-passthrough on
-# upterm
-set -ga update-environment " UPTERM_ADMIN_SOCKET"
