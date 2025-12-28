@@ -4,7 +4,7 @@
 set -g default-terminal "tmux-256color"
 # set the terminal-overrides
 set -sa terminal-overrides ",tmux-256color:RGB"
-set -ga terminal-features '*:RGB:hyperlinks:usstyle'
+set -ga terminal-features '*:RGB:hyperlinks:usstyle:clipboard'
 
 # set the titles dynamically
 set -g set-titles on
@@ -37,3 +37,6 @@ set -sg repeat-time 600
 
 # clipboard management
 set -gq allow-passthrough on
+
+# Enable OSC 52 clipboard
+set -g set-clipboard on
