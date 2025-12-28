@@ -267,3 +267,38 @@ _write_env_secrets() {
 ssh-tunnel() {
 	ssh -p 443 -R0:localhost:"$1" qr@a.pinggy.io
 }
+
+# ------------------------------------------------------------------------------
+# ssh-devpod
+# ------------------------------------------------------------------------------
+# SSH into a DevPod development container.
+#
+# This function connects to a DevPod (https://devpod.sh) development container
+# using SSH. DevPod automatically configures SSH access to containers, adding
+# host entries with a `.devpod` suffix to your SSH config.
+#
+# The function determines the target container by extracting the basename from
+# a directory path. This allows you to quickly connect to the DevPod container
+# associated with a project directory.
+#
+# Arguments:
+#   $1 - Target directory path (optional, default: current working directory)
+#        The basename of this path is used as the DevPod workspace name
+#
+# Prerequisites:
+#   - DevPod CLI installed and configured
+#   - DevPod workspace already created for the target project
+#   - SSH config populated by DevPod (entries like: <workspace>.devpod)
+#
+# Example:
+#   ssh-devpod                              # Connect to DevPod for current directory
+#   ssh-devpod ~/Projects/myapp             # Connect to DevPod for 'myapp' project
+#   ssh-devpod /path/to/project-name        # Connect to 'project-name.devpod'
+# ------------------------------------------------------------------------------
+ssh-devpod() {
+	local target_dir="${1:-$PWD}"
+	local target_host
+
+	target_host="$(basename "$target_dir")"
+	ssh "${target_host}.devpod"
+}
