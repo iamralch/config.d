@@ -1,5 +1,8 @@
 # vim:set ft=tmux:
 
+# tmux-theme configuration
+source-file "$TMUX_PLUGIN_MANAGER_PATH/tmux-theme/themes/catppuccin-mocha.conf"
+
 # Separators
 set -g @separator ""
 
