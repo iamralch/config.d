@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 # ==============================================================================
 # HSDK Environment Selection Utilities
@@ -14,7 +14,10 @@
 #
 # Usage:
 #   Source this file in your shell configuration:
-#   source ~/.config/zsh/snippets/hsdk.sh
+#     source ~/.config/zsh/snippets/hsdk.sh
+#
+#   Or run directly for tmux integration:
+#     ~/.config/zsh/snippets/hsdk.sh --tmux
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -81,3 +84,13 @@ hsdk-env-fzf() {
 hsdk-env-set() {
 	hsdk se "$(hsdk-env-fzf)"
 }
+
+# ------------------------------------------------------------------------------
+# Direct Execution Support
+# ------------------------------------------------------------------------------
+# When run directly (not sourced), execute hsdk-env-fzf with provided arguments.
+# This enables tmux integration via: ~/.config/zsh/snippets/hsdk.sh --tmux
+# ------------------------------------------------------------------------------
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+	hsdk-env-fzf "$@"
+fi
