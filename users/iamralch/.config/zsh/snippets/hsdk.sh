@@ -48,12 +48,15 @@
 # ------------------------------------------------------------------------------
 hsdk-env-fzf() {
 	local hsdk_env_list
+	local hsdk_env_list_columns
 
 	# Query HSDK for environments and format as tab-separated values:
 	# Column 1: Environment ID
 	# Column 2: Environment Name
 	# Column 3: AWS Console URL (SSO URL + account info)
-	hsdk_env_list=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r '.[] | "\(.Id)\t\(.Name)\t\(.AWSSsoUrl)/#/console?account_id=\(.AWSAccountId)&role_name=AdministratorAccess"' | column -t -s $'\t')
+	hsdk_env_list_columns='["Id", "Name", "Description", "URL"], (.[] | [.Id, .Name, .Description, .AWSSsoUrl + "/#/console?account_id=" + .AWSAccountId + "&role_name=AdministratorAccess"]) | @tsv'
+	# Get the raw data
+	hsdk_env_list=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r "$hsdk_env_list_columns" | column -t -s $'\t')
 
 	# Display in fzf with:
 	# --with-nth=1,2: Show only ID and Name columns (hide URL)
@@ -61,12 +64,13 @@ hsdk-env-fzf() {
 	# --bind 'ctrl-o:become(open {3})': Open browser with URL on ctrl-o
 	echo "$hsdk_env_list" | fzf --ansi \
 		--border none \
-		--with-nth=1,2 \
 		--accept-nth=1 \
+		--with-nth=1..-2 \
 		--tmux 100%,100% \
+		--header-lines 1 \
+		--color header:cyan \
 		--header='  Environment' \
-		--color=header:cyan \
-		--bind 'ctrl-o:execute-silent(open {3})'
+		--bind 'ctrl-o:execute-silent(open {-1})'
 }
 
 # ------------------------------------------------------------------------------
