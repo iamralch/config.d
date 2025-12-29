@@ -217,13 +217,13 @@ bind status X !git clean -fd
 # GitHub Browsing
 # Opens content in GitHub web interface - behavior varies by view context
 # Ordered by view usage priority: most common views first
-bind main   <C-o> !gh browse %(commit)          # Most used view
-bind status <C-o> !gh browse %(file)            # Very common view
-bind refs   <C-o> !gh browse --branch %(branch) # Common view
-bind log    <C-o> !gh browse %(commit)          # Common view
-bind stage  <C-o> !gh browse %(file)            # Common view
-bind blob   <C-o> !gh browse %(file):%(lineno)  # Moderate usage
-bind blame  <C-o> !gh browse %(file):%(lineno)  # Moderate usage
+bind main   <C-o> @gh browse %(commit)          # Most used view
+bind status <C-o> @gh browse %(file)            # Very common view
+bind refs   <C-o> @gh browse --branch %(branch) # Common view
+bind log    <C-o> @gh browse %(commit)          # Common view
+bind stage  <C-o> @gh browse %(file)            # Common view
+bind blob   <C-o> @gh browse %(file):%(lineno)  # Moderate usage
+bind blame  <C-o> @gh browse %(file):%(lineno)  # Moderate usage
 
 # GitHub URL Copying
 # Copies GitHub URLs to clipboard without opening browser - mirrors <C-o> bindings
