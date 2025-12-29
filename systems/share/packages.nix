@@ -7,11 +7,11 @@
     atlas
     atuin
     awscli2
+    asciinema_3
     bat
     bat-extras.core
     bottom
     buf
-    bun
     bun
     cfssl
     curl
