@@ -60,11 +60,13 @@ hsdk-env-fzf() {
 	# --accept-nth=1: Return only the Environment ID on selection
 	# --bind 'ctrl-o:become(open {3})': Open browser with URL on ctrl-o
 	echo "$hsdk_env_list" | fzf --ansi \
+		--border none \
 		--with-nth=1,2 \
 		--accept-nth=1 \
+		--tmux 100%,100% \
 		--header='  Environment' \
 		--color=header:cyan \
-		--bind 'ctrl-o:become(open {3})+abort'
+		--bind 'ctrl-o:execute-silent(open {3})'
 }
 
 # ------------------------------------------------------------------------------
