@@ -27,4 +27,4 @@ bind BTab switch-client -l
 bind Tab last-window
 
 # hsdk environment selection
-bind -n M-h run-shell "~/.config/zsh/snippets/hsdk.sh || true"
+bind -n M-h run-shell "~/.config/zsh/snippets/hsdk.sh > /dev/null || true"

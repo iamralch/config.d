@@ -84,7 +84,11 @@ hsdk-env-fzf() {
 #   hsdk-env-set
 # ------------------------------------------------------------------------------
 hsdk-env-set() {
-	hsdk se "$(hsdk-env-fzf)"
+	local selected_env
+	selected_env=$(hsdk-env-fzf)
+	if [[ -n "$selected_env" ]]; then
+		eval "$(hsdk se "$selected_env")"
+	fi
 }
 
 # ------------------------------------------------------------------------------
