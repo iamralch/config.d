@@ -7,7 +7,10 @@
 ENV_SECRETS_VAULT="env-secrets"
 # List of environment variable names to store/retrieve from keychain
 # These must match field names under op://Personal/GitHub/Secrets/
-ENV_SECRETS_KEYS=("GITHUB_TOKEN")
+ENV_SECRETS_KEYS=(
+	"op://Personal/GitHub/Secrets/GITHUB_TOKEN"
+	"op://Personal/Anthropic/Secrets/CLAUDE_CODE_OAUTH_TOKEN"
+)
 
 # ------------------------------------------------------------------------------
 # ssh-auth
@@ -177,10 +180,13 @@ _read_env_secret() {
 _export_env_secrets() {
 	local loaded=0
 
+	local name
+	local value
+	# Load each secret from Keychain and export as env var
 	for key in "${ENV_SECRETS_KEYS[@]}"; do
-		local value
-		if value=$(security find-generic-password -s "$ENV_SECRETS_VAULT" -a "$key" -w 2>/dev/null); then
-			export "$key=$value"
+		name=$(basename "$key")
+		if value=$(security find-generic-password -s "$ENV_SECRETS_VAULT" -a "$name" -w 2>/dev/null); then
+			export "$name=$value"
 			((loaded++))
 		fi
 	done
@@ -212,9 +218,12 @@ _export_env_secrets() {
 #   operation fails. Errors are handled by the calling function.
 # ------------------------------------------------------------------------------
 _write_env_secrets() {
-	for name in "${ENV_SECRETS_KEYS[@]}"; do
-		local value
-		value=$(_read_env_secret "op://Personal/GitHub/Secrets/$name")
+	local name
+	local value
+	# Write each secret to Keychain
+	for key in "${ENV_SECRETS_KEYS[@]}"; do
+		name=$(basename "$key")
+		value=$(_read_env_secret "$key")
 		security add-generic-password -U -s "$ENV_SECRETS_VAULT" -a "$name" -w "$value"
 	done
 }

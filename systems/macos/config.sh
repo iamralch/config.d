@@ -1,6 +1,6 @@
-#!/bin/bash -x
+#!/bin/bash
 
-[ -z "$DEBUG" ] || set -x
+[ -n "$DEBUG" ] && set -x
 
 ###############################################################################
 # System                                                                      #
@@ -60,6 +60,7 @@ defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
 
 # Disable the “Are you sure you want to open this application?” dialog
+# WARNING: This disables Gatekeeper security warnings - only enable if you understand the security implications
 defaults write com.apple.LaunchServices LSQuarantine -bool false
 
 # Disable automatic capitalization as it’s annoying when typing code
@@ -264,12 +265,6 @@ defaults write com.apple.dock static-only -bool true
 # Don’t show recent applications in Dock
 defaults write com.apple.dock show-recents -bool false
 
-# Disable Dashboard
-defaults write com.apple.dashboard mcx-disabled -bool true
-
-# Don’t show Dashboard as a Space
-defaults write com.apple.dock dashboard-in-overlay -bool true
-
 # Remove the auto-hiding Dock delay.
 defaults write com.apple.dock autohide-delay -float 0
 
@@ -459,8 +454,6 @@ defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
 # Prevent Time Machine from prompting to use new hard drives as backup volume
 defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
 
-# Disable local Time Machine backups
-hash tmutil &>/dev/null && tmutil disablelocal
 
 ###############################################################################
 # Photos                                                                      #
@@ -528,7 +521,7 @@ defaults write com.apple.terminal StringEncodings -array 4
 ###############################################################################
 # Hammerspoon                                                                 #
 ###############################################################################
-defaults write org.hammerspoon.Hammerspoon MJConfigFile "$HOME/.config/hammerspoon/init.lua"
+defaults write org.hammerspoon.Hammerspoon MJConfigFile "${HOME}/.config/hammerspoon/init.lua"
 
 ###############################################################################
 # Kill/restart affected applications                                          #

@@ -11,6 +11,7 @@
     "allow": [
       "Bash(jq:*)",
       "Bash(fd:*)",
+      "Bash(sed:*)",
       "Bash(cat:*)",
       "Bash(grep:*)",
       "Read(~/Projects/**)",
@@ -20,7 +21,9 @@
       "mcp__playwright__*"
     ],
     "deny": [
-      "Read(~/**)"
+      "Read(~/Desktop/**)",
+      "Read(~/Documents/**)",
+      "Read(~/Downloads/**)"
     ],
     "defaultMode": "plan"
   },
