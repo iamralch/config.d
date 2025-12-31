@@ -4,7 +4,6 @@ return {
 
   -- Completion
   { import = "astrocommunity.completion.blink-cmp-git" },
-  { import = "astrocommunity.completion.copilot-lua" },
 
   -- Editing Support
   { import = "astrocommunity.editing-support.refactoring-nvim" },
