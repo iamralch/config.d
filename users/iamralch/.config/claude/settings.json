@@ -14,6 +14,7 @@
       "Bash(sed:*)",
       "Bash(cat:*)",
       "Bash(grep:*)",
+      "Bash(find:*)",
       "Read(~/Projects/**)",
       "Edit(~/Projects/**)",
       "mcp__filesystem*",
