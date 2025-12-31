@@ -5,20 +5,20 @@
       "Bash(gh:*)",
       "Bash(git:*)",
       "Bash(sudo:*)",
-      "Bash(grep:*)",
       "Bash(rm -rf:*)"
     ],
     "allow": [
       "Bash(jq:*)",
       "Bash(fd:*)",
+      "Bash(awk:*)",
       "Bash(sed:*)",
       "Bash(cat:*)",
       "Bash(grep:*)",
       "Read(~/Projects/**)",
       "Edit(~/Projects/**)",
-      "mcp__thinking__*",
-      "mcp__filesystem__*",
-      "mcp__playwright__*"
+      "mcp__filesystem*",
+      "mcp__playwright*",
+      "mcp__sequential*"
     ],
     "deny": [
       "Read(~/Desktop/**)",
