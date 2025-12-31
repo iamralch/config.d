@@ -59,7 +59,7 @@ _hsdk_env_fzf() {
 	# --with-nth=1..-2: Show all columns except the last (hide URL)
 	# --accept-nth=1: Return only the Environment ID on selection
 	# --bind 'ctrl-o:...': Open browser with URL on ctrl-o
-	# --bind 'ctrl-w:...': Open new tmux window with selected environment
+	# --bind 'ctrl-n:...': Open new tmux window with selected environment
 	echo "$hsdk_env_list" | fzf --ansi \
 		--border none \
 		--accept-nth=1 \

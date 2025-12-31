@@ -22,3 +22,5 @@ http_unix_socket:
 # What web browser gh should use when opening URLs. If blank, will refer to environment.
 browser:
 version: "1"
+# gh-fzf extension configuration
+fzf.clone_base: ~/Projects
