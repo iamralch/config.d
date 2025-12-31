@@ -9,12 +9,15 @@
       "Bash(rm -rf:*)"
     ],
     "allow": [
+      "Bash(jq:*)",
+      "Bash(fd:*)",
       "Bash(cat:*)",
       "Bash(grep:*)",
       "Read(~/Projects/**)",
       "Edit(~/Projects/**)",
-      "mcp__plugin_thinking-*",
-      "mcp__plugin_playwright-*"
+      "mcp__thinking__*",
+      "mcp__filesystem__*",
+      "mcp__playwright__*"
     ],
     "deny": [
       "Read(~/**)"
