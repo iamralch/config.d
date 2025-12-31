@@ -69,7 +69,7 @@ _hsdk_env_fzf() {
 		--color header:cyan \
 		--header='  Environment' \
 		--bind 'ctrl-o:execute-silent(open {-1})' \
-		--bind 'ctrl-n:become(tmux new-window -n aws/{1} "~/.config/zsh/snippets/hsdk.sh --exec {1}")'
+		--bind 'ctrl-n:become(tmux new-window -n {1} "~/.config/zsh/snippets/hsdk.sh --exec {1}")'
 }
 
 # ------------------------------------------------------------------------------
@@ -117,8 +117,15 @@ hsdk-env() {
 
 	# Set the environment
 	if [[ -n "$env_id" ]]; then
-		eval "$(hsdk se "$env_id")"
+		# Apply custom tmux window styling if in a tmux session
+		if [[ "$exec_shell" == true ]] && [[ -n "$TMUX" ]]; then
+			# Style active window with yellow background, bold text, and AWS icon
+			tmux set-window-option window-status-current-format "#[fg=#{@thm_bg},bg=#{@thm_yellow},bold] #I:   #W #F "
+			# Style inactive window with yellow foreground and AWS icon
+			tmux set-window-option window-status-format "#[fg=#{@thm_yellow},bg=#{@thm_bg}] #I:   #W #F "
+		fi
 
+		eval "$(hsdk se "$env_id")"
 		# Optionally exec new shell (for tmux new-window)
 		if [[ "$exec_shell" == true ]]; then
 			exec $SHELL

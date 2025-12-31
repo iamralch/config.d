@@ -80,13 +80,13 @@ when = true
 [env_var.HSDK_ENV_ID]
 variable = 'HSDK_ENV_ID'
 format = '[$symbol$env_value]($style) '
-style = 'bright-red bold'
+style = 'bright-yellow bold'
 symbol = '  '
 
 [env_var.HSDK_ENV_ALIAS]
 variable = 'HSDK_ENV_ALIAS'
 format = '[$env_value]($style) '
-style = 'bright-red inverted'
+style = 'bright-yellow bold inverted'
 
 [env_var.TF_VAR_dns_name]
 variable = 'TF_VAR_dns_name'
