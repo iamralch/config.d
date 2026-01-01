@@ -66,6 +66,7 @@ _hsdk_env_fzf() {
 		--with-nth 1..-2 \
 		--tmux 100%,100% \
 		--color header:cyan \
+		--color footer:cyan \
 		--header-lines 1 \
 		--header-border sharp \
 		--footer '  Environment' \
