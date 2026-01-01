@@ -52,7 +52,7 @@ _hsdk_env_fzf() {
 	# Column 2: Environment Name
 	# Column 3: Description
 	# Column 4: AWS Console URL (SSO URL + account info)
-	hsdk_env_list_columns='["Id", "Name", "Description", "URL"], (.[] | [.Id, .Name, .Description, .AWSSsoUrl + "/#/console?account_id=" + .AWSAccountId + "&role_name=AdministratorAccess"]) | @tsv'
+	hsdk_env_list_columns='["ID", "NAME", "DESCRIPTION", "URL"], (.[] | [.Id, .Name, .Description, .AWSSsoUrl + "/#/console?account_id=" + .AWSAccountId + "&role_name=AdministratorAccess"]) | @tsv'
 	hsdk_env_list=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r "$hsdk_env_list_columns" | column -t -s $'\t')
 
 	# Display in fzf with:
@@ -62,12 +62,16 @@ _hsdk_env_fzf() {
 	# --bind 'ctrl-n:...': Open new tmux window with selected environment
 	echo "$hsdk_env_list" | fzf --ansi \
 		--border none \
-		--accept-nth=1 \
-		--with-nth=1..-2 \
+		--accept-nth 1 \
+		--with-nth 1..-2 \
 		--tmux 100%,100% \
-		--header-lines 1 \
 		--color header:cyan \
-		--header='  Environment' \
+		--header-lines 1 \
+		--header-border sharp \
+		--footer '  Environment' \
+		--footer-border sharp \
+		--input-border sharp \
+		--layout 'reverse-list' \
 		--bind 'ctrl-o:execute-silent(open {-1})' \
 		--bind 'ctrl-n:become(tmux new-window -n {1} "~/.config/zsh/snippets/hsdk.sh --exec {1}")'
 }
