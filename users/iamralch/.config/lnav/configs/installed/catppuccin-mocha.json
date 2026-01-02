@@ -4,26 +4,87 @@
     "theme": "catppuccin-mocha",
     "theme-defs": {
       "catppuccin-mocha": {
+        "icons": {
+          "hidden": {
+            "value": "\u22EE"
+          },
+          "ok": {
+            "value": "\u2714"
+          },
+          "info": {
+            "value": "\u24d8"
+          },
+          "warning": {
+            "value": "\u26a0"
+          },
+          "error": {
+            "value": "\u2718"
+          },
+          "log-level-trace": {
+            "value": "\uD83C\uDD43"
+          },
+          "log-level-debug": {
+            "value": "\uD83C\uDD33"
+          },
+          "log-level-info": {
+            "value": "\uD83C\uDD38"
+          },
+          "log-level-stats": {
+            "value": "\uD83C\uDD42"
+          },
+          "log-level-notice": {
+            "value": "\uD83C\uDD3D"
+          },
+          "log-level-warning": {
+            "value": "\uD83C\uDD46"
+          },
+          "log-level-error": {
+            "value": "\uD83C\uDD34"
+          },
+          "log-level-critical": {
+            "value": "\uD83C\uDD32"
+          },
+          "log-level-fatal": {
+            "value": "\uD83C\uDD35"
+          },
+          "play": {
+            "value": "\u25b6"
+          },
+          "edit": {
+            "value": "\u270F\uFE0F"
+          }
+        },
         "vars": {
-          "background": "#1e1e2e",
-          "bglighter": "#585b70",
-          "bglight": "#45475a",
-          "bgdark": "#313244",
-          "bgdarker": "#181825",
+          "rosewater": "#f5e0dc",
+          "flamingo": "#f2cdcd",
+          "pink": "#f5c2e7",
+          "mauve": "#cba6f7",
+          "red": "#f38ba8",
+          "maroon": "#eba0ac",
+          "peach": "#fab387",
+          "yellow": "#f9e2af",
+          "green": "#a6e3a1",
+          "teal": "#94e2d5",
+          "sky": "#89dceb",
+          "sapphire": "#74c7ec",
+          "blue": "#89b4fa",
+          "lavender": "#b4befe",
+          "text": "#cdd6f4",
+          "subtext1": "#bac2de",
+          "subtext0": "#a6adc8",
+          "overlay2": "#9399b2",
+          "overlay1": "#7f849c",
+          "overlay0": "#6c7086",
+          "surface2": "#585b70",
+          "surface1": "#45475a",
+          "surface0": "#313244",
+          "base": "#1e1e2e",
+          "mantle": "#181825",
+          "crust": "#11111b",
           "foreground": "#cdd6f4",
+          "background": "#1e1e2e",
           "selection": "#45475a",
           "comment": "#6c7086",
-          "black": "#11111b",
-          "red": "#f38ba8",
-          "green": "#a6e3a1",
-          "yellow": "#f9e2af",
-          "blue": "#89b4fa",
-          "magenta": "#cba6f7",
-          "cyan": "#94e2d5",
-          "white": "#cdd6f4",
-          "orange": "#fab387",
-          "purple": "#cba6f7",
-          "pink": "#f5c2e7",
           "semantic_highlight_color": "semantic()"
         },
         "styles": {
@@ -35,22 +96,22 @@
             "background-color": "black"
           },
           "selected-text": {
-            "background-color": "#02778f"
+            "background-color": "$surface2"
           },
           "fuzzy-match": {
-            "color": "$orange",
+            "color": "$peach",
             "underline": true,
             "bold": true
           },
           "alt-text": {
-            "background-color": "$bgdarker"
+            "background-color": "$mantle"
           },
           "ok": {
             "color": "$green",
             "bold": true
           },
           "info": {
-            "color": "$magenta",
+            "color": "$mauve",
             "bold": true
           },
           "error": {
@@ -66,62 +127,62 @@
             "bold": true
           },
           "cursor-line": {
-            "color": "$cyan",
+            "color": "$teal",
             "background-color": "$selection",
             "bold": true
           },
           "time-column": {
-            "background-color": "$bglight"
+            "background-color": "$surface1"
           },
           "disabled-cursor-line": {
-            "color": "$cyan",
-            "background-color": "#2a2c38"
+            "color": "$teal",
+            "background-color": "$surface0"
           },
           "adjusted-time": {
-            "color": "$magenta"
+            "color": "$mauve"
           },
           "skewed-time": {
             "color": "$yellow"
           },
           "offset-time": {
-            "color": "$cyan"
+            "color": "$teal"
           },
           "file-offset": {
-            "color": "#888"
+            "color": "$overlay2"
           },
           "invalid-msg": {
             "color": "$yellow"
           },
           "focused": {
-            "color": "$black",
-            "background-color": "$white"
+            "color": "$crust",
+            "background-color": "$text"
           },
           "disabled-focused": {
-            "color": "$white",
-            "background-color": "#333"
+            "color": "$text",
+            "background-color": "$surface0"
           },
           "popup": {
             "color": "$foreground",
-            "background-color": "$bgdarker"
+            "background-color": "$mantle"
           },
           "popup-border": {
             "color": "$foreground",
-            "background-color": "$bgdarker"
+            "background-color": "$mantle"
           },
           "scrollbar": {
-            "color": "$background",
-            "background-color": "$foreground"
+            "color": "$surface2",
+            "background-color": "$surface0"
           },
           "h1": {
-            "color": "$purple",
+            "color": "$mauve",
             "bold": true
           },
           "h2": {
-            "color": "$purple",
+            "color": "$mauve",
             "underline": true
           },
           "h3": {
-            "color": "$purple"
+            "color": "$mauve"
           },
           "h4": {
             "underline": true
@@ -133,59 +194,59 @@
             "italic": true
           },
           "hr": {
-            "color": "#6c7086"
+            "color": "$overlay0"
           },
           "hyperlink": {
             "underline": true
           },
           "list-glyph": {
-            "color": "$cyan"
+            "color": "$teal"
           },
           "breadcrumb": {
-            "color": "#99a",
+            "color": "$lavender",
             "bold": true
           },
           "table-border": {
-            "color": "#444"
+            "color": "$surface0"
           },
           "table-header": {
             "bold": true
           },
           "quote-border": {
-            "color": "#666",
-            "background-color": "$bgdarker"
+            "color": "$overlay0",
+            "background-color": "$mantle"
           },
           "quoted-text": {
             "color": "$yellow",
-            "background-color": "$bgdarker"
+            "background-color": "$mantle"
           },
           "footnote-border": {
             "color": "$blue",
-            "background-color": "$bgdarker"
+            "background-color": "$mantle"
           },
           "footnote-text": {
-            "color": "$cyan",
-            "background-color": "$bgdarker"
+            "color": "$teal",
+            "background-color": "$mantle"
           },
           "snippet-border": {
-            "color": "$cyan"
+            "color": "$teal"
           },
           "indent-guide": {
-            "color": "$bglighter"
+            "color": "$surface2"
           }
         },
         "syntax-styles": {
           "inline-code": {
             "color": "$green",
-            "background-color": "#121212"
+            "background-color": "$crust"
           },
           "quoted-code": {
-            "color": "$orange",
-            "background-color": "#121212"
+            "color": "$peach",
+            "background-color": "$crust"
           },
           "code-border": {
-            "color": "#444",
-            "background-color": "#121212"
+            "color": "$surface0",
+            "background-color": "$crust"
           },
           "object-key": {
             "color": "semantic()"
@@ -205,38 +266,38 @@
             "color": "$pink"
           },
           "variable": {
-            "color": "$orange"
+            "color": "$peach"
           },
           "symbol": {
-            "color": "#78dce8"
+            "color": "$sky"
           },
           "re-special": {
-            "color": "$cyan"
+            "color": "$teal"
           },
           "re-repeat": {
             "color": "$yellow"
           },
           "diff-delete": {
-            "color": "#f00"
+            "color": "$red"
           },
           "diff-add": {
-            "color": "#0f0"
+            "color": "$green"
           },
           "diff-section": {
-            "color": "#6c7086"
+            "color": "$overlay0"
           },
           "spectrogram-low": {
-            "color": "$black",
+            "color": "$crust",
             "background-color": "$green",
             "bold": true
           },
           "spectrogram-medium": {
-            "color": "$black",
+            "color": "$crust",
             "background-color": "$yellow",
             "bold": true
           },
           "spectrogram-high": {
-            "color": "$black",
+            "color": "$crust",
             "background-color": "$red",
             "bold": true
           },
@@ -244,7 +305,7 @@
             "color": "$blue"
           },
           "null": {
-            "color": "#888"
+            "color": "$overlay2"
           },
           "ascii-control": {
             "color": "$green"
@@ -262,69 +323,69 @@
             "color": "$pink"
           },
           "type": {
-            "color": "$cyan"
+            "color": "$teal"
           }
         },
         "status-styles": {
           "disabled-title": {
-            "color": "#74c7ec",
-            "background-color": "#313244",
+            "color": "$sapphire",
+            "background-color": "$surface0",
             "bold": true
           },
           "title": {
-            "color": "#cdd6f4",
-            "background-color": "#45475a",
+            "color": "$text",
+            "background-color": "$surface1",
             "bold": true
           },
           "subtitle": {
-            "color": "#6c7086",
-            "background-color": "#94e2d5",
+            "color": "$overlay0",
+            "background-color": "$teal",
             "bold": true
           },
           "info": {
-            "color": "#bac2de",
-            "background-color": "#313244"
+            "color": "$subtext1",
+            "background-color": "$surface0"
           },
           "title-hotkey": {
-            "color": "$black",
-            "background-color": "#45475a",
+            "color": "$crust",
+            "background-color": "$surface1",
             "underline": true
           },
           "hotkey": {
-            "color": "#cdd6f4",
+            "color": "$text",
             "underline": true
           },
           "text": {
-            "color": "#cdd6f4",
-            "background-color": "#313244"
+            "color": "$text",
+            "background-color": "$surface0"
           },
           "warn": {
-            "color": "$orange",
-            "background-color": "#313244"
+            "color": "$peach",
+            "background-color": "$surface0"
           },
           "alert": {
             "color": "$red",
-            "background-color": "#313244"
+            "background-color": "$surface0"
           },
           "active": {
             "color": "$green",
-            "background-color": "#313244"
+            "background-color": "$surface0"
           },
           "inactive": {
-            "color": "#6c7086",
-            "background-color": "#181825"
+            "color": "$overlay0",
+            "background-color": "$mantle"
           },
           "inactive-alert": {
             "color": "$red",
-            "background-color": "#181825"
+            "background-color": "$mantle"
           },
           "suggestion": {
-            "color": "#9399b2"
+            "color": "$overlay2"
           }
         },
         "log-level-styles": {
           "warning": {
-            "color": "$orange"
+            "color": "$peach"
           },
           "error": {
             "color": "$red"
@@ -334,6 +395,32 @@
           },
           "fatal": {
             "color": "$red"
+          }
+        },
+        "highlights": {
+          "colors": {
+            "pattern": "(?:#[a-fA-F0-9]{6}|#[a-fA-F0-9]{3}\\b)",
+            "style": {
+              "color": "${semantic_highlight_color}"
+            }
+          },
+          "ipv4": {
+            "pattern": "\\b(?<!\\d\\.)\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b(?!\\.\\d)",
+            "style": {
+              "color": "${semantic_highlight_color}"
+            }
+          },
+          "xml": {
+            "pattern": "</?([^ >=!]+)[^>]*>",
+            "style": {
+              "color": "${semantic_highlight_color}"
+            }
+          },
+          "xml-decl": {
+            "pattern": "<!([^ >=!]+)[^>]*>",
+            "style": {
+              "color": "${semantic_highlight_color}"
+            }
           }
         }
       }
