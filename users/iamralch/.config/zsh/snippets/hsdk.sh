@@ -191,10 +191,11 @@ hsdk-env() {
 			tmux set-window-option window-status-format "#[fg=#{${env_color}},bg=#{@thm_bg}] #I:   #W #F "
 		fi
 
-		eval "$(hsdk se "$env_id")"
-		# Optionally exec new shell (for tmux new-window)
-		if [[ "$exec_shell" == true ]]; then
-			exec $SHELL
+		if eval "$(hsdk se "$env_id")"; then
+			# Optionally exec new shell (for tmux new-window)
+			if [[ "$exec_shell" == true ]]; then
+				exec "$SHELL"
+			fi
 		fi
 	fi
 }
