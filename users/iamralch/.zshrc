@@ -18,6 +18,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 # Set the directory we want to store zinit and plugins
 export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 # Hardcoded project configuration
+export AWS_FZF_LOG_PAGER="lnav"
 export GOOGLE_CLOUD_PROJECT="hippo-dev-analytics"
 
 # shellcheck disable=SC2155
