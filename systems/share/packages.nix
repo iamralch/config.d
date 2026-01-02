@@ -43,6 +43,7 @@
     go
     google-cloud-sdk
     gum
+    ctop
     htop
     hurl
     imagemagick
