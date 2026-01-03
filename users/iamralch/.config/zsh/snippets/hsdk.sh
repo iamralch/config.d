@@ -17,8 +17,8 @@ _fzf_icon=" "
 
 _fzf_options=(
 	--ansi
-	--border='none'
-	--tmux='100%,100%'
+	--tmux
+	--border='sharp'
 	--color='header:cyan'
 	--color='footer:cyan'
 	--header-lines='1'
