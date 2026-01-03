@@ -44,8 +44,8 @@
     google-cloud-sdk
     gum
     htop
-    oxker
     hurl
+    lazydocker
     imagemagick
     jdk
     jjui

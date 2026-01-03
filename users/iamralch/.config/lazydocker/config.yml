@@ -1,0 +1,42 @@
+gui:
+  scrollHeight: 2
+  language: "auto"
+  border: "single"
+  theme:
+    activeBorderColor:
+      - "#89dceb"
+      - bold
+    inactiveBorderColor:
+      - "#6c7086"
+    selectedLineBgColor:
+      - "#585b70"
+    optionsTextColor:
+      - "#89b4fa"
+  returnImmediately: false
+  wrapMainPanel: true
+  # Side panel width as a ratio of the screen's width
+  sidePanelWidth: 0.333
+  # Determines whether we show the bottom line (the one containing keybinding
+  # info and the status of the app).
+  showBottomLine: true
+  # When true, increases vertical space used by focused side panel,
+  # creating an accordion effect
+  expandFocusedSidePanel: true
+  # Determines which screen mode will be used on startup
+  screenMode: "normal" # one of 'normal' | 'half' | 'fullscreen'
+  # Determines the style of the container status and container health display in the
+  # containers panel. "long": full words (default), "short": one or two characters,
+  # "icon": unicode emoji.
+  containerStatusHealthStyle: "long"
+stats:
+  graphs:
+    - caption: CPU (%)
+      statPath: DerivedStats.CPUPercentage
+      color: "#cba6f7"
+    - caption: Memory (%)
+      statPath: DerivedStats.MemoryPercentage
+      color: "#94e2d5"
+logs:
+  timestamps: true
+  since: ""
+  tail: ""
