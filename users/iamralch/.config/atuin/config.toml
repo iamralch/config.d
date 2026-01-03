@@ -45,7 +45,7 @@ show_preview = true
 ## possible values: return-original, return-query
 exit_mode = "return-original"
 
-# Use ctrl instead of alt as the shortcut modifier key for numerical UI shortcuts alt-0 ... alt-9
+# Use CTRL instead of alt as the shortcut modifier key for numerical UI shortcuts alt-0 ... alt-9
 ctrl_n_shortcuts = false
 
 # Configure whether or not to show the help row, which includes the current Atuin
@@ -64,7 +64,7 @@ store_failed = false
 
 ## Defaults to true. If enabled, upon hitting enter Atuin will immediately execute the command. Press tab to return to the shell and edit.
 # This applies for new installs. Old installs will keep the old behavior unless configured otherwise.
-enter_accept = false
+enter_accept = true
 
 # In the keymap mode "vim-normal", you may use k and j to navigate the history
 # list as in Vim, whilst pressing i changes the keymap mode to "vim-insert". In
@@ -78,7 +78,6 @@ keymap_mode = "vim-insert"
 keymap_cursor = { emacs = "steady-block", vim_insert = "steady-bar", vim_normal = "steady-block" }
 
 [stats]
-# Set commands where we should consider the subcommand for statistics. Eg, kubectl get vs just kubectl
 common_subcommands = [
   "buf",
   "ogen",
@@ -88,6 +87,7 @@ common_subcommands = [
   "dnf",
   "docker",
   "git",
+  "gh",
   "go",
   "ip",
   "kubectl",
@@ -100,10 +100,11 @@ common_subcommands = [
   "port",
   "systemctl",
   "tmux",
+  "bun",
   "yarn",
   "hsdk",
   "mise",
-]
+] # Set commands where we should consider the subcommand for statistics. Eg, kubectl get vs just kubectl
 
 # Set commands that will be completely ignored from stats
 ignored_commands = ["cd", "ls", "nvim"]
@@ -117,7 +118,7 @@ scroll_exits = false
 records = true
 
 [preview]
-# which preview strategy to use to calculate the preview height (respects max_preview_height).
+# Which preview strategy to use to calculate the preview height (respects max_preview_height).
 strategy = "auto"
 
 [daemon]
