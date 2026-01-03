@@ -1,5 +1,8 @@
 #!/bin/bash -x
 
+# Alias for oxker with custom config file
+alias ctop="oxker --config-file ~/.config/oxker/config.toml"
+
 # ==============================================================================
 # General Purpose Utility Functions
 # ==============================================================================

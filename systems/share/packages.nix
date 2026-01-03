@@ -43,8 +43,8 @@
     go
     google-cloud-sdk
     gum
-    ctop
     htop
+    oxker
     hurl
     imagemagick
     jdk
