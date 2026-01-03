@@ -1,19 +1,19 @@
-# date format to use when displaying stats
+# Date format to use when displaying stats
 dialect = "uk"
 
-# default timezone to use when displaying time
+# Default timezone to use when displaying time
 timezone = "local"
 
 # enable or disable automatic sync
 auto_sync = false
 
-# enable or disable automatic update checks
+# Enable or disable automatic update checks
 update_check = true
 
-# use fzf syntax
+# Use fzf syntax
 search_mode = "fuzzy"
 
-# which filter mode to use
+# Which filter mode to use
 # possible values: global, host, session, directory
 filter_mode = "global"
 
@@ -21,31 +21,31 @@ filter_mode = "global"
 ## in any directory within a git repository tree (default: false)
 workspaces = true
 
-## which filter mode to use when atuin is invoked from a shell up-key binding
+## Which filter mode to use when Atuin is invoked from a shell up-key binding
 ## the accepted values are identical to those of "filter_mode"
 ## leave unspecified to use same mode set in "filter_mode"
 filter_mode_shell_up_key_binding = "directory"
 
-## which style to use
+## Which style to use
 ## possible values: auto, full, compact
 style = "compact"
 
-## the maximum number of lines the interface should take up
-## set it to 0 to always go full screen
+## The maximum number of lines the interface should take up.
+## Set it to 0 to always go full screen
 inline_height = 0
 
-# Invert the UI - put the search bar at the top , Default to `false`
+# Invert the UI - put the search bar at the top, Default to `false`
 invert = false
 
-## enable or disable showing a preview of the selected command
+## Enable or disable showing a preview of the selected command
 ## useful when the command is longer than the terminal width and is cut off
 show_preview = true
 
-## what to do when the escape key is pressed when searching
+## What to do when the escape key is pressed when searching
 ## possible values: return-original, return-query
 exit_mode = "return-original"
 
-# use ctrl instead of alt as the shortcut modifier key for numerical UI shortcuts alt-0 .. alt-9
+# Use ctrl instead of alt as the shortcut modifier key for numerical UI shortcuts alt-0 ... alt-9
 ctrl_n_shortcuts = false
 
 # Configure whether or not to show the help row, which includes the current Atuin
@@ -63,17 +63,17 @@ secrets_filter = true
 store_failed = false
 
 ## Defaults to true. If enabled, upon hitting enter Atuin will immediately execute the command. Press tab to return to the shell and edit.
-# This applies for new installs. Old installs will keep the old behaviour unless configured otherwise.
+# This applies for new installs. Old installs will keep the old behavior unless configured otherwise.
 enter_accept = false
 
 # In the keymap mode "vim-normal", you may use k and j to navigate the history
 # list as in Vim, whilst pressing i changes the keymap mode to "vim-insert". In
 # the keymap mode "vim-insert", you can search for a string as in the keymap
-# mode "emacs", while pressing Esc switches the keymap mode to "vim-normal".
+# mode "Emacs", while pressing escape switches the keymap mode to "vim-normal".
 keymap_mode = "vim-insert"
 
-## Cursor style in each keymap mode.  If specified, the cursor style is changed
-## in entering the cursor shape.  Available values are "default" and
+## Cursor style in each keymap mode. If specified, the cursor style is changed
+## in entering the cursor shape. Available values are "default" and
 ## "{blink,steady}-{block,underline,bar}".
 keymap_cursor = { emacs = "steady-block", vim_insert = "steady-bar", vim_normal = "steady-block" }
 
@@ -109,11 +109,11 @@ common_subcommands = [
 ignored_commands = ["cd", "ls", "nvim"]
 
 [keys]
-# defaults to true. If disabled, using the up/down key won't exit the TUI when scrolled past the first/last entry.
+# Defaults to true. If disabled, using the up/down key won't exit the TUI when scrolled past the first/last entry.
 scroll_exits = false
 
 [sync]
-# enable sync v2 by default
+# Enable sync by default
 records = true
 
 [preview]
@@ -121,5 +121,5 @@ records = true
 strategy = "auto"
 
 [daemon]
-# enables using the daemon to sync
-enabled = false
+# Enables using the daemon to sync
+enabled = true
