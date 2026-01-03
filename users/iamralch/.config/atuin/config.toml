@@ -59,6 +59,9 @@ show_tabs = true
 ## Defaults to true. This matches history against a set of default regex, and will not save it if we get a match. Defaults include
 secrets_filter = true
 
+# If enabled, commands that fail (i.e. exit with a non-zero status) will not be saved to history.
+store_failed = false
+
 ## Defaults to true. If enabled, upon hitting enter Atuin will immediately execute the command. Press tab to return to the shell and edit.
 # This applies for new installs. Old installs will keep the old behaviour unless configured otherwise.
 enter_accept = false
