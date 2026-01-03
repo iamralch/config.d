@@ -30,7 +30,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx -y @owloops/claude-powerline@latest --theme=rose-pine"
+    "command": "npx -y @owloops/claude-powerline@latest --theme=tokyo-night --style=capsule"
   },
   "extraKnownMarketplaces": {
     "claude-mcp": {

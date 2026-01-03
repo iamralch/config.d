@@ -104,6 +104,7 @@
     unzip
     upterm
     usql
+    postgresql_18
     uv
     vifm
     vivid
