@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# ------------------------------------------------------------------------------
+# Global Configuration
+# ------------------------------------------------------------------------------
+# _fzf_icon: AWS cloud icon (󰸏) used in fzf prompt footers for visual context
+# _fzf_options: Shared fzf configuration array for consistent UI across all
+#               interactive selections. Key settings:
+#   --tmux='100%,100%': Run fzf in tmux popup (full screen)
+#   --border='none': No outer border (tmux popup provides border)
+#   --layout='reverse-list': List items top-to-bottom with prompt at bottom
+#   --header-lines='1': Treat first line as column headers
+#   Various --*-border and --color options for styled appearance
+# ------------------------------------------------------------------------------
+
 _fzf_icon=" "
 
 _fzf_options=(
@@ -27,6 +40,17 @@ _fzf_options=(
 #   - fzf: Fuzzy finder for terminal
 #   - column: Text column formatting utility
 #
+# Environment Color Coding:
+#   When running in tmux, windows are automatically styled based on environment
+#   type to provide visual distinction and prevent accidental operations:
+#   - Development (dev):  Yellow indicator  (lower risk)
+#   - Staging (stage):    Peach indicator   (moderate risk)
+#   - Production (prod):  Red indicator     (high risk)
+#   - Other/Unknown:      Rosewater default (unclassified)
+#
+#   The color coding applies to both active and inactive tmux window status bars,
+#   making it easy to identify which environment you're working with at a glance.
+#
 # Usage:
 #   Source this file in your shell configuration:
 #     source ~/.config/zsh/snippets/hsdk.sh
@@ -36,6 +60,41 @@ _fzf_options=(
 #     ~/.config/zsh/snippets/hsdk.sh <id>         # Set env by ID
 #     ~/.config/zsh/snippets/hsdk.sh --exec       # Select, set, exec shell
 #     ~/.config/zsh/snippets/hsdk.sh --exec <id>  # Set env by ID, exec shell
+#
+# Workflow Examples:
+#
+#   Example 1: Quick environment switch in current shell
+#     $ hsdk-env
+#     [Interactive fzf selection appears]
+#     [Select environment, press Enter]
+#     [Environment credentials loaded in current shell]
+#
+#   Example 2: Opening AWS console while browsing
+#     $ hsdk-env
+#     [Type to filter environments, e.g., "prod"]
+#     [Press ctrl-o to open AWS console in browser]
+#     [Browser opens, fzf selection still active]
+#     [Continue browsing or press Esc to cancel]
+#
+#   Example 3: Creating dedicated tmux windows for environments
+#     $ hsdk-env
+#     [Navigate to production environment]
+#     [Press ctrl-n to create new tmux window]
+#     [New window opens with red indicator and prod environment configured]
+#     [Repeat for staging (peach) and dev (yellow) environments]
+#     [Result: Multi-window tmux layout with color-coded environments]
+#
+#   Example 4: Direct environment selection by ID
+#     $ hsdk-env 655141976367-us-east-1
+#     [Environment set immediately without fzf prompt]
+#     [Useful for scripting or when ID is already known]
+#
+#   Example 5: Setting up monitoring layout in tmux
+#     [In tmux, create multiple windows using ctrl-n from fzf]
+#     [Window 1: Production environment (red indicator)]
+#     [Window 2: Staging environment (peach indicator)]
+#     [Window 3: Development environment (yellow indicator)]
+#     [Easy visual distinction while monitoring multiple environments]
 # ==============================================================================
 
 # ------------------------------------------------------------------------------
@@ -50,10 +109,17 @@ _fzf_options=(
 #   - AWS SSO Console URL (hidden in display, accessible via ctrl-o)
 #
 # Keybindings:
-#   - Enter: Select environment and return the ID
-#   - ctrl-o: Open the AWS console URL in default browser
-#   - ctrl-w: Open new tmux window with selected environment
-#   - Esc: Cancel selection
+#   - Enter: Select environment and return the ID and Type (for setting in
+#            current shell or further processing)
+#   - ctrl-o: Open the AWS console URL in default browser without selecting
+#            the environment. Useful for quickly checking console while browsing
+#            options. The selection remains active after opening.
+#   - ctrl-n: Create new tmux window with the selected environment already
+#            configured. The window is automatically named with the environment
+#            ID and styled with color-coded indicators based on environment type
+#            (dev/stage/prod). A new shell is exec'd in the window with the
+#            environment credentials loaded.
+#   - Esc: Cancel selection and return without setting any environment
 #
 # Output:
 #   The selected environment ID (stdout)
@@ -86,24 +152,43 @@ _hsdk_env_fzf() {
 }
 
 # ------------------------------------------------------------------------------
-# _hsdk_get_color_from_type (private)
+# _hsdk_env_tmux (private)
 # ------------------------------------------------------------------------------
-# Map HSDK environment type to tmux theme color variable.
+# Apply environment-specific tmux window styling based on environment type.
 #
-# This function performs case-insensitive partial matching to determine the
-# appropriate color for tmux window styling based on environment type:
-#   - Development environments (dev, development) → @thm_yellow
-#   - Stage environments (stage, staging, stag) → @thm_peach
-#   - Production environments (prod, production) → @thm_red
-#   - Unknown/missing type → empty string (no styling)
+# This function customizes the tmux window status bar appearance to provide
+# visual indicators for different environment types. It helps prevent accidental
+# operations by making it immediately clear which environment context you're in.
 #
-# Arguments:
-#   $1: Environment type string (e.g., "development", "production", "stage")
+# The function sets two tmux window options:
+#   1. window-status-current-format: Style for the currently active window
+#   2. window-status-format: Style for inactive windows
 #
-# Output:
-#   Tmux theme color variable name or empty string
+# Both formats include:
+#   - Window index number (#I)
+#   - AWS cloud icon (󰸏) for visual context
+#   - Window name (#W)
+#   - Window flags (#F)
+#   - Environment-specific color coding
+#
+# Parameters:
+#   $1 - Environment type string (case-insensitive)
+#        Supports partial matching against the type string
+#
+# Color Mapping (using Catppuccin theme variables):
+#   - *dev*   → @thm_yellow    (Development environments)
+#   - *stage* → @thm_peach     (Staging environments)
+#   - *prod*  → @thm_red       (Production environments - high risk)
+#   - other   → @thm_rosewater (Default for unrecognized types)
+#
+# Example Usage:
+#   _hsdk_env_tmux "production"     # Sets red indicator
+#   _hsdk_env_tmux "dev-testing"    # Sets yellow indicator (partial match)
+#   _hsdk_env_tmux "STAGE"          # Sets peach indicator (case-insensitive)
+#
+# Note: This function should only be called when inside a tmux session.
 # ------------------------------------------------------------------------------
-_hsdk_get_color_from_type() {
+_hsdk_env_tmux() {
 	local env_type="$1"
 	local env_color
 
@@ -124,7 +209,10 @@ _hsdk_get_color_from_type() {
 		;;
 	esac
 
-	echo "$env_color"
+	# Style active window with environment-specific color, bold text, and AWS icon
+	tmux set-window-option window-status-current-format "#[fg=#{@thm_bg},bg=#{${env_color}},bold] #I:   #W #F "
+	# Style inactive window with environment-specific color and AWS icon
+	tmux set-window-option window-status-format "#[fg=#{${env_color}},bg=#{@thm_bg}] #I:   #W #F "
 }
 
 # ------------------------------------------------------------------------------
@@ -187,13 +275,7 @@ hsdk-env() {
 
 		# Apply custom tmux window styling if in a tmux session and color is set
 		if [[ "$exec_shell" == true ]] && [[ -n "$TMUX" ]]; then
-			local env_color
-			# get the environment color
-			env_color=$(_hsdk_get_color_from_type "$env_type")
-			# Style active window with environment-specific color, bold text, and AWS icon
-			tmux set-window-option window-status-current-format "#[fg=#{@thm_bg},bg=#{${env_color}},bold] #I:   #W #F "
-			# Style inactive window with environment-specific color and AWS icon
-			tmux set-window-option window-status-format "#[fg=#{${env_color}},bg=#{@thm_bg}] #I:   #W #F "
+			_hsdk_env_tmux "$env_type"
 		fi
 
 		if eval "$(hsdk se "$env_id")"; then
