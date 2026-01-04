@@ -1,9 +1,3 @@
-# Include sample configuration files
-*.sample
-*.history
-*.lnav
-*.json
-*.sql
-*.py
-*.sh
+view-info*.json
+**/default/**
 *.db
