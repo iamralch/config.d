@@ -9,6 +9,8 @@ export LC_CTYPE="en_US.UTF-8"
 export PYTHON_BIN="$(readlink -f /run/current-system/sw/bin/python3)"
 export PYTHONPATH="${PYTHON_BIN}/lib/python3.13/site-packages"
 
+# Configure the tail
+export LESS="-R -F -X -S -J"
 # Configure the editor
 export EDITOR="nvim"
 # Set the configuration directories
@@ -18,7 +20,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 # Set the directory we want to store zinit and plugins
 export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 # Hardcoded project configuration
-export AWS_FZF_LOG_PAGER="lnav"
+export AWS_FZF_LOG_VIEWER="lnav"
 export GOOGLE_CLOUD_PROJECT="hippo-dev-analytics"
 
 # shellcheck disable=SC2155
