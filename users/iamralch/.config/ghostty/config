@@ -6,18 +6,23 @@ theme = dark:Catppuccin Mocha,light:Catppuccin Latte
 
 # window configuration
 window-theme = dark
-window-padding-x = 4
-window-padding-y = 4
+window-padding-x = 12
+window-padding-y = 10
 window-padding-balance = true
 window-inherit-font-size = false
+window-colorspace = display-p3
 
 # font configuration
 font-family = "JetBrainsMono NF"
 font-style = "regular"
-font-size = 16.0
+font-thicken = true
+font-size = 16
 
 # cursor configuration
 cursor-style-blink = false
+# Adjust the thickness of the cursor (percentage of font size)
+adjust-cursor-thickness = 175%
+adjust-cell-width = -4%
 
 # mouse configuration
 mouse-hide-while-typing = true
