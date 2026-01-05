@@ -276,3 +276,32 @@ _write_env_secrets() {
 ssh-tunnel() {
 	ssh -p 443 -R0:localhost:"$1" qr@a.pinggy.io
 }
+
+# ------------------------------------------------------------------------------
+# ssh-devpod
+# ------------------------------------------------------------------------------
+# Connects to a development pod via SSH.
+#
+# This function constructs the SSH hostname by taking the base name of the
+# current working directory and appending ".devpod" to it. It then initiates
+# an SSH connection to this constructed hostname.
+#
+# This is useful for quickly connecting to dynamically named development
+# environments (e.g., cloud-based dev environments) that follow a consistent
+# naming convention based on the project directory.
+#
+# Arguments:
+#   None. The hostname is derived from the current working directory.
+#
+# Example:
+#   # If current directory is `/Users/iamralch/Projects/my-project`
+#   ssh-devpod               # Connects to `my-project.devpod`
+#
+# Usage with dynamically created dev pods:
+#   Ensure your SSH config (~/.ssh/config) or DNS settings can resolve
+#   hostnames like `your-project-name.devpod` to the correct IP address
+#   or SSH gateway.
+# ------------------------------------------------------------------------------
+ssh-devpod() {
+	ssh "$(basename "$PWD").devpod"
+}
