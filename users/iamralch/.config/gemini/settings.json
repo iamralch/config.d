@@ -18,8 +18,7 @@
     "previewFeatures": true,
     "preferredEditor": "neovim",
     "disableAutoUpdate": true,
-    "disableUpdateNag": true,
-    "enablePromptCompletion": true
+    "disableUpdateNag": true
   },
   "privacy": {
     "usageStatisticsEnabled": false
@@ -34,16 +33,16 @@
       "showColor": true
     },
     "useRipgrep": true,
-    "enableToolOutputTruncation": true,
-    "allowed": [
-      ""
-    ]
+    "enableToolOutputTruncation": true
   },
   "context": {
     "fileName": [
       "AGENTS.md",
       "GEMINI.md",
       "CLAUDE.md"
+    ],
+    "includeDirectories": [
+      "~/Projects/**"
     ]
   },
   "experimental": {
