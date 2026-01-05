@@ -1,0 +1,58 @@
+{
+  "$schema": "https://lnav.org/schemas/format-v1.schema.json",
+  "aws_cloudwatch": {
+    "title": "AWS Cloud Watch",
+    "description": "ECS log with a Golang slog JSON message (regex parsing)",
+    "regex": {
+      "json": {
+        "pattern": "^(?<timestamp>\\S+)\\s+(?<logStreamName>\\S+)\\s+(?<message>\\{.*\\})$"
+      },
+      "plain": {
+        "pattern": "^(?<timestamp>\\S+)\\s+(?<logStreamName>\\S+)\\s+(?<message>.*)$"
+      }
+    },
+    "timestamp-field": "timestamp",
+    "body-field": "message",
+    "value": {
+      "timestamp": {
+        "description": "Timestamp emitted by slog inside the JSON payload (RFC3339Nano)",
+        "kind": "string",
+        "hidden": true
+      },
+      "logStreamName": {
+        "description": "AWS ECS log stream path identifying service and task",
+        "kind": "string",
+        "identifier": true,
+        "hidden": true
+      },
+      "message": {
+        "description": "Human-readable log message emitted by the application",
+        "kind": "string"
+      }
+    },
+    "line-format": [
+      {
+        "field": "timestamp",
+        "min-width": 19
+      },
+      " ",
+      {
+        "field": "logStreamName",
+        "min-width": 5
+      },
+      " ",
+      {
+        "field": "message",
+        "auto-width": true
+      }
+    ],
+    "sample": [
+      {
+        "line": "2026-01-04T04:54:20.315000+00:00 /app/copay-coupon-api-broker/3550a624f44c4797bf4394c169a3df08 {\"time\":\"2026-01-04T04:54:20.315287514Z\",\"level\":\"INFO\",\"msg\":\"Updating program coupon event batch\",\"version\":\"v0.0.0-20260102135729-0ff8bf2cbf0b\"}"
+      },
+      {
+        "line": "2026-01-04T04:54:20.315000+00:00 /app/copay-coupon-api-broker/3550a624f44c4797bf4394c169a3df08 {\"time\":\"2026-01-04T04:54:20.315298651Z\",\"level\":\"INFO\",\"msg\":\"Pipeline completed successfully, adjusting poll interval\",\"version\":\"v0.0.0-20260102135729-0ff8bf2cbf0b\",\"event_count\":0,\"next_interval\":30000000000}"
+      }
+    ]
+  }
+}
