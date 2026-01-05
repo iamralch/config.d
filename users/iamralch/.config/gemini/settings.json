@@ -1,15 +1,25 @@
 {
+  "$schema": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/schemas/settings.schema.json",
   "ui": {
     "hideBanner": true,
     "hideTips": true,
     "useFullWidth": true,
     "showMemoryUsage": true,
     "showLineNumbers": true,
-    "enablePromptCompletion": true
+    "showStatusInTitle": true,
+    "showModelInfoInChat": true,
+    "footer": {
+      "hideSandboxStatus": true,
+      "hideContextPercentage": false
+    }
   },
   "general": {
     "vimMode": true,
-    "preferredEditor": "neovim"
+    "previewFeatures": true,
+    "preferredEditor": "neovim",
+    "disableAutoUpdate": true,
+    "disableUpdateNag": true,
+    "enablePromptCompletion": true
   },
   "privacy": {
     "usageStatisticsEnabled": false
@@ -22,20 +32,39 @@
   "tools": {
     "shell": {
       "showColor": true
-    }
+    },
+    "useRipgrep": true,
+    "enableToolOutputTruncation": true,
+    "allowed": [
+      ""
+    ]
+  },
+  "context": {
+    "fileName": [
+      "AGENTS.md",
+      "GEMINI.md",
+      "CLAUDE.md"
+    ]
+  },
+  "experimental": {
+    "skills": true,
+    "enableAgents": true,
+    "extensionManagement": true
   },
   "mcpServers": {
     "sequential-thinking": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "~/Projects"]
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"]
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
     }
   }
 }
