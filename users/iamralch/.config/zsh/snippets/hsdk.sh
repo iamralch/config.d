@@ -271,8 +271,8 @@ _hsdk_env_tmux() {
 		;;
 	esac
 
-	# Style active window with environment-specific color, bold text, and AWS icon
-	tmux set-window-option window-status-current-format "#[fg=#{@thm_bg},bg=#{${env_color}},bold] #I:   #W #F "
+	# Style active window with environment-specific color, text, and AWS icon
+	tmux set-window-option window-status-current-format "#[fg=#{@thm_bg},bg=#{${env_color}}] #I:   #W #F "
 	# Style inactive window with environment-specific color and AWS icon
 	tmux set-window-option window-status-format "#[fg=#{${env_color}},bg=#{@thm_bg}] #I:   #W #F "
 }

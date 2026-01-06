@@ -19,5 +19,5 @@ set -gF window-status-activity-style "fg=#{@thm_lavender}"
 set -gF window-status-bell-style "fg=#{@thm_yellow}"
 
 set -g window-status-format "#[fg=#{@thm_fg},bg=#{@thm_bg}] #I: #W #F "
-set -g window-status-current-format "#[fg=#{@thm_mauve},bold] #I: #W #F "
+set -g window-status-current-format "#[fg=#{@thm_bg},bg=#{@thm_mauve}] #I: #W #F "
 set -g window-status-separator ""
