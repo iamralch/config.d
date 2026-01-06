@@ -28,6 +28,67 @@ _fzf_options=(
 	--layout='reverse-list'
 )
 
+# ------------------------------------------------------------------------------
+# HSDK Keychain Configuration
+# ------------------------------------------------------------------------------
+HSDK_SECRETS_VAULT="hsdk-secrets"
+
+# ------------------------------------------------------------------------------
+# _hsdk_read_env_from_keychain (private)
+# ------------------------------------------------------------------------------
+# Reads HSDK environment variables from macOS Keychain.
+#
+# Data is stored base64-encoded to handle multi-line scripts. This function
+# decodes the data upon retrieval.
+#
+# Parameters:
+#   $1 - Environment ID
+#
+# Output:
+#   The stored environment variables script, or empty if not found.
+# ------------------------------------------------------------------------------
+_hsdk_read_env_from_keychain() {
+	local env_id="$1"
+	local b64_data
+	b64_data=$(security find-generic-password -s "$HSDK_SECRETS_VAULT" -a "$env_id" -w 2>/dev/null)
+	if [[ -n "$b64_data" ]]; then
+		printf "%s" "$b64_data" | base64 --decode
+	fi
+}
+
+# ------------------------------------------------------------------------------
+# _hsdk_write_env_to_keychain (private)
+# ------------------------------------------------------------------------------
+# Writes HSDK environment variables to macOS Keychain.
+#
+# Data is base64-encoded before storage to ensure that newlines and special
+# characters are preserved correctly.
+#
+# Parameters:
+#   $1 - Environment ID
+#   $2 - The environment variables script to store
+# ------------------------------------------------------------------------------
+_hsdk_write_env_to_keychain() {
+	local env_id="$1"
+	local env_data="$2"
+	local b64_data
+	b64_data=$(echo -n "$env_data" | base64)
+	security add-generic-password -U -s "$HSDK_SECRETS_VAULT" -a "$env_id" -w "$b64_data"
+}
+
+# ------------------------------------------------------------------------------
+# _hsdk_delete_env_from_keychain (private)
+# ------------------------------------------------------------------------------
+# Deletes HSDK environment variables from macOS Keychain.
+#
+# Parameters:
+#   $1 - Environment ID
+# ------------------------------------------------------------------------------
+_hsdk_delete_env_from_keychain() {
+	local env_id="$1"
+	security delete-generic-password -s "$HSDK_SECRETS_VAULT" -a "$env_id" >/dev/null 2>&1 || true
+}
+
 # ==============================================================================
 # HSDK Environment Selection Utilities
 # ==============================================================================
@@ -134,9 +195,10 @@ _hsdk_env_fzf() {
 	# Column 3: Environment Type
 	# Column 4: Description
 	# Column 5: AWS Console URL (SSO URL + account info)
-	hsdk_env_list_columns='(["ID", "NAME", "TYPE", "DESCRIPTION", "URL"] | @tsv),
-	                       (.[] | [.Id, .Name, (.Type // "none" | select(. != "") // "none"), .Description, .AWSSsoUrl + "/#/console?account_id=" + .AWSAccountId + "&role_name=AdministratorAccess"] | @tsv)'
+	hsdk_env_list_columns='(["ID", "NAME", "DESCRIPTION", "URL"] | @tsv),
+	                       (.[] | [.Id, .Name, .Description, .AWSSsoUrl + "/#/console?account_id=" + .AWSAccountId + "&role_name=AdministratorAccess"] | @tsv)'
 
+	# Get the environment list
 	hsdk_env_list=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r "$hsdk_env_list_columns" | column -t -s $'\t')
 
 	# Display in fzf with:
@@ -145,10 +207,10 @@ _hsdk_env_fzf() {
 	# --bind 'ctrl-o:...': Open browser with URL on ctrl-o
 	# --bind 'ctrl-n:...': Open new tmux window with selected environment
 	echo "$hsdk_env_list" | fzf "${_fzf_options[@]}" \
-		--accept-nth 1,3 --with-nth 1..-2 \
+		--accept-nth 1 --with-nth 1..-2 \
 		--footer "$_fzf_icon Environment" \
 		--bind 'ctrl-o:execute-silent(open {-1})' \
-		--bind 'ctrl-n:become(tmux new-window -n {1} "~/.config/zsh/snippets/hsdk.sh --exec {1}")'
+		--bind 'ctrl-n:execute(tmux new-window -n {1} "~/.config/zsh/snippets/hsdk.sh --exec {1}")+abort'
 }
 
 # ------------------------------------------------------------------------------
@@ -216,9 +278,104 @@ _hsdk_env_tmux() {
 }
 
 # ------------------------------------------------------------------------------
+# _hsdk_env_shell (private)
+# ------------------------------------------------------------------------------
+# Handles the final steps of setting up an HSDK environment in a new shell.
+# It applies tmux styling if applicable and then replaces the current shell
+# with a new one, ensuring the environment is fully loaded.
+#
+# This is typically called with the `--exec` flag in `hsdk-env`.
+#
+# Parameters:
+#   $1 - Environment Type (e.g., "prod", "dev")
+# ------------------------------------------------------------------------------
+_hsdk_env_shell() {
+	local env_type="${1:-$TF_VAR_account_type}"
+	if [[ -n "$TMUX" ]]; then
+		_hsdk_env_tmux "$env_type"
+	fi
+	exec "$SHELL"
+}
+
+# ------------------------------------------------------------------------------
+# _hsdk_set_env (private)
+# ------------------------------------------------------------------------------
+# Sets the HSDK environment by sourcing credentials, using a keychain cache.
+#
+# This function handles the logic of retrieving HSDK environment variables.
+# It first checks for cached credentials in the macOS keychain. If found, it
+# validates them using `aws sts get-caller-identity`. If they are valid, they are
+# used. If not, or if they are not found, it fetches new credentials from
+# `hsdk se`, verifies them, and caches them in the keychain.
+#
+# Parameters:
+#   $1 - Environment ID
+#
+# Returns:
+#   0 on success, 1 on failure.
+# ------------------------------------------------------------------------------
+_hsdk_set_env() {
+	local env_id="$1"
+	local env_data
+
+	env_data=$(_hsdk_read_env_from_keychain "$env_id")
+	# Load cached credentials if available
+	if [[ -n "$env_data" ]]; then
+		eval "$env_data"
+		# We also need to eval the alias-tools after setting the env
+		eval "$(hsdk alias-tools)"
+
+		if gum spin --title "Verifying cached credentials for '$env_id'..." -- aws sts get-caller-identity >/dev/null 2>&1; then
+			# Credentials are good, we are done.
+			gum log --level info "Using valid cached credentials for '$env_id'."
+			return 0
+		fi
+
+		gum log --level warn "Cached credentials for '$env_id' are expired or invalid. Refreshing..."
+		# If we are here, credentials were bad.
+		_hsdk_delete_env_from_keychain "$env_id"
+	fi
+
+	# Fetch new ones.
+	# shellcheck disable=SC2016
+	env_data=$(
+		gum spin --title "Fetching new credentials for '$env_id'..." -- \
+			env -i HOME="$HOME" PATH="$PATH" HSDK_ENV_ID="$env_id" \
+			sh -c 'eval "$(hsdk se $HSDK_ENV_ID 2>/dev/null)"; env' | grep -E '^(TF_|AWS_|HSDK_)' | awk '{print "export " $0}'
+	)
+
+	# If fetching failed, exit with error.
+	if [[ -z "$env_data" ]]; then
+		gum log --level error "Failed to fetch credentials for '$env_id'."
+		return 1
+	fi
+
+	eval "$env_data"
+	# We also need to eval the alias-tools after setting the env
+	eval "$(hsdk alias-tools)"
+
+	# Verify that the new credentials work before caching them.
+	if gum spin --title "Verifying new credentials for '$env_id'..." -- aws sts get-caller-identity >/dev/null 2>&1; then
+		_hsdk_write_env_to_keychain "$env_id" "$env_data"
+		gum log --level info "Successfully cached new credentials for '$env_id'."
+	else
+		gum log --level error "Fetched credentials for '$env_id' are invalid."
+		return 1
+	fi
+
+	return 0
+}
+
+# ------------------------------------------------------------------------------
 # hsdk-env
 # ------------------------------------------------------------------------------
 # Set HSDK environment in the current shell, with optional interactive selection.
+#
+# This function now includes keychain caching for HSDK credentials. It will
+# first attempt to load credentials from the macOS keychain. If found, it checks
+# if they are expired. If they are not expired, it uses them. Otherwise, it
+# fetches new credentials from `hsdk`, caches them in the keychain, and then
+# loads them.
 #
 # Usage:
 #   hsdk-env              # Select interactively, set in current shell
@@ -238,7 +395,6 @@ _hsdk_env_tmux() {
 hsdk-env() {
 	local exec_shell=false
 	local env_id
-	local env_type
 
 	# Parse arguments
 	while [[ $# -gt 0 ]]; do
@@ -256,34 +412,24 @@ hsdk-env() {
 
 	# If no env_id provided, select interactively
 	if [[ -z "$env_id" ]]; then
-		local env_item
 		# get the environment
-		env_item=$(_hsdk_env_fzf)
-		# Extract ID (first field) and Type (second field) from selection
-		env_id=$(echo "$env_item" | awk '{print $1}')
-		env_type=$(echo "$env_item" | awk '{print $2}')
+		env_id=$(_hsdk_env_fzf)
 	fi
 
-	# If env_id was provided directly (not from fzf), fetch the Type
-	if [[ -n "$env_id" ]] && [[ -z "$env_type" ]]; then
-		env_type=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r ".[] | select(.Id == \"$env_id\") | .Type")
+	# If no env_id is set after parsing and fzf, exit.
+	if [[ -z "$env_id" ]]; then
+		# fzf was cancelled, not an error
+		return 0
 	fi
 
 	# Set the environment
-	if [[ -n "$env_id" ]]; then
-		# Determine color based on environment type
+	if ! _hsdk_set_env "$env_id"; then
+		return 1
+	fi
 
-		# Apply custom tmux window styling if in a tmux session and color is set
-		if [[ "$exec_shell" == true ]] && [[ -n "$TMUX" ]]; then
-			_hsdk_env_tmux "$env_type"
-		fi
-
-		if eval "$(hsdk se "$env_id")"; then
-			# Optionally exec new shell (for tmux new-window)
-			if [[ "$exec_shell" == true ]]; then
-				exec "$SHELL"
-			fi
-		fi
+	# Spawn new shell if requested
+	if [[ "$exec_shell" == true ]]; then
+		_hsdk_env_shell
 	fi
 }
 
