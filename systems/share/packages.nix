@@ -4,10 +4,10 @@
 }:
 {
   environment.systemPackages = with pkgs; [
+    asciinema_3
     atlas
     atuin
     awscli2
-    asciinema_3
     bat
     bat-extras.core
     bottom
@@ -22,7 +22,6 @@
     direnv
     dotnet-sdk
     entr
-    exiftool
     exiftool
     extract_url
     eza
@@ -42,16 +41,17 @@
     gnused
     go
     google-cloud-sdk
+    graphviz
     gum
     htop
     hurl
-    lazydocker
     imagemagick
     jdk
     jjui
     jq
     jujutsu
     julia-bin
+    lazydocker
     lazygit
     lazyjj
     lnav
@@ -84,6 +84,7 @@
         pynvim
       ]
     ))
+    postgresql_18
     quartoMinimal
     readline
     ripgrep
@@ -104,7 +105,6 @@
     unzip
     upterm
     usql
-    postgresql_18
     uv
     vifm
     vivid

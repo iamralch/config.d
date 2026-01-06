@@ -42,15 +42,11 @@ return {
         "sqlfluff",
         "impl",
         "buf",
-      }
 
-      -- Add packages that are only available outside Linux ARM
-      if vim.env.DEVPOD ~= "true" then
-        vim.list_extend(opts.ensure_installed, {
-          "swiftlint",
-          "tectonic",
-        })
-      end
+        -- Linux ARM?
+        "swiftlint",
+        "tectonic",
+      }
     end,
   },
   {
@@ -61,16 +57,12 @@ return {
         "lua",
         "norg",
         "regex",
+        "latex",
         "svelte",
         "typst",
         "vim",
         "vue",
       })
-
-      -- Add parsers that are only available outside Linux ARM
-      if vim.env.DEVPOD ~= "true" then vim.list_extend(opts.ensure_installed, {
-        "latex",
-      }) end
     end,
   },
   {

@@ -25,19 +25,7 @@ require("lazy").setup({
       options = {
         g = {
           -- Use nix-managed Python
-          python3_host_prog = vim.env.DEVPOD ~= "true" and "/run/current-system/sw/bin/python3" or nil,
-          -- In Docker environments, use OSC 52 clipboard support
-          clipboard = vim.env.DEVPOD == "true" and {
-            name = "OSC 52",
-            copy = {
-              ["+"] = require("vim.ui.clipboard.osc52").copy "+",
-              ["*"] = require("vim.ui.clipboard.osc52").copy "*",
-            },
-            paste = {
-              ["+"] = require("vim.ui.clipboard.osc52").paste "+",
-              ["*"] = require("vim.ui.clipboard.osc52").paste "*",
-            },
-          } or nil,
+          python3_host_prog = "/run/current-system/sw/bin/python3",
         },
       },
     },
