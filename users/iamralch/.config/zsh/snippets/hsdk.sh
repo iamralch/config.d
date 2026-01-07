@@ -161,7 +161,7 @@ _hsdk_set_env() {
 	export AWS_PROFILE="${HSDK_ENV_ALIAS}-AdministratorAccess"
 
 	local env_config
-	env_config=$(env | grep -E 'HSDK|TF|AWS_VAULT' | awk '{print "export " $0}')
+	env_config=$(env | grep -E 'HSDK|TF' | awk '{print "export " $0}')
 	# Write the hsdk env to the keychain
 	_hsdk_write_env_to_keychain "$AWS_PROFILE" "$env_config"
 }
@@ -274,7 +274,9 @@ _hsdk_env_shell() {
 #   to the `hsdk-env` function, enabling its use in contexts like tmux keybindings.
 # ------------------------------------------------------------------------------
 hsdk-env() {
-	case "${1:-}" in
+	local command="${1:-}"
+
+	case "$command" in
 	auth)
 		shift
 		_hsdk_env_auth "$1"
