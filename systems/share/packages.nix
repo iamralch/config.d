@@ -8,6 +8,7 @@
     atlas
     atuin
     awscli2
+    aws-vault
     bat
     bat-extras.core
     bottom
