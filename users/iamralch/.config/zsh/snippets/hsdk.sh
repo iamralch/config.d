@@ -30,6 +30,8 @@ _fzf_options=(
 	--layout='reverse-list'
 )
 
+HSDK_ROLE_NAME="${HSDK_ROLE_NAME:-AdministratorAccess}"
+
 # ------------------------------------------------------------------------------
 # _hsdk_env_fzf (private)
 # ------------------------------------------------------------------------------
@@ -64,8 +66,8 @@ _hsdk_env_fzf() {
 	# Column 2: Environment Name
 	# Column 3: Description
 	# Column 4: AWS Console URL (SSO URL + account info)
-	hsdk_env_list_columns='(["ID", "NAME", "DESCRIPTION", "URL"] | @tsv),
-	                       (.[] | [.Id, .Name, .Description, .AWSSsoUrl + "/#/console?account_id=" + .AWSAccountId + "&role_name=AdministratorAccess"] | @tsv)'
+	hsdk_env_list_columns='(["Account", "URL", "ID", "Name", "Description"] | @tsv),
+	                       (.[] | [.AWSAccountId, .AWSSsoUrl, .Id, .Name, .Description] | @tsv)'
 
 	# Get the environment list
 	hsdk_env_list=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r "$hsdk_env_list_columns" | column -t -s $'\t')
@@ -76,10 +78,10 @@ _hsdk_env_fzf() {
 	# --bind 'ctrl-o:...': Open browser with URL on ctrl-o
 	# --bind 'ctrl-n:...': Open new tmux window with selected environment
 	echo "$hsdk_env_list" | fzf "${_fzf_options[@]}" \
-		--accept-nth 1 --with-nth 1..-2 \
+		--accept-nth 3 --with-nth 3.. \
 		--footer "$_fzf_icon Environment" \
-		--bind "ctrl-o:execute-silent(open {-1})" \
-		--bind "ctrl-n:become(tmux new-window -n {1} $HOME/.config/zsh/snippets/hsdk.sh auth {1})+abort"
+		--bind "ctrl-o:execute(open '{2}/#/console?account_id={1}&role_name=$HSDK_ROLE_NAME')+abort" \
+		--bind "ctrl-n:become(tmux new-window -n {3} $HOME/.config/zsh/snippets/hsdk.sh auth {3})+abort"
 }
 
 # ------------------------------------------------------------------------------
@@ -158,7 +160,7 @@ _hsdk_set_env() {
 	# shellcheck disable=SC2016
 	eval "$(hsdk setenv "$env_id")"
 	# We assume success if we reach this point
-	export AWS_PROFILE="${HSDK_ENV_ALIAS}-AdministratorAccess"
+	export AWS_PROFILE="${HSDK_ENV_ALIAS}-${HSDK_ROLE_NAME}"
 
 	local env_config
 	env_config=$(env | grep -E 'HSDK|TF' | awk '{print "export " $0}')
