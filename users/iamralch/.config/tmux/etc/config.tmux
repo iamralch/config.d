@@ -1,5 +1,6 @@
 # vim:ft=tmux
 
+
 # Terminal inside tmux
 set -g default-terminal "tmux-256color"
 
