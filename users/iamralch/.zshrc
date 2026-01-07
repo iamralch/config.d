@@ -22,6 +22,7 @@ export ZINIT_HOME="$XDG_DATA_HOME/zinit/zinit.git"
 # Hardcoded project configuration
 export AWS_FZF_LOG_VIEWER="lnav"
 export GOOGLE_CLOUD_PROJECT="hippo-dev-analytics"
+export OPENCODE_GEMINI_PROJECT_ID="$GOOGLE_CLOUD_PROJECT"
 
 # shellcheck disable=SC2155
 export GOPATH="$HOME/.local/share/go"
@@ -64,8 +65,9 @@ zinit light jeffreytse/zsh-vi-mode
 zinit light Aloxaf/fzf-tab
 # Add personal plugins
 zinit load zsh-contrib/zsh-fzf
+zinit load zsh-contrib/zsh-aws
 
-if [[ "$TERM" != "xterm-ghossty" ]]; then
+if [[ "$TERM" != "tmux-256color" ]]; then
   zinit load zsh-contrib/zsh-vivid
 fi
 
