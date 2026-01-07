@@ -76,14 +76,3 @@ format = 'as [$symbol($output)]($style) '
 ignore_timeout = true
 symbol = '  '
 when = true
-
-[env_var.HSDK_ENV_ID]
-variable = 'HSDK_ENV_ID'
-format = '[$symbol$env_value]($style) '
-style = 'bright-yellow bold'
-symbol = '  '
-
-[env_var.HSDK_ENV_TYPE]
-variable = 'TF_VAR_account_type'
-format = '[$env_value]($style) '
-style = 'bright-yellow bold inverted'
