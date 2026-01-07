@@ -1,10 +1,10 @@
 # vim:ft=tmux
 
-# set terminal options
-set -g default-terminal "xterm-ghostty"
-# set the terminal-overrides
-set -sa terminal-overrides ",tmux-256color:RGB"
-set -ga terminal-features '*:RGB:hyperlinks:usstyle:clipboard'
+# Terminal inside tmux
+set -g default-terminal "tmux-256color"
+
+# Capabilities (modern)
+set -ga terminal-features ",tmux-256color:RGB,clipboard,extkeys,focus,hyperlinks,mouse,strikethrough,sync,title,usstyle"
 
 # set the titles dynamically
 set -g set-titles on
