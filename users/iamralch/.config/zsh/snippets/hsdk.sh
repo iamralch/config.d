@@ -232,6 +232,8 @@ _hsdk_env_shell() {
 	if [[ -n "$AWS_PROFILE" ]]; then
 		# Read from environment variables if set
 		eval "$(_hsdk_read_env_from_keychain "$AWS_PROFILE")"
+		# Export AWS_VAULT for aws-vault compatibility
+		export AWS_VAULT="$HSDK_ENV_ID"
 		# Read from hsdk alias tools if available
 		eval "$(hsdk alias-tools)"
 	fi
