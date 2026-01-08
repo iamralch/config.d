@@ -26,7 +26,8 @@ set -g pane-active-border-style "fg=#{@thm_lavender}"
 set -g message-style "fg=#{@thm_bg},bg=#{@thm_yellow}"
 set -g mode-style "fg=#{@thm_bg},bg=#{@thm_yellow}"
 
-set -g popup-border-style "fg=#{@thm_overlay_0},bg=#{@thm_bg}"
+set -g popup-border-style "fg=#{@thm_lavender},bg=#{@thm_bg}"
+set -g popup-style "fg=#{@thm_fg},bg=#{@thm_bg}"
 
 # Colors for focused panes
 set-hook -g pane-focus-in 'select-pane -P "bg=#{@thm_bg}"'
