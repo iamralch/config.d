@@ -170,7 +170,16 @@ hs.hotkey.bind({ "ctrl", "alt", "shift" }, "f", function()
 end)
 
 hs.hotkey.bind({ "ctrl", "alt", "shift" }, "m", function()
+	-- Start the app
 	hs.application.launchOrFocus("zoom.us")
+	-- Find focus all zoom windows
+	local windows = hs.application("zoom.us"):allWindows()
+	-- Focus all windows except "Zoom Workplace"
+	for _, w in ipairs(windows) do
+		if w:title() ~= "Zoom Workplace" then
+			w:focus()
+		end
+	end
 	-- update the mouse position
 	mouse.focus()
 end)
