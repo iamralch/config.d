@@ -48,7 +48,7 @@ HSDK_ROLE_NAME="${HSDK_ROLE_NAME:-AdministratorAccess}"
 #            shell or for further processing.
 #   - ctrl-o: Open the AWS console URL in the default browser without selecting
 #            the environment. Useful for quickly checking the console.
-#   - ctrl-n: Create a new tmux window with the selected environment already
+#   - alt-n: Create a new tmux window with the selected environment already
 #            configured. The window is automatically named with the environment
 #            ID. A new shell is started in the window with the environment
 #            credentials loaded.
@@ -81,7 +81,7 @@ _hsdk_env_fzf() {
 		--accept-nth 1 --with-nth 1,2,6.. \
 		--footer "$_fzf_icon Environment" \
 		--bind "ctrl-o:execute(open {5}/\#/console\?account_id={3}\&role_name=$HSDK_ROLE_NAME)+abort" \
-		--bind "ctrl-n:become(tmux new-window -n {1} $HOME/.config/zsh/snippets/hsdk.sh auth {1})+abort"
+		--bind "alt-enter:become(tmux new-window -n {1} $HOME/.config/zsh/snippets/hsdk.sh auth {1})+abort"
 }
 
 # ------------------------------------------------------------------------------
