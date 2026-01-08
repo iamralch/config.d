@@ -5,7 +5,6 @@
 highlight clear
 
 highlight Border cterm=none	ctermfg=default	ctermbg=default
-
 highlight TopLine	cterm=none	ctermfg=green	ctermbg=default
 highlight TopLineSel cterm=bold	ctermfg=green ctermbg=default
 
@@ -27,3 +26,13 @@ highlight BrokenLink cterm=bold ctermfg=red	ctermbg=default
 highlight Device cterm=bold ctermfg=magenta	ctermbg=default
 highlight Fifo cterm=none	ctermfg=default	ctermbg=default
 highlight Socket cterm=bold	ctermfg=default	ctermbg=default
+
+" --- Statusline colors (Catppuccin style) ---
+" filename / focus
+highlight User1 cterm=bold ctermfg=green  ctermbg=default   
+" path / separators
+highlight User2 cterm=none ctermfg=blue   ctermbg=default   
+" metadata
+highlight User3 cterm=none ctermfg=yellow ctermbg=default
+" size / time
+highlight User4 cterm=none ctermfg=magenta ctermbg=default

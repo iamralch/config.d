@@ -5,6 +5,9 @@
 " you will need to change this setting.
 set vicmd=nvim
 
+" Default file preview
+set previewprg="~/.config/vifm/scripts/preview.sh %c"
+
 " This makes vifm perform file operations on its own instead of relying on
 " standard utilities like `cp`.  While using `cp` and alike is a more universal
 " solution, it's also much slower when processing large amounts of files and
@@ -71,7 +74,7 @@ set incsearch
 set scrolloff=4
 
 " Set custom status line look
-set statusline=" Tip: %z%= %A %10u:%-7g %15s %20d "
+set statusline="%1* %-26t %2* %= %1* %A %2* %7u:%-7g %1* %-5s %2* %d "
 
 " :com[mand][!] command_name action
 " The following macros can be used in a command
@@ -87,15 +90,22 @@ set statusline=" Tip: %z%= %A %10u:%-7g %15s %20d "
 
 command! diff nvim -d %f %F
 command! zip zip -r %f.zip %f
-command! run !! ./%f
+command! run !!./%c
 command! make !!make %a
 command! mkcd :mkdir -p %a | cd %a
-command! vgrep nvim "+grep %a"
+command! vgrep nvim +"grep %a"
 command! reload :write | restart full
 command! tig tig -- %d
 
 " filetype open by xdg-open
-filetype * xdg-open
+" open images with the default app
+filetype *.jpg,*.jpeg,*.png,*.gif,*.bmp,*.tiff,*.svg,*.ico open %f
+
+" open PDFs with the default app
+filetype *.pdf open %f
+
+" open videos and audio with the default app
+filetype *.mp4,*.mkv,*.avi,*.mov,*.mp3,*.flac,*.wav open %f
 
 " ------------------------------------------------------------------------------
 
@@ -104,20 +114,14 @@ filetype * xdg-open
 set vifminfo=dhistory,chistory,state,tui,shistory,phistory,fhistory,dirstack,registers,bookmarks,bmarks
 
 " create new tab
-nnoremap <c-t> :tabnew<cr>:view!<cr>
+nnoremap <c-t> :tabnew<cr>
 
 " close tab
 nnoremap <c-w> :tabclose<cr>
 
-" switch to tab to the left
-nnoremap H :tabprevious<cr>:view!<cr>
-
-" switch to tab to the left
-nnoremap L :tabnext<cr>:view!<cr>
-
-" switch to tab to the left
-nnoremap q :cquit<cr>
-nnoremap Q :quit<cr>
+" more Vim-like exits
+nnoremap ZZ :quit<cr>
+nnoremap ZQ :cquit<cr>
 
 " Start shell in current directory
 nnoremap s :shell<cr>
@@ -125,10 +129,9 @@ nnoremap s :shell<cr>
 " Display sorting dialog
 nnoremap S :sort<cr>
 
-
 " Toggle visibility of preview window
-nnoremap w :view<cr>
-vnoremap w :view<cr>gv
+nnoremap zp :view<cr>
+vnoremap zp :view<cr>gv
 
 " Edit file
 nnoremap e :edit<cr>
@@ -136,14 +139,22 @@ nnoremap e :edit<cr>
 " Navigate to home directory
 nnoremap gh :goto ~<cr>l
 
-" go to parent directory
-nnoremap <bs> gh
+" Parent
+nnoremap h h
+nnoremap <bs> h
+nnoremap - h
+
+" History
+nnoremap go go
+nnoremap gi gi
+nnoremap <c-o> go
+nnoremap <c-i> gi
 
 " Yank current directory path into the clipboard
-nnoremap yd :!echo %d | pbcopy<cr>
-
+nnoremap yd :let @* = "%d"<cr>
+   
 " Yank current file path into the clipboard
-nnoremap yf :!echo %c:p | pbcopy<cr>
+nnoremap yf :let @* = expand("%c:p")<cr>
 
 " Mappings for faster renaming
 nnoremap I cw<c-a>
@@ -167,8 +178,7 @@ nnoremap <a-i> :sync<cr>
 " Open directory under cursor in the other pane
 nnoremap <a-o> :sync %c<cr>
 
-" Swap panes
-nnoremap <c-u> <c-w>x
+" Swap panes using <c-w>x
 
 " Show bookmarks
 map <c-\> :bmarks<cr>
