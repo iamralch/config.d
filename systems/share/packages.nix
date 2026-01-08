@@ -7,8 +7,8 @@
     asciinema_3
     atlas
     atuin
-    awscli2
     aws-vault
+    awscli2
     bat
     bat-extras.core
     bottom
@@ -52,6 +52,7 @@
     jq
     jujutsu
     julia-bin
+    k6
     lazydocker
     lazygit
     lazyjj
