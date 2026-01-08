@@ -197,8 +197,12 @@ _hsdk_set_env() {
 _hsdk_env_auth() {
 	local env_id="$1"
 	# Set the HSDK environment for the new tmux window
-	if _hsdk_set_env "$env_id"; then
-		if [[ -n "$TMUX" ]]; then
+	if [[ -n "$TMUX" ]]; then
+		local window_id
+		window_id="$(tmux display -p '#{window_id}')"
+
+		# TODO: get the window and pass it
+		if _hsdk_set_env "$env_id"; then
 			# Set the environment profile type
 			# shellcheck disable=SC2154
 			aws configure set environment "${TF_VAR_account_type}" --profile "$AWS_PROFILE"
@@ -207,7 +211,10 @@ _hsdk_env_auth() {
 			# Start a new shell in the tmux window
 			"$SHELL" --login
 		fi
+	else
+		_hsdk_set_env "$env_id"
 	fi
+
 }
 
 # ------------------------------------------------------------------------------
