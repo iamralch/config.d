@@ -120,8 +120,8 @@ nnoremap <c-t> :tabnew<cr>
 nnoremap <c-w> :tabclose<cr>
 
 " more Vim-like exits
-nnoremap ZZ :quit<cr>
-nnoremap ZQ :cquit<cr>
+nnoremap q :cquit<cr>
+nnoremap Q :quit<cr>
 
 " Start shell in current directory
 nnoremap s :shell<cr>
@@ -184,10 +184,10 @@ nnoremap <a-o> :sync %c<cr>
 map <c-\> :bmarks<cr>
 
 " bookmarks
-mark h ~/
-mark d ~/Desktop
-mark o ~/Documents
-mark l ~/Downloads
-mark w ~/Workspace
+mark H ~/
+mark D ~/Desktop
+mark P ~/Projects
+mark O ~/Documents
+mark L ~/Downloads
 
 source ~/.config/vifm/plugins/icons.vifm

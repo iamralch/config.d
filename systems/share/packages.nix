@@ -15,7 +15,6 @@
     buf
     bun
     cfssl
-    chafa
     curl
     d2
     deadnix
@@ -30,7 +29,6 @@
     fastfetch
     fd
     ffmpeg
-    ffmpegthumbnailer
     fish
     fpp
     fzf
@@ -76,7 +74,6 @@
     php
     php84Packages.composer
     pnpm
-    poppler-utils
     protobuf
     pspg
     pstree

@@ -16,17 +16,8 @@ _preview_file() {
   file_type=$(file --mime-type -Lb "$file_path" || echo "application/octet-stream")
 
   case "$file_type" in
-  video/*)
-    ffmpegthumbnailer -i "$file_path" -o - -s 0 | chafa
-    ;;
-  application/pdf)
-    pdftotext "$file_path" - | sed -n '1,200p'
-    ;;
   text/*)
     bat --paging=never --color=always --style=numbers --line-range=:300 "$file_path"
-    ;;
-  image/*)
-    chafa "$file_path"
     ;;
   *)
     file "$file_path"
