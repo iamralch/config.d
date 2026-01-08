@@ -16,10 +16,10 @@
 
 # ── General ──────────────────────────────────
 color default          white   default
-color cursor           black   white     bold
-color cursor-blur      white   black
-color title-focus      black   white     bold
-color title-blur       white   black
+color cursor           black   yellow    bold
+color cursor-blur      black   default   
+color title-focus      yellow  default   bold
+color title-blur       black   default
 color delimiter        magenta default
 color author           cyan    default
 color date             blue    default
