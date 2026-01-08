@@ -18,12 +18,15 @@ set -gF window-status-bell-style "fg=#{@thm_yellow}"
 set -g window-status-format "#[fg=#{@thm_fg},bg=#{@thm_bg}] #I: #W #F "
 set -g window-status-current-format "#[fg=#{@thm_mauve},bg=#{@thm_bg},bold]  #I: #W #F "
 set -g window-status-separator ""
+set -g window-status-activity-style ""
 
 set -g pane-border-style "fg=#{@thm_overlay_0}"
 set -g pane-active-border-style "fg=#{@thm_lavender}"
 
 set -g message-style "fg=#{@thm_bg},bg=#{@thm_yellow}"
 set -g mode-style "fg=#{@thm_bg},bg=#{@thm_yellow}"
+
+set -g popup-border-style "fg=#{@thm_overlay_0},bg=#{@thm_bg}"
 
 # Colors for focused panes
 set-hook -g pane-focus-in 'select-pane -P "bg=#{@thm_bg}"'
