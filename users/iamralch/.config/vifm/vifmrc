@@ -96,8 +96,8 @@ command! mkcd :mkdir -p %a | cd %a
 command! vgrep nvim +"grep %a"
 command! reload :write | restart full
 command! tig tig -- %d
-command! fzfdir  : let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
-command! fzffile : let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "Files · %d") | redraw | if $PICK != '' | execute 'edit' fnameescape($PICK) | endif
+command! fzfdir :let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "  Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
+command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'edit' fnameescape($PICK) | endif
 
 " filetype open by xdg-open
 " open images with the default app
@@ -115,6 +115,9 @@ filetype *.mp4,*.mkv,*.avi,*.mov,*.mp3,*.flac,*.wav open %f
 " value if you don't want vifm to remember last visited directories for you.
 set vifminfo=dhistory,chistory,state,tui,shistory,phistory,fhistory,dirstack,registers,bookmarks,bmarks
 
+" use space as a leader
+nnoremap <Space> <nop>
+
 " create new tab
 nnoremap <c-t> :tabnew<cr>
 
@@ -128,6 +131,9 @@ nnoremap Q :quit<cr>
 " Start shell in current directory
 nnoremap s :shell<cr>
 
+" Start tig in current directory
+nnoremap <space>gt :tig<cr>
+
 " Display sorting dialog
 nnoremap S :sort<cr>
 
@@ -137,6 +143,10 @@ vnoremap zp :view<cr>gv
 
 " Edit file
 nnoremap e :edit<cr>
+
+" Find files and directories using fzf and fd
+nnoremap <space>ff :fzffile<cr>
+nnoremap <space>fd :fzfdir<cr>
 
 " Navigate to home directory
 nnoremap gh :goto ~<cr>l
