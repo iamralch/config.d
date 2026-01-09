@@ -198,10 +198,6 @@ _hsdk_env_auth() {
 	local env_id="$1"
 	# Set the HSDK environment for the new tmux window
 	if [[ -n "$TMUX" ]]; then
-		local window_id
-		window_id="$(tmux display -p '#{window_id}')"
-
-		# TODO: get the window and pass it
 		if _hsdk_set_env "$env_id"; then
 			# Set the environment profile type
 			# shellcheck disable=SC2154
