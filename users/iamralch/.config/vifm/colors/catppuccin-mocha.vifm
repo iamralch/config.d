@@ -20,7 +20,7 @@ highlight clear
 
 " --- UI Structure & Window Highlights ---
 " Vertical separator between split panes
-highlight Border cterm=none	ctermfg=default	ctermbg=default
+highlight Border cterm=none	ctermfg=255	ctermbg=default
 
 " Top line of inactive pane (shows directory path)
 highlight TopLine	cterm=none	ctermfg=green	ctermbg=default
@@ -30,6 +30,9 @@ highlight TopLineSel cterm=bold	ctermfg=green ctermbg=default
 
 " Default color for window content and file listings
 highlight Win	cterm=none ctermfg=default ctermbg=default
+
+" Default color for inactive pane content
+highlight OtherWin	cterm=none ctermfg=246 ctermbg=default
 
 " Directory entries in file list
 highlight Directory	cterm=bold	ctermfg=blue ctermbg=default
