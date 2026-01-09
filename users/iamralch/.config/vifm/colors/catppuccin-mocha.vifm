@@ -1,5 +1,7 @@
+" vim: filetype=vifm :
+
 ""
-" Catppuccin color scheme for Vifm
+" Catppuccin Mocha color scheme for Vifm
 ""
 
 highlight clear
