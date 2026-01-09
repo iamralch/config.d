@@ -6,9 +6,44 @@
 " Activate screen/tmux support
 screen!
 
-" Set vertical border character to nothing for a cleaner look
-set fillchars=vborder:"",hborder:"",millersep:""
+" ------------------------------------------------------------------------------
+" USER INTERFACE - BORDERS AND DISPLAY
+" ------------------------------------------------------------------------------
+" Hide side borders and use fixed-size middle border
+set tuioptions-=s
+set tuioptions-=u
+set tuioptions-=v
 
+" ------------------------------------------------------------------------------
+" USER INTERFACE - APPEARANCE
+" ------------------------------------------------------------------------------
+" List of color schemes to try (picks the first one supported by the terminal)
+colorscheme catppuccin-mocha
+
+" Format for displaying time in file list. For example:
+" TIME_STAMP_FORMAT=%m/%d-%H:%M
+" See man date or man strftime for details.
+set timefmt=%Y-%m-%d\ %H:%M
+
+" Try to leave some space from cursor to upper/lower border in lists
+set scrolloff=4
+
+" Set custom status line look
+set statusline="%1* %-26t %2* %= %1* %A %2* %7u:%-7g %1* %-5s %2* %d "
+
+" Show list of matches on tab completion in command-line mode
+set wildmenu
+
+" Display completions in a form of popup with descriptions of the matches
+set wildstyle=popup
+
+" Display suggestions in normal, visual and view modes for keys, marks and
+" registers (at most 5 files).  In other view, when available.
+set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
+
+" ------------------------------------------------------------------------------
+" EXTERNAL TOOL INTEGRATION
+" ------------------------------------------------------------------------------
 " Command used to edit files in various contexts.  The default is vim.
 " If you would like to use another vi clone such as Elvis or Vile
 " you will need to change this setting.
@@ -17,6 +52,12 @@ set vicmd=nvim
 " Default file preview
 set previewprg="~/.config/vifm/scripts/preview.sh %c"
 
+" Get rid of delay before drawing graphics
+set previewoptions+=graphicsdelay:0
+
+" ------------------------------------------------------------------------------
+" FILE OPERATIONS
+" ------------------------------------------------------------------------------
 " This makes vifm perform file operations on its own instead of relying on
 " standard utilities like `cp`.  While using `cp` and alike is a more universal
 " solution, it's also much slower when processing large amounts of files and
@@ -32,9 +73,6 @@ set syscalls
 set trash
 set trashdir=~/.local/share/Trash/files
 
-" This is how many directories to store in the directory history.
-set history=100
-
 " Automatically resolve symbolic links on l or Enter.
 set followlinks
 
@@ -45,6 +83,16 @@ set fastrun
 " Natural sort of (version) numbers within text.
 set sortnumbers
 
+" If you would like to run an executable file when you
+" press Enter, l or Right Arrow, set this.
+set norunexec
+
+" ------------------------------------------------------------------------------
+" HISTORY AND SESSION MANAGEMENT
+" ------------------------------------------------------------------------------
+" This is how many directories to store in the directory history.
+set history=100
+
 " Maximum number of changes that can be undone.
 set undolevels=100
 
@@ -52,39 +100,25 @@ set undolevels=100
 " If you would rather use a plain text help file set novimhelp.
 set vimhelp
 
-" If you would like to run an executable file when you
-" press Enter, l or Right Arrow, set this.
-set norunexec
+" Disable compatibility with older versions:
+" * make yy and dd ignore selection and work with file under the cursor;
+" * make <c-i> (and <tab>) work in same way as in Vim (go forward in history).
+set cpoptions-=fst
 
-" List of color schemes to try (picks the first one supported by the terminal)
-colorscheme catppuccin-mocha
-
-" Format for displaying time in file list. For example:
-" TIME_STAMP_FORMAT=%m/%d-%H:%M
-" See man date or man strftime for details.
-set timefmt=%Y-%m-%d\ %H:%M
-
-" Show list of matches on tab completion in command-line mode
-set wildmenu
-
-" Display completions in a form of popup with descriptions of the matches
-set wildstyle=popup
-
-" Display suggestions in normal, visual and view modes for keys, marks and
-" registers (at most 5 files).  In other view, when available.
-set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
-
+" ------------------------------------------------------------------------------
+" SEARCH SETTINGS
+" ------------------------------------------------------------------------------
 set ignorecase
 set smartcase
 set nohlsearch
 set incsearch
 
-" Try to leave some space from cursor to upper/lower border in lists
-set scrolloff=4
+" Always match characters on f/F/;/, in a case sensitive way
+set caseoptions=G
 
-" Set custom status line look
-set statusline="%1* %-26t %2* %= %1* %A %2* %7u:%-7g %1* %-5s %2* %d "
-
+" ------------------------------------------------------------------------------
+" CUSTOM COMMANDS
+" ------------------------------------------------------------------------------
 " :com[mand][!] command_name action
 " The following macros can be used in a command
 " %a is replaced with the user arguments.
@@ -105,10 +139,14 @@ command! mkcd :mkdir -p %a | cd %a
 command! vgrep nvim +"grep %a"
 command! reload :write | restart full
 command! tig tig -- %d
-command! fzfdir :let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "  Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
-command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'edit' fnameescape($PICK) | endif
+command! fzfdir :let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "  Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
+command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'edit' fnameescape($PICK) | endif
 
+" ------------------------------------------------------------------------------
+" FILE TYPE ASSOCIATIONS
+" ------------------------------------------------------------------------------
 " filetype open by xdg-open
+
 " open images with the default app
 filetype *.jpg,*.jpeg,*.png,*.gif,*.bmp,*.tiff,*.svg,*.ico open %f
 
@@ -119,41 +157,24 @@ filetype *.pdf open %f
 filetype *.mp4,*.mkv,*.avi,*.mov,*.mp3,*.flac,*.wav open %f
 
 " ------------------------------------------------------------------------------
-
+" SESSION PERSISTENCE
+" ------------------------------------------------------------------------------
 " What should be saved automatically between vifm sessions.  Drop "savedirs"
 " value if you don't want vifm to remember last visited directories for you.
 set vifminfo=dhistory,chistory,state,tui,shistory,phistory,fhistory,dirstack,registers,bookmarks,bmarks
 
-" use space as a leader
-nnoremap <Space> <nop>
-
+" ------------------------------------------------------------------------------
+" KEYBINDINGS - TAB AND WINDOW MANAGEMENT
+" ------------------------------------------------------------------------------
 " create new tab
 nnoremap <c-t> :tabnew<cr>
 
 " close tab
 nnoremap <c-w> :tabclose<cr>
 
-" more Vim-like exits
-nnoremap ZZ :quit<cr>
-nnoremap ZQ :cquit<cr>
-
-" Start tig in current directory
-nnoremap <space>gt :tig<cr>
-
-" Display sorting dialog
-nnoremap S :sort<cr>
-
-" Toggle visibility of preview window
-nnoremap zp :view<cr>
-vnoremap zp :view<cr>gv
-
-" Edit file
-nnoremap e :edit<cr>
-
-" Find files and directories using fzf and fd
-nnoremap <space>ff :fzffile<cr>
-nnoremap <space>fd :fzfdir<cr>
-
+" ------------------------------------------------------------------------------
+" KEYBINDINGS - NAVIGATION
+" ------------------------------------------------------------------------------
 " Navigate to home directory
 nnoremap gh :goto ~<cr>l
 
@@ -168,19 +189,21 @@ nnoremap gi gi
 nnoremap <c-o> go
 nnoremap <c-i> gi
 
-" Yank current directory path into the clipboard
-nnoremap yd :let @* = "%d"<cr>
-   
-" Yank current file path into the clipboard
-nnoremap yf :let @* = expand("%c:p")<cr>
+" ------------------------------------------------------------------------------
+" KEYBINDINGS - FILE AND DIRECTORY OPERATIONS
+" ------------------------------------------------------------------------------
+" Start tig in current directory
+nnoremap <space>gt :tig<cr>
 
-" Mappings for faster renaming
-nnoremap I cw<c-a>
-nnoremap cc cw<c-u>
-nnoremap A cw
+" Edit file
+nnoremap e :edit<cr>
 
-" Toggle wrap setting on ,w key
-nnoremap ,w :set wrap!<cr>
+" Display sorting dialog
+nnoremap S :sort<cr>
+
+" Find files and directories using fzf and fd
+nnoremap <space>ff :fzffile<cr>
+nnoremap <space>fd :fzfdir<cr>
 
 " Example of standard two-panel file managers mappings
 nnoremap <f3> :!less %f<cr>
@@ -190,6 +213,13 @@ nnoremap <f6> :move<cr>
 nnoremap <f7> :mkdir<space>
 nnoremap <f8> :delete<cr>
 
+" ------------------------------------------------------------------------------
+" KEYBINDINGS - PANE MANAGEMENT
+" ------------------------------------------------------------------------------
+" Toggle visibility of preview window
+nnoremap zp :view<cr>
+vnoremap zp :view<cr>gv
+
 " Open current directory in the other pane
 nnoremap <a-i> :sync<cr>
 
@@ -198,14 +228,42 @@ nnoremap <a-o> :sync %c<cr>
 
 " Swap panes using <c-w>x
 
+" ------------------------------------------------------------------------------
+" KEYBINDINGS - YANK (COPY TO CLIPBOARD)
+" ------------------------------------------------------------------------------
+" Yank current directory path into the clipboard
+nnoremap yd :let @* = "%d"<cr>
+
+" Yank current file path into the clipboard
+nnoremap yf :let @* = expand("%c:p")<cr>
+
+" ------------------------------------------------------------------------------
+" KEYBINDINGS - FAST RENAMING
+" ------------------------------------------------------------------------------
+" Mappings for faster renaming
+nnoremap I cw<c-a>
+nnoremap cc cw<c-u>
+nnoremap A cw
+
+" ------------------------------------------------------------------------------
+" KEYBINDINGS - MISCELLANEOUS
+" ------------------------------------------------------------------------------
+" Toggle wrap setting on ,w key
+nnoremap ,w :set wrap!<cr>
+
 " Show bookmarks
 map <c-\> :bmarks<cr>
 
-" bookmarks
+" ------------------------------------------------------------------------------
+" BOOKMARKS
+" ------------------------------------------------------------------------------
 mark H ~/
 mark D ~/Desktop
 mark P ~/Projects
 mark O ~/Documents
 mark L ~/Downloads
 
+" ------------------------------------------------------------------------------
+" PLUGINS
+" ------------------------------------------------------------------------------
 source ~/.config/vifm/plugins/icons.vifm
