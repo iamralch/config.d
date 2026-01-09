@@ -43,4 +43,4 @@ set -gq allow-passthrough on
 set -g set-clipboard on
 
 # Enable locking with cmatrix
-set lock-command "/run/current-system/sw/bin/cmatrix -s -b"
+set -g lock-command "/run/current-system/sw/bin/cmatrix -s -b"
