@@ -75,6 +75,7 @@
     php
     php84Packages.composer
     pnpm
+    presenterm
     protobuf
     pspg
     pstree
