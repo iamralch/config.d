@@ -5,6 +5,9 @@
 " you will need to change this setting.
 set vicmd=nvim
 
+" Activate screen/tmux support
+screen!
+
 " Default file preview
 set previewprg="~/.config/vifm/scripts/preview.sh %c"
 
@@ -125,11 +128,8 @@ nnoremap <c-t> :tabnew<cr>
 nnoremap <c-w> :tabclose<cr>
 
 " more Vim-like exits
-nnoremap q :cquit<cr>
-nnoremap Q :quit<cr>
-
-" Start shell in current directory
-nnoremap s :shell<cr>
+nnoremap <space>q :cquit<cr>
+nnoremap <space>Q :quit<cr>
 
 " Start tig in current directory
 nnoremap <space>gt :tig<cr>
