@@ -19,3 +19,5 @@ bind BTab previous-window
 
 # hsdk environment selection
 bind -T fzf-menu e run-shell "~/.config/zsh/snippets/hsdk.sh > /dev/null || true"
+bind -T fzf-menu g command-prompt -p "Enter the GitHub organization name:" "popup 'gh fzf repo %% --limit 500'"
+
