@@ -1,40 +1,95 @@
-" vim: filetype=vifm :
+" vim: filetype=vim :
 
 ""
 " Catppuccin Mocha color scheme for Vifm
+"
+" A soothing pastel theme with warm tones based on the Catppuccin Mocha palette.
+" This color scheme defines how various UI elements and file types appear in Vifm.
+"
+" Color Format:
+"   cterm     - Text style (none, bold, underline, reverse, standout, italic)
+"   ctermfg   - Foreground color (color name or 0-255 for 256-color terminals)
+"   ctermbg   - Background color (color name or 0-255 for 256-color terminals)
+"
+" Available colors: black, red, green, yellow, blue, magenta, cyan, white
+"                   light variants (lightred, lightgreen, etc.)
+"                   default (terminal default), 0-255 (256-color palette)
 ""
 
 highlight clear
 
+" --- UI Structure & Window Highlights ---
+" Vertical separator between split panes
 highlight Border cterm=none	ctermfg=default	ctermbg=default
+
+" Top line of inactive pane (shows directory path)
 highlight TopLine	cterm=none	ctermfg=green	ctermbg=default
+
+" Top line of active pane (shows current directory path)
 highlight TopLineSel cterm=bold	ctermfg=green ctermbg=default
 
+" Default color for window content and file listings
 highlight Win	cterm=none ctermfg=default ctermbg=default
+
+" Directory entries in file list
 highlight Directory	cterm=bold	ctermfg=blue ctermbg=default
+
+" Current cursor line in active pane
 highlight CurrLine cterm=bold ctermfg=232	ctermbg=yellow
+
+" Cursor position line in inactive pane
 highlight OtherLine	cterm=bold ctermfg=default ctermbg=default
+
+" Selected/marked files (selected with visual mode or 't' key)
 highlight Selected cterm=bold	ctermfg=white	ctermbg=black
 
+" --- Command Line & Status Highlights ---
+" Background job progress indicator (appears above status line)
 highlight JobLine	cterm=bold	ctermfg=232	ctermbg=white
+
+" Status line between file list and command line
 highlight StatusLine cterm=none	ctermfg=default	ctermbg=default
+
+" Error messages displayed in status area
 highlight ErrorMsg cterm=bold	ctermfg=red	ctermbg=default
+
+" Completion menu selection (appears during command/path completion)
 highlight WildMenu cterm=bold	ctermfg=white ctermbg=default
+
+" Command line input area at bottom of screen
 highlight CmdLine	cterm=none ctermfg=white ctermbg=default
 
+" --- File Type Highlights ---
+" Executable files (scripts, binaries with execute permission)
 highlight Executable cterm=bold	ctermfg=cyan ctermbg=default
+
+" Symbolic links
 highlight Link cterm=bold	ctermfg=magenta	ctermbg=default
+
+" Broken/dangling symbolic links (target doesn't exist)
 highlight BrokenLink cterm=bold ctermfg=red	ctermbg=default
+
+" Block and character devices (e.g., /dev/null, /dev/sda)
 highlight Device cterm=bold ctermfg=magenta	ctermbg=default
+
+" Named pipes (FIFO special files)
 highlight Fifo cterm=none	ctermfg=default	ctermbg=default
+
+" Unix domain socket files
 highlight Socket cterm=bold	ctermfg=default	ctermbg=default
 
-" --- Statusline colors (Catppuccin style) ---
-" filename / focus
-highlight User1 cterm=bold ctermfg=green  ctermbg=default   
-" path / separators
-highlight User2 cterm=none ctermfg=blue   ctermbg=default   
-" metadata
+" --- Statusline Colors (Catppuccin style) ---
+" Custom colors used in the statusline format string.
+" Referenced in vifmrc statusline: %1* %-26t %2* %= %1* %A %2* %7u:%-7g %1* %-5s %2* %d
+"
+" User1: Filename, file attributes, and file size (bold green for emphasis)
+highlight User1 cterm=bold ctermfg=green  ctermbg=default
+
+" User2: Path separators and date (blue for secondary information)
+highlight User2 cterm=none ctermfg=blue   ctermbg=default
+
+" User3: Metadata information (yellow for highlights)
 highlight User3 cterm=none ctermfg=yellow ctermbg=default
-" size / time
+
+" User4: Size and time details (magenta for data values)
 highlight User4 cterm=none ctermfg=magenta ctermbg=default
