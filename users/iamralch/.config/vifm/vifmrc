@@ -196,7 +196,7 @@ nnoremap <c-i> gi
 nnoremap <space>gt :tig<cr>
 
 " Edit file
-nnoremap e :edit<cr>
+nnoremap E :edit<cr>
 
 " Display sorting dialog
 nnoremap S :sort<cr>
@@ -205,13 +205,9 @@ nnoremap S :sort<cr>
 nnoremap <space>ff :fzffile<cr>
 nnoremap <space>fd :fzfdir<cr>
 
-" Example of standard two-panel file managers mappings
-nnoremap <f3> :!less %f<cr>
-nnoremap <f4> :edit<cr>
-nnoremap <f5> :copy<cr>
-nnoremap <f6> :move<cr>
-nnoremap <f7> :mkdir<space>
-nnoremap <f8> :delete<cr>
+" use space and shift-tab as tab in quick view mode
+qnoremap <space> <tab>
+qnoremap <s-tab> <tab>
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - PANE MANAGEMENT
@@ -241,9 +237,12 @@ nnoremap yf :let @* = expand("%c:p")<cr>
 " KEYBINDINGS - FAST RENAMING
 " ------------------------------------------------------------------------------
 " Mappings for faster renaming
-nnoremap I cw<c-a>
-nnoremap cc cw<c-u>
+" append to name
 nnoremap A cw
+" prepend to name
+nnoremap I cw<c-a>
+" replace file name stem
+nnoremap cc cW<c-u>
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - MISCELLANEOUS
