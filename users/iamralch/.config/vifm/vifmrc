@@ -96,6 +96,8 @@ command! mkcd :mkdir -p %a | cd %a
 command! vgrep nvim +"grep %a"
 command! reload :write | restart full
 command! tig tig -- %d
+command! fzfdir  : let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
+command! fzffile : let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "Files · %d") | redraw | if $PICK != '' | execute 'edit' fnameescape($PICK) | endif
 
 " filetype open by xdg-open
 " open images with the default app
