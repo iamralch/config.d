@@ -42,7 +42,6 @@
   },
   "enabledPlugins": {
     "thinking-mcp@claude-mcp": true,
-    "filesystem-mcp@claude-mcp": true,
     "playwright-mcp@claude-mcp": true
   },
   "alwaysThinkingEnabled": true,
