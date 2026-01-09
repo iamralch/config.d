@@ -143,7 +143,7 @@ _hsdk_write_env_to_keychain() {
 #   2. Exports the `AWS_PROFILE` variable based on the environment alias.
 #   3. Gathers all relevant environment variables (HSDK, TF, AWS_VAULT).
 #   4. Caches these variables in the macOS Keychain for later use by
-#      `_hsdk_env_shell`.
+#      `_export_hsdk_secrets`.
 #
 # This function always fetches fresh credentials and overwrites any existing
 # cached entry.
@@ -214,7 +214,7 @@ _hsdk_env_auth() {
 }
 
 # ------------------------------------------------------------------------------
-# _hsdk_env_shell (private)
+# _export_hsdk_secrets (private)
 # ------------------------------------------------------------------------------
 # Loads HSDK environment variables and aliases for an already configured shell.
 #
@@ -233,7 +233,7 @@ _hsdk_env_auth() {
 #   - AWS_PROFILE: The AWS profile name, which is used as the key for keychain
 #                  lookups. If not set, the function does nothing.
 # ------------------------------------------------------------------------------
-_hsdk_env_shell() {
+_export_hsdk_secrets() {
 	if [[ -n "$AWS_PROFILE" ]]; then
 		# Read from environment variables if set
 		eval "$(_hsdk_read_env_from_keychain "$AWS_PROFILE")"
@@ -264,7 +264,7 @@ _hsdk_env_shell() {
 #    configuration and a custom status bar.
 #
 # The script leverages the macOS Keychain to cache credentials, allowing for
-# quick re-sourcing of environments in new shell sessions via the `_hsdk_env_shell`
+# quick re-sourcing of environments in new shell sessions via the `_export_hsdk_secrets`
 # function (which should be added to a shell rc file).
 #
 # Usage:

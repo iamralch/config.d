@@ -83,9 +83,9 @@ for snippet in "$HOME/.config/zsh/snippets/"*.sh; do
   [ -r "$snippet" ] && source "$snippet"
 done
 
-# Initialize HSDK environment
-_hsdk_env_shell
-# Load secrets from macOS Keychain (populated by ssh-auth)
+# Load hsdk secrets from macOS Keychain (populated by hsdk)
+_export_hsdk_secrets
+# Load User secrets from macOS Keychain (populated by ssh-auth)
 _export_env_secrets
 
 # Load completions
