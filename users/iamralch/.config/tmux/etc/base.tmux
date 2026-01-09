@@ -41,3 +41,6 @@ set -gq allow-passthrough on
 
 # Enable OSC 52 clipboard
 set -g set-clipboard on
+
+# Enable locking with cmatrix
+set lock-command "/run/current-system/sw/bin/cmatrix -s -b"

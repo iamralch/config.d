@@ -15,6 +15,7 @@
     buf
     bun
     cfssl
+    cmatrix
     curl
     d2
     deadnix
