@@ -139,8 +139,10 @@ command! mkcd :mkdir -p %a | cd %a
 command! vgrep nvim +"grep %a"
 command! reload :write | restart full
 command! tig tig -- %d
+command! fuse :let $PICK = system('~/.config/vifm/scripts/fuse.sh --print-path %a') | redraw | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | execute 'open' | endif 
 command! fzfdir :let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "  Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
 command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'edit' fnameescape($PICK) | endif
+" command! fzfbucket :let $PICK = system('aws fzf --tmux s3 bucket list') | redraw | if $PICK != '' | execute 'fuse' 's3://'.fnameescape($PICK).'/' | endif
 
 " ------------------------------------------------------------------------------
 " FILE TYPE ASSOCIATIONS
@@ -204,6 +206,9 @@ nnoremap S :sort<cr>
 " Find files and directories using fzf and fd
 nnoremap <space>ff :fzffile<cr>
 nnoremap <space>fd :fzfdir<cr>
+
+" Find and mount S3 buckets
+" nnoremap <space>fb :fzfbucket<cr>
 
 " use space and shift-tab as tab in quick view mode
 qnoremap <space> <tab>
