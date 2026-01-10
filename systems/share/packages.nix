@@ -96,6 +96,7 @@
     sd
     silver-searcher
     sqlc
+    s3fs
     sshfs
     starship
     statix

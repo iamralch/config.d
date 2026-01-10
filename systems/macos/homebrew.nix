@@ -20,6 +20,7 @@ _: {
       "hammerspoon"
       "jordanbaird-ice"
       "kitty"
+      "macfuse"
       "monitorcontrol"
       "obsidian"
       "orbstack"

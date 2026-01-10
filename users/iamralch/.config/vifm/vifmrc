@@ -265,4 +265,5 @@ mark L ~/Downloads
 " ------------------------------------------------------------------------------
 " PLUGINS
 " ------------------------------------------------------------------------------
+source ~/.config/vifm/plugins/fuse.vifm
 source ~/.config/vifm/plugins/icons.vifm
