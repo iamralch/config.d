@@ -17,7 +17,7 @@ bind e new-window "sh -c 'nvim ~/.config/tmux/tmux.conf'"
 bind Tab next-window
 bind BTab previous-window
 
+# github fzf repo search
+bind -T fzf-menu g run-shell "gh fzf --tmux search repos > /dev/null || true"
 # hsdk environment selection
 bind -T fzf-menu e run-shell "~/.config/zsh/snippets/hsdk.sh > /dev/null || true"
-bind -T fzf-menu g command-prompt -p "Enter the GitHub organization name:" "popup 'gh fzf repo %% --limit 500'"
-
