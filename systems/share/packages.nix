@@ -17,6 +17,7 @@
     cfssl
     cmatrix
     curl
+    coreutils
     d2
     deadnix
     delta
@@ -66,6 +67,7 @@
     neovim
     nixd
     nixfmt-rfc-style
+    nnn
     nmap
     nodePackages.neovim
     nodejs
@@ -75,7 +77,6 @@
     php
     php84Packages.composer
     pnpm
-    presenterm
     protobuf
     pspg
     pstree
@@ -93,11 +94,10 @@
     ripgrep
     ruby
     rustup
+    rclone
     sd
     silver-searcher
     sqlc
-    s3fs
-    sshfs
     starship
     statix
     terraform
@@ -110,7 +110,6 @@
     upterm
     usql
     uv
-    vifm
     vivid
     watch
     wget
