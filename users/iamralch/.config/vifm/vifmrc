@@ -1,10 +1,13 @@
 " vim: filetype=vim :
-"
-" Start in single-pane mode
+
+" Activate preview mode
 :view!
 
 " Activate screen/tmux support
 screen!
+
+" Force focus to left pane
+wincmd h
 
 " ------------------------------------------------------------------------------
 " USER INTERFACE - BORDERS AND DISPLAY
@@ -48,6 +51,12 @@ set suggestoptions=normal,visual,view,otherpane,keys,marks,registers
 " If you would like to use another vi clone such as Elvis or Vile
 " you will need to change this setting.
 set vicmd=nvim
+
+" Use ripgrep to grep
+set grepprg='rg --vimgrep --smart-case -- %i %p %s'
+
+" Fast name search via fd; results go to custom view (like a list)
+set findprg='fd --color=never --hidden --follow -- %p %s %u'
 
 " Default file preview
 set previewprg="~/.config/vifm/scripts/preview.sh %c"
@@ -112,6 +121,7 @@ set ignorecase
 set smartcase
 set nohlsearch
 set incsearch
+set slowfs=sshfs,rclone,ftp,sftp
 
 " Always match characters on f/F/;/, in a case sensitive way
 set caseoptions=G
@@ -131,23 +141,30 @@ set caseoptions=G
 " %D the other window directory name.
 " %m run the command in a menu window
 
-command! diff nvim -d %f %F
-command! zip zip -r %f.zip %f
+" Vifm Commands
+command! reload :write | restart full
+
+" Exec Commands
 command! run !!./%c
 command! make !!make %a
-command! mkcd :mkdir -p %a | cd %a
-command! vgrep nvim +"grep %a"
-command! reload :write | restart full
+
+" File Commands
+command! zip !!zip -r "%c.zip" "%c"
+command! mkcd silent execute '!mkdir -p ' . shellescape(%a) . ' && cd ' . shellescape(%a)
+
+" Vim Commands
+command! vdiff silent execute '!nvim -d %f %F'
+command! vgrep silent execute '!nvim +"lcd %d | grep %p"'
+command! vrename silent execute '!vidir ' . shellescape(expand('%d'))
+
+" External Commands
 command! tig tig -- %d
-command! fuse :let $PICK = system('~/.config/vifm/scripts/fuse.sh --print-path %a') | redraw | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | execute 'open' | endif 
 command! fzfdir :let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "  Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
-command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'edit' fnameescape($PICK) | endif
-" command! fzfbucket :let $PICK = system('aws fzf --tmux s3 bucket list') | redraw | if $PICK != '' | execute 'fuse' 's3://'.fnameescape($PICK).'/' | endif
+command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
 
 " ------------------------------------------------------------------------------
 " FILE TYPE ASSOCIATIONS
 " ------------------------------------------------------------------------------
-" filetype open by xdg-open
 
 " open images with the default app
 filetype *.jpg,*.jpeg,*.png,*.gif,*.bmp,*.tiff,*.svg,*.ico open %f
@@ -163,33 +180,24 @@ filetype *.mp4,*.mkv,*.avi,*.mov,*.mp3,*.flac,*.wav open %f
 " ------------------------------------------------------------------------------
 " What should be saved automatically between vifm sessions.  Drop "savedirs"
 " value if you don't want vifm to remember last visited directories for you.
-set vifminfo=dhistory,chistory,state,tui,shistory,phistory,fhistory,dirstack,registers,bookmarks,bmarks
+set vifminfo=
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - TAB AND WINDOW MANAGEMENT
 " ------------------------------------------------------------------------------
 " create new tab
-nnoremap <c-t> :tabnew<cr>
+nnoremap <Space>tn :tabnew<cr>
 
 " close tab
-nnoremap <c-w> :tabclose<cr>
+nnoremap <Space>tc :tabclose<cr>
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - NAVIGATION
 " ------------------------------------------------------------------------------
-" Navigate to home directory
-nnoremap gh :goto ~<cr>l
-
 " Parent
 nnoremap h h
 nnoremap <bs> h
 nnoremap - h
-
-" History
-nnoremap go go
-nnoremap gi gi
-nnoremap <c-o> go
-nnoremap <c-i> gi
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - FILE AND DIRECTORY OPERATIONS
@@ -200,19 +208,19 @@ nnoremap <space>gt :tig<cr>
 " Edit file
 nnoremap E :edit<cr>
 
+" Reload dir
+nnoremap R :reload<CR>
+
 " Display sorting dialog
 nnoremap S :sort<cr>
 
 " Find files and directories using fzf and fd
-nnoremap <space>ff :fzffile<cr>
 nnoremap <space>fd :fzfdir<cr>
-
-" Find and mount S3 buckets
-" nnoremap <space>fb :fzfbucket<cr>
+nnoremap <space>ff :fzffile<cr>
 
 " use space and shift-tab as tab in quick view mode
-qnoremap <space> <tab>
-qnoremap <s-tab> <tab>
+" qnoremap <space> <tab>
+" qnoremap <s-tab> <tab>
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - PANE MANAGEMENT
@@ -220,6 +228,7 @@ qnoremap <s-tab> <tab>
 " Toggle visibility of preview window
 nnoremap zp :view<cr>
 vnoremap zp :view<cr>gv
+nnoremap zh :set dotfiles!<cr>
 
 " Open current directory in the other pane
 nnoremap <a-i> :sync<cr>
@@ -233,10 +242,10 @@ nnoremap <a-o> :sync %c<cr>
 " KEYBINDINGS - YANK (COPY TO CLIPBOARD)
 " ------------------------------------------------------------------------------
 " Yank current directory path into the clipboard
-nnoremap yd :let @* = "%d"<cr>
+nnoremap yd :let @* = "%d" | let @+ = "%d"<cr>
 
 " Yank current file path into the clipboard
-nnoremap yf :let @* = expand("%c:p")<cr>
+nnoremap yf :let @* = expand("%c:p") | let @+ = expand("%c:p")<cr>
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - FAST RENAMING
@@ -257,6 +266,10 @@ nnoremap ,w :set wrap!<cr>
 
 " Show bookmarks
 map <c-\> :bmarks<cr>
+
+" Explicit file opening to avoid 'cannot be explored' error
+nnoremap <enter> :edit<cr>
+nnoremap l :edit<cr>
 
 " ------------------------------------------------------------------------------
 " BOOKMARKS
