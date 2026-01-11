@@ -151,7 +151,6 @@ command! make !!make %a
 " File Commands
 command! zip !!zip -r "%c.zip" "%c"
 command! mkcd silent execute '!mkdir -p ' . shellescape(%a) . ' && cd ' . shellescape(%a)
-command! mount :let $PICK = system('~/.config/vifm/scripts/fuse.sh configure %a') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | execute 'open' | endif
 
 " Vim Commands
 command! vdiff silent execute '!nvim -d %f %F'
@@ -162,6 +161,7 @@ command! vrename silent execute '!vidir ' . shellescape(expand('%d'))
 command! tig tig -- %d
 command! fzfdir :let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "  Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
 command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
+command! fzfbucket :let $PICK = system('aws s3api list-buckets | jq -r ".Buckets[] | .Name" | ~/.config/vifm/scripts/find.sh') | redraw | if $PICK != '' | execute '!~/.config/vifm/scripts/rclone.sh config s3:' . expand($PICK) | endif
 
 " ------------------------------------------------------------------------------
 " FILE TYPE ASSOCIATIONS
@@ -284,5 +284,5 @@ mark L ~/Downloads
 " ------------------------------------------------------------------------------
 " PLUGINS
 " ------------------------------------------------------------------------------
-source ~/.config/vifm/plugins/fuse.vifm
 source ~/.config/vifm/plugins/icons.vifm
+source ~/.config/vifm/plugins/rclone.vifm

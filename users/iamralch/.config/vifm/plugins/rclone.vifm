@@ -1,0 +1,17 @@
+" vim: filetype=vim :
+
+" Remote clone
+filetype *.rclone
+       \ {rclone target)}
+       \ FUSE_MOUNT2|rclone mount --daemon
+       \ --vfs-cache-mode writes
+       \ --vfs-cache-max-age 24h 
+       \ --vfs-cache-max-size 5G 
+       \ --cache-dir ~/.cache/rclone/
+       \ --dir-cache-time 1h
+       \ --poll-interval 1m 
+       \ --buffer-size 32M
+       \ --fast-list
+       \ --allow-other
+       \ --umask 002
+       \ %PARAM %DESTINATION_DIR
