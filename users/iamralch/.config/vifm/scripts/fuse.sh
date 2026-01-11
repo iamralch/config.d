@@ -117,7 +117,7 @@ USAGE:
     fuse.sh <command> <url>
 
 COMMANDS:
-    create-config   Create configuration file and output file path
+    configure   Create configuration file and output file path
     help            Show this help message
 
 PARAMETERS:
@@ -135,12 +135,12 @@ DESCRIPTION:
 
 EXAMPLES:
     # Create config file and output file path
-    fuse.sh create-config "s3://my-bucket/data"
+    fuse.sh configure "s3://my-bucket/data"
     # Output: my-bucket-data.s3
     # Creates file: my-bucket-data.s3 (containing: my-bucket/data)
 
     # Create SSH config file
-    fuse.sh create-config "ssh://user@server.com/home"
+    fuse.sh configure "ssh://user@server.com/home"
     # Output: user@server.com-home.ssh
     # Creates file: user@server.com-home.ssh (containing: user@server.com/home)
 EOF
@@ -199,18 +199,18 @@ _cmd_create_config() {
 #
 # DESCRIPTION:
 #   Processes command line arguments and dispatches to appropriate
-#   sub-commands (create-config, help).
+#   sub-commands (configure, help).
 #
 # PARAMETERS:
-#   $1 - Command (create-config, help, --help, -h)
-#   $2 - URL (required for create-config command)
+#   $1 - Command (configure, help, --help, -h)
+#   $2 - URL (required for configure command)
 #
 # RETURNS:
 #   0 - Success
 #   1 - Error (unknown command, missing URL, or command failed)
 #
 # COMMANDS:
-#   create-config   - Create configuration file and output file path
+#   configure   - Create configuration file and output file path
 #   help            - Show help information
 #   --help          - Show help information
 #   -h              - Show help information
@@ -222,8 +222,8 @@ _cmd_create_config() {
 #   - Command failures propagate error codes
 #
 # EXAMPLE:
-#   main "create-config" "s3://my-bucket/data"
-#   main "create-config" "ssh://user@host/home"
+#   main "configure" "s3://my-bucket/data"
+#   main "configure" "ssh://user@host/home"
 #   main "help"
 #
 main() {
@@ -231,9 +231,9 @@ main() {
 	local url="$2"
 
 	case "$command" in
-	create-config)
+	configure)
 		if [[ -z "$url" ]]; then
-			echo "Error: URL required for create-config command" >&2
+			echo "Error: URL required for configure command" >&2
 			echo "Run 'fuse.sh help' for usage information" >&2
 			exit 1
 		fi
@@ -244,7 +244,7 @@ main() {
 		;;
 	*)
 		echo "Error: Unknown command '$command'" >&2
-		echo "Available commands: create-config, help" >&2
+		echo "Available commands: configure, help" >&2
 		echo "Run 'fuse.sh help' for detailed usage information" >&2
 		exit 1
 		;;
