@@ -151,6 +151,7 @@ command! make !!make %a
 " File Commands
 command! zip !!zip -r "%c.zip" "%c"
 command! mkcd silent execute '!mkdir -p ' . shellescape(%a) . ' && cd ' . shellescape(%a)
+command! mount :let $PICK = system('~/.config/vifm/scripts/fuse.sh create-config %a') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | execute 'open' | endif
 
 " Vim Commands
 command! vdiff silent execute '!nvim -d %f %F'

@@ -3,9 +3,10 @@
 " Mount SSH targets using sshfs
 filetype *.ssh
        \ {Mount SSH target}
-       \ FUSE_MOUNT2|sshfs %PARAM %DESTINATION_DIR
+       \ FUSE_MOUNT2|rclone mount --daemon ssh:%PARAM %DESTINATION_DIR
 
 " Mount S3 buckets using s3fs
 filetype *.s3
        \ {Mount S3 target}
-       \ FUSE_MOUNT2|s3fs %PARAM %DESTINATION_DIR
+       \ FUSE_MOUNT2|rclone mount --daemon s3:%PARAM %DESTINATION_DIR
+

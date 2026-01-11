@@ -17,7 +17,6 @@
     cfssl
     cmatrix
     curl
-    coreutils
     d2
     deadnix
     delta
