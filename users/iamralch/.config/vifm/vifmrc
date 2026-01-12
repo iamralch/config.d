@@ -165,9 +165,9 @@ command! vrename silent execute '!vidir ' . shellescape(expand('%d'))
 
 " External Commands
 command! tig tig -- %d
-command! fzfdir :let $PICK = system('~/.config/vifm/scripts/find.sh dir %d %a') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
-command! fzffile :let $PICK = system('~/.config/vifm/scripts/find.sh file %d %a') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
-command! fzfbucket :let $PICK = system('~/.config/vifm/scripts/find.sh bucket') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
+command! fzfdir :let $PICK = term('~/.config/vifm/scripts/find.sh dir %d %a') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
+command! fzffile :let $PICK = term('~/.config/vifm/scripts/find.sh file %d %a') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
+command! fzfbucket :let $PICK = term('~/.config/vifm/scripts/find.sh bucket') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
 
 " ------------------------------------------------------------------------------
 " FILE TYPE ASSOCIATIONS

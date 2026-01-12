@@ -6,34 +6,6 @@ set -euo pipefail
 
 _find_script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# find.sh - Interactive file, directory, and S3 bucket finder
-#
-# USAGE:
-#   find.sh file [base-dir] [fd-args...]    - Search for files
-#   find.sh dir [base-dir] [fd-args...]     - Search for directories
-#   find.sh bucket                         - Search for S3 buckets
-
-# _check_deps()
-#
-# Check for required commands
-_check_deps() {
-	local missing=()
-
-	if ! command -v fzf &>/dev/null; then
-		missing+=("fzf")
-	fi
-
-	if ! command -v fd &>/dev/null; then
-		missing+=("fd")
-	fi
-
-	if [[ ${#missing[@]} -gt 0 ]]; then
-		echo "Error: Missing required commands: ${missing[*]}" >&2
-		echo "Please install them before running this script." >&2
-		exit 1
-	fi
-}
-
 # _show_help()
 #
 # Display help information
@@ -58,13 +30,6 @@ EXAMPLES:
 EOF
 }
 
-# _fzf()
-#
-# Wrapper for fzf with custom styling
-_fzf() {
-	fzf --ansi --color footer:red --footer-border sharp "$@"
-}
-
 # _cmd_file()
 #
 # Search for files interactively
@@ -72,7 +37,8 @@ _cmd_file() {
 	local base_dir="${1:-$PWD}"
 	shift || true
 
-	fd -t f --base-directory "$base_dir" "$@" | _fzf --footer " 󰱼 Files · $base_dir"
+	fd -t f --base-directory "$base_dir" "$@" |
+		fzf --ansi --color footer:red --footer-border sharp --footer " 󰱼 Files · $base_dir"
 }
 
 # _cmd_dir()
@@ -82,7 +48,8 @@ _cmd_dir() {
 	local base_dir="${1:-$PWD}"
 	shift || true
 
-	fd -t d --base-directory "$base_dir" "$@" | _fzf --footer " 󰥨 Directories · $base_dir"
+	fd -t d --base-directory "$base_dir" "$@" |
+		fzf fzf --ansi --color footer:red --footer-border sharp --footer " 󰥨 Directories · $base_dir"
 }
 
 # _cmd_bucket()
@@ -90,7 +57,7 @@ _cmd_dir() {
 # Search for S3 buckets and create rclone config
 _cmd_bucket() {
 	local bucket
-	bucket="$(aws fzf s3 bucket list)"
+	bucket="$(CLICOLOR=1 aws fzf s3 bucket list 2>/dev/tty)"
 
 	if [[ -n "$bucket" ]]; then
 		"$_find_script_dir/rclone.sh" config "s3:$bucket"
