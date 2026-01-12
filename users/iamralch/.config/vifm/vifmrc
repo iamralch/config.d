@@ -10,12 +10,18 @@ screen!
 wincmd h
 
 " ------------------------------------------------------------------------------
-" USER INTERFACE - BORDERS AND DISPLAY
+" USER INTERFACE - TABS, BORDERS AND DISPLAY
 " ------------------------------------------------------------------------------
 " Hide side borders and use fixed-size middle border
 set tuioptions-=s
 set tuioptions-=u
 set tuioptions-=v
+
+" Border styles
+set fillchars=
+
+" Tab sytles
+set showtabline=never
 
 " ------------------------------------------------------------------------------
 " USER INTERFACE - APPEARANCE
