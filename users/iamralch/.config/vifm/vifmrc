@@ -20,8 +20,11 @@ set tuioptions-=v
 " Border styles
 set fillchars=
 
-" Tab sytles
-set showtabline=never
+" Tab Styles
+set tabprefix=" "
+set tabsuffix=" "
+set tablabel="%N: %p"
+set tabscope=global
 
 " ------------------------------------------------------------------------------
 " USER INTERFACE - APPEARANCE
@@ -192,7 +195,7 @@ set vifminfo=
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - TAB AND WINDOW MANAGEMENT
 " ------------------------------------------------------------------------------
-
+"
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - NAVIGATION
 " ------------------------------------------------------------------------------

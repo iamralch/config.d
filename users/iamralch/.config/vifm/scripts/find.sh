@@ -49,7 +49,7 @@ _cmd_dir() {
 	shift || true
 
 	fd -t d --base-directory "$base_dir" "$@" |
-		fzf fzf --ansi --color footer:red --footer-border sharp --footer " 󰥨 Directories · $base_dir"
+		fzf --ansi --color footer:red --footer-border sharp --footer " 󰥨 Directories · $base_dir"
 }
 
 # _cmd_bucket()
