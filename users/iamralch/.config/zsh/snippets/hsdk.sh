@@ -156,9 +156,10 @@ _hsdk_write_env_to_keychain() {
 # ------------------------------------------------------------------------------
 _hsdk_set_env() {
 	local env_id="$1"
+
 	# Get the HSDK Credentials
 	# shellcheck disable=SC2016
-	eval "$(hsdk setenv "$env_id")"
+	eval "$(unset AWS_VAULT && hsdk setenv "$env_id")"
 	# We assume success if we reach this point
 	export AWS_PROFILE="${HSDK_ENV_ALIAS}-${HSDK_ROLE_NAME}"
 
@@ -196,14 +197,18 @@ _hsdk_set_env() {
 # ------------------------------------------------------------------------------
 _hsdk_env_auth() {
 	local env_id="$1"
+
 	# Set the HSDK environment for the new tmux window
 	if [[ -n "$TMUX" ]]; then
+		local tmux_window_id
+		tmux_window_id="$(tmux display -p '#{session_name}:#{window_index}')"
+
 		if _hsdk_set_env "$env_id"; then
 			# Set the environment profile type
 			# shellcheck disable=SC2154
 			aws configure set environment "${TF_VAR_account_type}" --profile "$AWS_PROFILE"
 			# Create a new tmux window with the selected environment
-			"$TMUX_PLUGIN_MANAGER_PATH/tmux-aws/scripts/tmux-aws.sh" --profile "$AWS_PROFILE"
+			"$TMUX_PLUGIN_MANAGER_PATH/tmux-aws/scripts/tmux-aws.sh" --profile "$AWS_PROFILE" --target "$tmux_window_id"
 			# Start a new shell in the tmux window
 			"$SHELL" --login
 		fi
