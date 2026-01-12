@@ -22,8 +22,10 @@ set -euo pipefail
 #   rclone.sh config ssh:my-server
 #   # Creates: $PWD/.rclone/my-server.rclone (containing: ssh:my-server)
 
+# Root Directory
+GIT_REPOSITORY_DIR="$(git rev-parse --show-toplevel || echo "$PWD")"
 # Configuration
-RCLONE_DIR="$PWD/.rclone"
+RCLONE_DIR="$GIT_REPOSITORY_DIR/.rclone"
 
 # _show_help()
 #
