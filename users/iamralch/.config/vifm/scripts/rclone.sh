@@ -73,17 +73,20 @@ _cmd_config() {
 	local name
 	name="${remote#*:}"
 
-	# Create rclone directory if it doesn't exist
-	mkdir -p "$RCLONE_DIR"
+	if [[ -n "$name" ]]; then
+		# Create rclone directory if it doesn't exist
+		mkdir -p "$RCLONE_DIR"
 
-	# Create filename
-	local path="${RCLONE_DIR}/${name}.rclone"
+		# Create filename
+		local path="${RCLONE_DIR}/${name}.rclone"
 
-	# Write full remote specification to file
-	echo "$remote" >"$path"
+		# Write full remote specification to file
+		echo "$remote" >"$path"
 
-	# Output the filename (for vifm to capture)
-	printf '%s' "$path"
+		# Output the filename (for vifm to capture)
+		printf '%s' "$path"
+	fi
+
 }
 
 # main()

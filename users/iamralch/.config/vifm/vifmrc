@@ -1,7 +1,7 @@
 " vim: filetype=vim :
 
 " Activate preview mode
-:view!
+:only
 
 " Activate screen/tmux support
 screen!
@@ -165,9 +165,9 @@ command! vrename silent execute '!vidir ' . shellescape(expand('%d'))
 
 " External Commands
 command! tig tig -- %d
-command! fzfdir :let $PICK = system('fd -t d --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer "  Directories · %d"') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
-command! fzffile :let $PICK = system('fd -t f --base-directory %d %a | ~/.config/vifm/scripts/find.sh --footer " Files · %d"') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
-command! fzfbucket :let $PICK = system('aws s3api list-buckets | jq -r ".Buckets[] | .Name" | ~/.config/vifm/scripts/find.sh') | redraw | if $PICK != '' | execute '!~/.config/vifm/scripts/rclone.sh config s3:' . expand($PICK) | endif
+command! fzfdir :let $PICK = system('~/.config/vifm/scripts/find.sh dir %d %a') | redraw | if $PICK != '' | execute 'cd' fnameescape($PICK) | endif
+command! fzffile :let $PICK = system('~/.config/vifm/scripts/find.sh file %d %a') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
+command! fzfbucket :let $PICK = system('~/.config/vifm/scripts/find.sh bucket') | redraw | if $PICK != '' | execute 'goto' fnameescape($PICK) | endif
 
 " ------------------------------------------------------------------------------
 " FILE TYPE ASSOCIATIONS
@@ -192,11 +192,6 @@ set vifminfo=
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - TAB AND WINDOW MANAGEMENT
 " ------------------------------------------------------------------------------
-" create new tab
-nnoremap <Space>tn :tabnew<cr>
-
-" close tab
-nnoremap <Space>tc :tabclose<cr>
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - NAVIGATION
@@ -209,9 +204,6 @@ nnoremap - h
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - FILE AND DIRECTORY OPERATIONS
 " ------------------------------------------------------------------------------
-" Start tig in current directory
-nnoremap <space>gt :tig<cr>
-
 " Edit file
 nnoremap E :edit<cr>
 
@@ -221,13 +213,13 @@ nnoremap R :reload<CR>
 " Display sorting dialog
 nnoremap S :sort<cr>
 
-" Find files and directories using fzf and fd
-nnoremap <space>fd :fzfdir<cr>
-nnoremap <space>ff :fzffile<cr>
+" Start tig in current directory
+nnoremap ,gt :tig<cr>
 
-" use space and shift-tab as tab in quick view mode
-" qnoremap <space> <tab>
-" qnoremap <s-tab> <tab>
+" Find files and directories using fzf and fd
+nnoremap ,fd :fzfdir<cr>
+nnoremap ,ff :fzffile<cr>
+nnoremap ,fb :fzfbucket<cr>
 
 " ------------------------------------------------------------------------------
 " KEYBINDINGS - PANE MANAGEMENT
