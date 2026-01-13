@@ -114,6 +114,7 @@
     watch
     wget
     yarn
+    yazi
     yt-dlp
     zig
     zinit
