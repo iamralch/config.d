@@ -13,9 +13,8 @@ bind r source-file ~/.config/tmux/tmux.conf
 # edit configuration
 bind e new-window "sh -c 'nvim ~/.config/tmux/tmux.conf'"
 
-# tab navigation
-bind Tab next-window
-bind BTab previous-window
+# window navigation
+bind W last-window
 
 # github fzf repo search
 bind -T fzf-menu g run-shell "gh fzf --tmux search repos > /dev/null || true"
