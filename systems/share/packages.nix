@@ -22,7 +22,6 @@
     delta
     deno
     direnv
-    dotnet-sdk
     entr
     exiftool
     extract_url
