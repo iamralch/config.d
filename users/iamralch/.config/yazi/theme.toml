@@ -4,6 +4,7 @@ light = "catppuccin-latte"
 
 [mgr]
 border_symbol = "·"
+preview_hovered = { underline = false }
 
 [status]
 sep_left = { open = "", close = "" }
