@@ -19,7 +19,7 @@ set -gF window-status-style "fg=#{@thm_fg},bg=#{@thm_bg}"
 set -gF window-status-current-style "fg=#{@thm_mauve},bg=#{@thm_bg},bold"
 # Window Formats
 set -g window-status-format " #I: #W #F "
-set -g window-status-current-format "  #I: #W #F "
+set -g window-status-current-format " #I: #W #F "
 # Window Status Separator
 set -gF window-status-separator "#{@separator}"
 
