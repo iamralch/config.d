@@ -32,16 +32,23 @@
     "command": "npx -y @owloops/claude-powerline@latest --theme=tokyo-night --style=capsule"
   },
   "extraKnownMarketplaces": {
-    "claude-mcp": {
+    "claude-plugins": {
       "source": {
         "source": "github",
-        "repo": "claude-contrib/claude-mcp"
+        "repo": "claude-contrib/claude-plugins"
+      }
+    },
+    "claude-services": {
+      "source": {
+        "source": "github",
+        "repo": "claude-contrib/claude-services"
       }
     }
   },
   "enabledPlugins": {
-    "thinking-mcp@claude-mcp": true,
-    "playwright-mcp@claude-mcp": true
+    "agents-context@claude-plugins": true,
+    "thinking-mcp@claude-services": true,
+    "playwright-mcp@claude-services": true
   },
   "alwaysThinkingEnabled": true,
   "includeCoAuthoredBy": false
