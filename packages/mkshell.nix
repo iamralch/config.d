@@ -2,6 +2,7 @@
 
 {
   nixpkgs,
+  nixpkgs-unstable,
   overlays,
 }:
 
@@ -13,7 +14,14 @@ let
     config.allowUnfree = true;
   };
 
-  sharedConfig = import ../systems/share/packages.nix { inherit pkgs; };
+  pkgs-unstable = import nixpkgs-unstable {
+    inherit system overlays;
+    config.allowUnfree = true;
+  };
+
+  sharedConfig = import ../systems/share/packages.nix {
+    inherit pkgs pkgs-unstable;
+  };
 
 in
 pkgs.mkShell {

@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    # Sometimes we need the unstable channel for more recent packages
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
@@ -20,6 +22,7 @@
   outputs =
     {
       nixpkgs,
+      nixpkgs-unstable,
       ...
     }@inputs:
     let
@@ -31,12 +34,12 @@
 
       # Make host function to create a nix Darwin host configuration
       mkHost = import ./packages/mkhost.nix {
-        inherit overlays nixpkgs inputs;
+        inherit overlays nixpkgs nixpkgs-unstable inputs;
       };
 
       # Make Shell function to create a development shell
       mkShell = import ./packages/mkshell.nix {
-        inherit overlays nixpkgs;
+        inherit overlays nixpkgs nixpkgs-unstable;
       };
 
     in

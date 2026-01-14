@@ -3,6 +3,7 @@
 
 {
   nixpkgs,
+  nixpkgs-unstable,
   overlays,
   inputs,
 }:
@@ -31,12 +32,25 @@ let
     };
   };
 
+  pkgs-unstable = import nixpkgs-unstable {
+    inherit system overlays;
+    config = {
+      allowUnfree = true;
+      allowBroken = true;
+      allowUnsupportedSystem = true;
+    };
+  };
+
   # Read-only pkgs module path
   readOnlyPkgs = "${nixpkgs}/nixos/modules/misc/nixpkgs/read-only.nix";
 
 in
 system-manager {
   inherit system;
+
+  specialArgs = {
+    inherit pkgs-unstable;
+  };
 
   modules = [
     { nixpkgs.pkgs = pkgs; }
