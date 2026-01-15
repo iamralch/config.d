@@ -1,16 +1,17 @@
 --- @since 26.01.15
 --- find.yazi - Interactive file and directory finder for Yazi
---- Based on find.sh script, uses fd and fzf for searching
+--- Uses FZF environment variables for consistency with shell scripts
 
--- Get shell and current working directory
+-- Get shell name
 local shell = os.getenv("SHELL"):match(".*/(.*)")
 
+-- Get current working directory from Yazi
 local get_cwd = ya.sync(function()
   return cx.active.current.cwd
 end)
 
 -- Error notification handler
-local fail = function(s, ...)
+local notify_error = function(s, ...)
   ya.notify({
     title = "find.yazi",
     content = string.format(s, ...),
@@ -19,22 +20,32 @@ local fail = function(s, ...)
   })
 end
 
--- Get custom options from state
-local get_custom_opts = ya.sync(function(state)
-  local opts = state.custom_opts or {}
-  return {
-    fd = opts.fd or "",
-    fzf = opts.fzf or "",
-  }
-end)
-
--- Check if required dependencies are installed
-local check_dependencies = function()
-  local fd_check, err = Command("fd"):arg("--version"):output()
-  if not fd_check then
-    return false, "fd", err
+-- Get FZF configuration from environment variables
+local get_fzf_config = function(mode)
+  if mode == "file" then
+    return {
+      commands = os.getenv("FZF_CTRL_T_COMMAND") or "fd -t f",
+      options = os.getenv("FZF_CTRL_T_OPTS") or "",
+    }
+  else -- mode == "dir"
+    return {
+      commands = os.getenv("FZF_ALT_C_COMMAND") or "fd -t d",
+      options = os.getenv("FZF_ALT_C_OPTS") or "",
+    }
   end
+end
 
+-- Substitute $PWD with actual directory path
+local substitute_pwd = function(str, base_dir)
+  if not str then
+    return ""
+  end
+  -- Replace all occurrences of $PWD with base_dir
+  return str:gsub("%$PWD", tostring(base_dir))
+end
+
+-- Check if fzf is installed
+local check_dependencies = function()
   local fzf_check, err = Command("fzf"):arg("--version"):output()
   if not fzf_check then
     return false, "fzf", err
@@ -43,7 +54,7 @@ local check_dependencies = function()
   return true, nil, nil
 end
 
--- Parse job arguments into mode and additional fd arguments
+-- Parse job arguments into mode
 local parse_args = function(job_args)
   if #job_args == 0 then
     return nil, "Mode argument required (file or dir)"
@@ -54,82 +65,36 @@ local parse_args = function(job_args)
     return nil, string.format("Invalid mode '%s'. Use 'file' or 'dir'", mode)
   end
 
-  local fd_args = {}
-  for i = 2, #job_args do
-    table.insert(fd_args, job_args[i])
-  end
-
-  return { mode = mode, fd_args = fd_args }, nil
+  return { mode = mode }, nil
 end
 
--- Build fd command based on mode and arguments
-local build_fd_command = function(mode, base_dir, additional_args, custom_opts)
-  local fd_type = mode == "file" and "f" or "d"
+-- Build complete command using environment variables (replicates bash find.sh)
+local build_command = function(mode, base_dir)
+  local fzf_config = get_fzf_config(mode)
 
-  local fd_parts = {
-    "fd",
-    "-t",
-    fd_type,
-    "--base-directory",
-    string.format("'%s'", tostring(base_dir)),
-  }
+  -- Substitute $PWD in both commands and options
+  local options = substitute_pwd(fzf_config.options, base_dir)
+  local commands = substitute_pwd(fzf_config.commands, base_dir)
 
-  -- Add custom fd options from setup
-  if custom_opts.fd ~= "" then
-    table.insert(fd_parts, custom_opts.fd)
+  -- Get existing FZF_DEFAULT_OPTS
+  local default_options = os.getenv("FZF_DEFAULT_OPTS") or ""
+  -- append mode-specific options
+  if options ~= "" then
+    options = default_options .. " " .. options
+  else
+    options = default_options
   end
 
-  -- Add arguments passed from keymap/command
-  if #additional_args > 0 then
-    for _, arg in ipairs(additional_args) do
-      table.insert(fd_parts, arg)
-    end
-  end
+  -- Construct shell command that changes to base_dir and executes fzf
+  -- Matches the bash script: cd "$base_dir" && FZF_DEFAULT_COMMAND="$cmd" FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $opts" fzf
+  local shell_cmd = string.format(
+    'cd \'%s\' && FZF_DEFAULT_COMMAND="%s" FZF_DEFAULT_OPTS="%s" fzf',
+    tostring(base_dir),
+    commands,
+    options
+  )
 
-  return table.concat(fd_parts, " ")
-end
-
--- Build fzf command with custom styling
-local build_fzf_command = function(mode, base_dir, custom_opts)
-  local icon = mode == "file" and "󰱼" or "󰥨"
-  local label = mode == "file" and "Files" or "Directories"
-  local footer = string.format(" %s %s · %s", icon, label, tostring(base_dir))
-
-  local fzf_parts = {
-    "fzf",
-    "--ansi",
-    "--color",
-    "footer:red",
-    "--footer-border",
-    "sharp",
-    "--footer",
-    string.format("'%s'", footer),
-  }
-
-  -- Add custom fzf options from setup
-  if custom_opts.fzf ~= "" then
-    table.insert(fzf_parts, custom_opts.fzf)
-  end
-
-  return table.concat(fzf_parts, " ")
-end
-
--- Build complete command pipeline
-local build_command = function(mode, base_dir, fd_args, custom_opts)
-  local fd_cmd = build_fd_command(mode, base_dir, fd_args, custom_opts)
-  local fzf_cmd = build_fzf_command(mode, base_dir, custom_opts)
-
-  return fd_cmd .. " | " .. fzf_cmd
-end
-
--- Setup function for custom configuration
-local function setup(state, opts)
-  opts = opts or {}
-
-  state.custom_opts = {
-    fd = opts.fd or "",
-    fzf = opts.fzf or "",
-  }
+  return shell_cmd
 end
 
 -- Main entry point
@@ -137,47 +102,40 @@ local function entry(_, job)
   -- Hide Yazi UI to allow fzf interaction
   local _permit = ui.hide()
 
+  local ok, missing_tool, err = check_dependencies()
   -- Check dependencies
-  local deps_ok, missing_tool, err = check_dependencies()
-  if not deps_ok then
-    return fail("`%s` was not found", missing_tool)
+  if not ok then
+    return notify_error("`%s` was not found", missing_tool)
   end
 
   -- Parse arguments
   local parsed, parse_err = parse_args(job.args)
   if not parsed then
-    return fail(parse_err)
+    return notify_error(parse_err)
   end
 
   local mode = parsed.mode
-  local fd_args = parsed.fd_args
-
   -- Get current working directory
   local cwd = get_cwd()
-
-  -- Get custom options
-  local custom_opts = get_custom_opts()
-
-  -- Build command pipeline
-  local command = build_command(mode, cwd, fd_args, custom_opts)
+  -- Build command using environment variables
+  local command = build_command(mode, cwd)
 
   -- Execute command via shell
   local child, err = Command(shell)
       :arg({ "-c", command })
-      :cwd(tostring(cwd))
       :stdin(Command.INHERIT)
       :stdout(Command.PIPED)
       :stderr(Command.INHERIT)
       :spawn()
 
   if not child then
-    return fail("Failed to spawn shell, error: %s", err)
+    return notify_error("Failed to spawn shell, error: %s", err)
   end
 
   -- Wait for output
   local output, err = child:wait_with_output()
   if not output then
-    return fail("Cannot read command output, error: %s", err)
+    return notify_error("Cannot read command output, error: %s", err)
   elseif output.status.code == 130 then
     -- User cancelled with <ctrl-c> or <esc>
     return
@@ -190,21 +148,20 @@ local function entry(_, job)
     })
   elseif output.status.code ~= 0 then
     -- Other error
-    return fail("Command exited with error code %s", output.status.code)
+    return notify_error("Command exited with error code %s", output.status.code)
   end
 
-  -- Parse output
   local target = output.stdout:gsub("\n$", "")
+  -- Parse output
   if target ~= "" then
-    -- Construct URL (handle relative paths from fd)
     local url = Url(target)
+    -- Construct URL (handle relative paths)
     if not url.is_absolute then
       url = cwd:join(url)
     end
-
     -- Navigate to selected file/directory
     ya.emit("reveal", { url })
   end
 end
 
-return { entry = entry, setup = setup }
+return { entry = entry }
