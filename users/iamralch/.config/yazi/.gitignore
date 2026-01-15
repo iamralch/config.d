@@ -1,0 +1,6 @@
+# remote flavors
+flavors/*
+# remote plugins
+plugins/*
+# local plugins
+!plugin/find.yazi
