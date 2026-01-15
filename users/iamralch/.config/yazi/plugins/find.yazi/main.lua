@@ -1,3 +1,12 @@
+-- Get the current working directory
+local get_cwd = ya.sync(function()
+  return cx.active.current.cwd
+end)
+
+local has_prefix = function(str, start)
+  return string.sub(str, 1, #start) == start
+end
+
 -- Notify about errors
 local notify_error = function(s, ...)
   ya.notify({
@@ -45,17 +54,17 @@ end
 local get_fzf_config = function(mode)
   if mode == "file" then
     return {
-      commands = os.getenv("FZF_CTRL_T_COMMAND") or "fd -t f",
+      commands = os.getenv("FZF_CTRL_T_COMMAND") or "",
+      defaults = os.getenv("FZF_DEFAULT_OPTS") or "",
       options = os.getenv("FZF_CTRL_T_OPTS") or "",
-      args = "--walker=dir,file,follow --scheme=path",
     }
   end
 
   if mode == "dir" then
     return {
-      commands = os.getenv("FZF_ALT_C_COMMAND") or "fd -t d",
+      commands = os.getenv("FZF_ALT_C_COMMAND") or "",
+      defaults = os.getenv("FZF_DEFAULT_OPTS") or "",
       options = os.getenv("FZF_ALT_C_OPTS") or "",
-      args = "--walker=dir,follow --scheme=path",
     }
   end
 
@@ -64,21 +73,21 @@ end
 
 -- Get the fzf environment variables
 local get_fzf_env = function(config)
-  local args = config.args
   local options = config.options
-  local commands = config.commands -- Fixed: was config.command
+  local defaults = config.defaults
+  local commands = config.commands
 
-  local options_default = os.getenv("FZF_DEFAULT_OPTS") or ""
-  -- Append mode-specific options to default options
-  if options ~= "" then
-    options = options_default .. " " .. options
-  else
-    options = options_default
+  local arguments = ""
+  local cwd = tostring(get_cwd())
+  -- Make sure the command uses the correct base directory
+  if has_prefix(commands, "fd") then
+    arguments = arguments .. " --base-directory " .. cwd
   end
 
   return {
-    FZF_DEFAULT_OPTS = options .. " " .. args,
-    FZF_DEFAULT_COMMAND = commands,
+    FZF_CWD = cwd,
+    FZF_DEFAULT_OPTS = options .. " " .. defaults,
+    FZF_DEFAULT_COMMAND = commands .. " " .. arguments,
   }
 end
 
