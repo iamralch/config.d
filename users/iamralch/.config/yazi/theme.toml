@@ -1,11 +1,11 @@
+"$schema" = "https://yazi-rs.github.io/schemas/theme.json"
+
 [flavor]
 dark = "catppuccin-mocha"
 light = "catppuccin-latte"
 
 [mgr]
 border_symbol = "·"
-preview_hovered = { underline = false }
 
-[status]
-sep_left = { open = "", close = "" }
-sep_right = { open = "", close = "" }
+[indicator]
+preview = { underline = false }
