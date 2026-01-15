@@ -37,8 +37,11 @@ _cmd_file() {
 	local base_dir="${1:-$PWD}"
 	shift || true
 
-	fd -t f --base-directory "$base_dir" "$@" |
-		fzf --ansi --color footer:red --footer-border sharp --footer " 󰱼 Files · $base_dir"
+	# Substitute $PWD with actual base_dir in FZF variables
+	local fzf_command="${FZF_CTRL_T_COMMAND//\$PWD/$base_dir}"
+	local fzf_options="${FZF_CTRL_T_OPTS//\$PWD/$base_dir}"
+	# Execute fzf in the specified base directory
+	(cd "$base_dir" && FZF_DEFAULT_COMMAND="$fzf_command" FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $fzf_options" fzf)
 }
 
 # _cmd_dir()
@@ -48,8 +51,11 @@ _cmd_dir() {
 	local base_dir="${1:-$PWD}"
 	shift || true
 
-	fd -t d --base-directory "$base_dir" "$@" |
-		fzf --ansi --color footer:red --footer-border sharp --footer " 󰥨 Directories · $base_dir"
+	# Substitute $PWD with actual base_dir in FZF variables
+	local fzf_command="${FZF_ALT_C_COMMAND//\$PWD/$base_dir}"
+	local fzf_options="${FZF_ALT_C_OPTS//\$PWD/$base_dir}"
+	# Execute fzf in the specified base directory
+	(cd "$base_dir" && FZF_DEFAULT_COMMAND="$fzf_command" FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $fzf_options" fzf)
 }
 
 # _cmd_bucket()
