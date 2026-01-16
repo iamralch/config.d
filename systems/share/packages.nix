@@ -111,7 +111,6 @@
       upterm
       usql
       uv
-      vifm
       vivid
       watch
       wget
