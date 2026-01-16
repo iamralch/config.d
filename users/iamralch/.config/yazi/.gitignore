@@ -3,5 +3,6 @@ flavors/*
 # remote plugins
 plugins/*
 # local plugins
-!plugin/find.yazi
+!plugin/finder.yazi
+!plugin/layout.yazi
 !plugin/status.yazi

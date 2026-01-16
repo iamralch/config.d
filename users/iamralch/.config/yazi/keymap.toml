@@ -3,6 +3,6 @@
 [mgr]
 prepend_keymap = [
   # Search
-  { on = "z", run = "plugin find file" },
-  { on = "Z", run = "plugin find dir" },
+  { on = "z", run = "plugin finder file" },
+  { on = "Z", run = "plugin finder dir" },
 ]

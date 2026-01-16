@@ -11,8 +11,8 @@ border_symbol = "·"
 preview = { underline = false }
 
 [status]
-perm_sep = { fg = "green" }
-perm_type = { fg = "green" }
-perm_exec = { fg = "green" }
-perm_read = { fg = "green" }
-perm_write = { fg = "green" }
+perm_sep = { fg = "cyan" }
+perm_type = { fg = "cyan" }
+perm_exec = { fg = "cyan" }
+perm_read = { fg = "cyan" }
+perm_write = { fg = "cyan" }
