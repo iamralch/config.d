@@ -73,21 +73,23 @@ end
 
 -- Get the fzf environment variables
 local get_fzf_env = function(config)
+  local cwd = tostring(get_cwd())
   local options = config.options
   local defaults = config.defaults
   local commands = config.commands
 
-  local arguments = ""
-  local cwd = tostring(get_cwd())
+  -- Make sure fzf starts in the correct directory
+  options = options:gsub(os.getenv("FZF_CWD"), cwd)
+  options = options .. " " .. defaults
+
   -- Make sure the command uses the correct base directory
   if has_prefix(commands, "fd") then
-    arguments = arguments .. " --base-directory " .. cwd
+    commands = commands .. " --base-directory " .. cwd
   end
 
   return {
-    FZF_CWD = cwd,
-    FZF_DEFAULT_OPTS = options .. " " .. defaults,
-    FZF_DEFAULT_COMMAND = commands .. " " .. arguments,
+    FZF_DEFAULT_OPTS = options,
+    FZF_DEFAULT_COMMAND = commands,
   }
 end
 
