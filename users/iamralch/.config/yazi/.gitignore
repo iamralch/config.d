@@ -4,3 +4,4 @@ flavors/*
 plugins/*
 # local plugins
 !plugin/find.yazi
+!plugin/status.yazi

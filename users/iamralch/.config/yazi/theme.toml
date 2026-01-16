@@ -9,3 +9,10 @@ border_symbol = "·"
 
 [indicator]
 preview = { underline = false }
+
+[status]
+perm_sep = { fg = "green" }
+perm_type = { fg = "green" }
+perm_exec = { fg = "green" }
+perm_read = { fg = "green" }
+perm_write = { fg = "green" }
