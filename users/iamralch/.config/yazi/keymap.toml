@@ -3,6 +3,9 @@
 [mgr]
 prepend_keymap = [
   # Search
-  { on = "z", run = "plugin finder file" },
-  { on = "Z", run = "plugin finder dir" },
+  { on = ["z"], run = "plugin finder file", desc = "Find files" },
+  { on = ["Z"], run = "plugin finder dir", desc = "Find directories" },
+  { on = ["g", "k"], run = "cd ~/Desktop", desc = "Go ~/Desktop" },
+  { on = ["g", "p"], run = "cd ~/Projects", desc = "Go ~/Projects" },
+  { on = ["g", "o"], run = "cd ~/Documents", desc = "Go ~/Documents" },
 ]
