@@ -23,6 +23,7 @@
       d2
       deadnix
       delta
+      diffnav
       deno
       direnv
       entr
@@ -38,6 +39,7 @@
       gh
       ghostscript
       git
+      gitlogue
       git-lfs
       glab
       glow
