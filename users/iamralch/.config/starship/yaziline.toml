@@ -12,7 +12,7 @@ tag_disabled = false
 [git_status]
 format = '[$all_status$ahead_behind]($style) '
 conflicted = " "
-untracked = " "
+untracked = ""
 stashed = " "
 modified = " "
 staged = " "
