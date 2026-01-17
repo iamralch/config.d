@@ -44,8 +44,8 @@ local parse_args = function(args)
 
   local mode = args[1]
   -- Check for valid mode
-  if mode ~= "file" and mode ~= "dir" then
-    return nil, string.format("Invalid mode '%s'. Use 'file' or 'dir'", mode)
+  if mode ~= "file" and mode ~= "dir" and mode ~= "s3" then
+    return nil, string.format("Invalid mode '%s'. Use 'file' or 'dir' or 's3'", mode)
   end
 
   return { mode = mode }, nil
@@ -66,6 +66,14 @@ local get_fzf_env = function(mode)
     config = {
       commands = os.getenv("FZF_ALT_C_COMMAND") or "",
       options = os.getenv("FZF_ALT_C_OPTS") or "",
+      cwd = os.getenv("FZF_CWD") or "",
+    }
+  end
+
+  if mode == "s3" then
+    config = {
+      commands = os.getenv("FZF_AWS_S3_BUCKET_COMMAND") or "",
+      options = os.getenv("FZF_AWS_S3_BUCKET_OPTS") or "",
       cwd = os.getenv("FZF_CWD") or "",
     }
   end
