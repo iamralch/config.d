@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/zsh
+
+[ -z "$DEBUG" ] || set -x
 
 # ------------------------------------------------------------------------------
 # Environment Secrets Configuration
@@ -278,7 +280,7 @@ ssh-tunnel() {
 }
 
 # ------------------------------------------------------------------------------
-# ssh-devpod
+# ssh-docker
 # ------------------------------------------------------------------------------
 # Connects to a development pod via SSH.
 #
@@ -295,13 +297,36 @@ ssh-tunnel() {
 #
 # Example:
 #   # If current directory is `/Users/iamralch/Projects/my-project`
-#   ssh-devpod               # Connects to `my-project.devpod`
+#   ssh-docker               # Connects to `my-project.devpod`
 #
 # Usage with dynamically created dev pods:
 #   Ensure your SSH config (~/.ssh/config) or DNS settings can resolve
 #   hostnames like `your-project-name.devpod` to the correct IP address
 #   or SSH gateway.
 # ------------------------------------------------------------------------------
-ssh-devpod() {
-	ssh "$(basename "$PWD").devpod"
+ssh-docker() {
+	local project_name="${1:-}"
+
+	local project_path
+	project_path="$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
+
+	local project_state
+	project_state="$(devpod status --output json --silent "$project_name" | jq -r '.state')"
+
+	case "$project_state" in
+	NotFound | Stopped)
+		(cd "$project_path" && devpod up "$project_name")
+		;;
+	Running)
+		gum log --level info "Container '$project_name' is already running."
+		;;
+	*)
+		gum log --level fatal "Failed to ssh '$project_name' (state: $project_state)"
+		return 1
+		;;
+	esac
+
+	gum log --level info "Connecting to '$project_name'..."
+	# We use devpod ssh to connect to the pod
+	devpod ssh "$project_name"
 }

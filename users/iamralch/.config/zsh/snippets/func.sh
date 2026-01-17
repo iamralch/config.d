@@ -1,4 +1,6 @@
-#!/bin/bash -x
+#!/bin/zsh
+
+[ -z "$DEBUG" ] || set -x
 
 # ==============================================================================
 # General Purpose Utility Functions
