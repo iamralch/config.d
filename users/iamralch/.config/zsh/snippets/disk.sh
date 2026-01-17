@@ -26,45 +26,65 @@ RCLONE_PROC_DIR="$RCLONE_STATE_DIR/proc"
 #   0 on success, 1 on failure.
 # ------------------------------------------------------------------------------
 rclone-mount() {
-	local remote="$1"
+	local remote=""
+	local print_path=false
+
+	# Parse arguments
+	for arg in "$@"; do
+		case "$arg" in
+		--print)
+			print_path=true
+			;;
+		*)
+			if [[ -z "$remote" ]]; then
+				remote="$arg"
+			fi
+			;;
+		esac
+	done
+
 	# Validate input
 	if [[ -z "$remote" ]]; then
 		gum log --level error "Remote required"
-		gum log --level warn "Usage: disk.sh mount <REMOTE>"
+		gum log --level warn "Usage: disk.sh mount <REMOTE> [--print]"
 		return 1
 	fi
 
-	# Prepare mount
 	local mount_dir="$RCLONE_MOUNT_DIR/$remote"
-	# Create mount directory
-	mkdir -p "$mount_dir"
-
-	# Prepare cache
-	local cache_dir="$RCLONE_CACHE_DIR/$remote"
-	# Create cache directory
-	mkdir -p "$cache_dir"
-
-	# Prepare PID file
 	local pid_file="$RCLONE_PROC_DIR/$remote.pid"
-	# Create pid directory
-	mkdir -p "$RCLONE_PROC_DIR"
 
-	# Mount the remote
-	gum spin --title="Mounting $remote..." --show-error -- \
-		rclone mount "$remote" "$mount_dir" \
-		--daemon --umask 002 \
-		--cache-dir "$cache_dir" \
-		--vfs-cache-mode writes \
-		--vfs-cache-max-age 24h \
-		--vfs-cache-max-size 5G \
-		--dir-cache-time 1h \
-		--poll-interval 1m \
-		--buffer-size 32M \
-		--allow-other
+	# Check if not mounted, then mount it
+	if [[ ! -f "$pid_file" ]]; then
+		# Not mounted, so mount it
+		mkdir -p "$mount_dir"
 
-	pgrep -f "rclone mount $remote $mount_dir" >"$pid_file"
-	# DONE!
-	gum log --level info "Successfully mounted $remote at $mount_dir"
+		local cache_dir="$RCLONE_CACHE_DIR/$remote"
+		mkdir -p "$cache_dir"
+
+		mkdir -p "$RCLONE_PROC_DIR"
+
+		gum spin --title="Mounting $remote..." --show-error -- \
+			rclone mount "$remote" "$mount_dir" \
+			--daemon --umask 002 \
+			--cache-dir "$cache_dir" \
+			--vfs-cache-mode writes \
+			--vfs-cache-max-age 24h \
+			--vfs-cache-max-size 5G \
+			--dir-cache-time 1h \
+			--poll-interval 1m \
+			--buffer-size 32M \
+			--allow-other
+
+		pgrep -f "rclone mount $remote $mount_dir" >"$pid_file"
+		
+		# DONE!
+		gum log --level info "Successfully mounted $remote at $mount_dir"
+	fi
+
+	# Print the mount path if requested
+	if [[ "$print_path" == true ]]; then
+		echo "$mount_dir"
+	fi
 }
 
 # ------------------------------------------------------------------------------
@@ -112,8 +132,6 @@ rclone-unmount() {
 	fi
 }
 
-
-
 # main()
 #
 # Main entry point
@@ -129,7 +147,6 @@ _rclone_main() {
 		shift
 		rclone-mount "$@"
 		;;
-
 	help | --help | -h | "")
 		_show_help
 		;;
