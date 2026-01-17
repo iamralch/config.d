@@ -27,12 +27,12 @@ local load_state = function(cwd)
 	local config_path = home .. "/.config/starship/yaziline.toml"
 	-- Execute the prompt command
 	local output = Command("starship")
-		:stdin(Command.INHERIT)
-		:env("STARSHIP_CONFIG", config_path)
-		:env("STARSHIP_SHELL", "")
-		:arg("prompt")
-		:cwd(cwd)
-		:output()
+			:stdin(Command.INHERIT)
+			:env("STARSHIP_CONFIG", config_path)
+			:env("STARSHIP_SHELL", "")
+			:arg("prompt")
+			:cwd(cwd)
+			:output()
 	-- sanitize output
 	if output then
 		set_state({ prompt = output.stdout:gsub("^%s+", ""):gsub("%s+$", "") })

@@ -7,12 +7,22 @@ light = "catppuccin-latte"
 [mgr]
 border_symbol = "·"
 
+
 [indicator]
 preview = { underline = false }
+padding = { open = "█", close = "█" }
+
+[tabs]
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
 
 [status]
+# Permissions
 perm_sep = { fg = "cyan" }
 perm_type = { fg = "cyan" }
 perm_exec = { fg = "cyan" }
 perm_read = { fg = "cyan" }
 perm_write = { fg = "cyan" }
+# Separators
+sep_left = { open = "", close = "" }
+sep_right = { open = "", close = "" }

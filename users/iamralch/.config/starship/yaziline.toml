@@ -1,12 +1,30 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = '$git_branch$git_commit$git_state$git_metrics$git_status'
+format = '$git_branch$git_commit$git_state$git_metrics$git_status$aws$gcloud$sudo'
 
 [git_branch]
 symbol = ' '
+format = ' [$symbol$branch(:$remote_branch)]($style) '
 
 [git_commit]
 tag_disabled = false
 
 [git_status]
-format = '[󰄽 $all_status$ahead_behind 󰄾]($style) '
+format = '[$all_status$ahead_behind]($style) '
+conflicted = " "
+untracked = " "
+stashed = " "
+modified = " "
+staged = " "
+renamed = " "
+deleted = " "
+typechanged = " "
+
+
+[aws]
+symbol = " "
+format = ' [$symbol($profile )(\($region\) )(\[$duration\] )]($style)'
+
+[gcloud]
+symbol = " "
+format = ' [$symbol$account(@$domain)(\($region\))]($style)'
