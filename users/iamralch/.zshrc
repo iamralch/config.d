@@ -1,3 +1,27 @@
+# Allow parameter, command, and arithmetic expansion inside the prompt
+# Enables things like $(git_branch), $VAR, $((1+2)) in PROMPT/RPROMPT
+setopt PROMPT_SUBST
+
+# Clear the right prompt (RPROMPT) after a command is accepted
+# Keeps the terminal clean once you start typing/output appears
+setopt TRANSIENT_RPROMPT
+
+# Print a space if command output doesn't end with a newline
+# Prevents the prompt from overwriting the last line of output
+setopt PROMPT_SP
+
+# Ensure the prompt starts on a new line
+# Avoids prompt corruption after multiline or partial output
+setopt PROMPT_CR
+
+# Enable advanced globbing patterns (e.g. **, ^, (#i), (N))
+# Extremely useful for powerful file matching and scripting
+setopt EXTENDED_GLOB
+
+# Allow comments (# ...) in interactive shell commands
+# Useful for annotating one-off commands in the terminal
+setopt INTERACTIVE_COMMENTS
+
 # Configure the language
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -114,6 +138,3 @@ function zvm_after_init() {
   zvm_bindkey viins '^R' atuin-search
   zvm_bindkey vicmd '^R' atuin-search
 }
-
-# Options
-setopt PROMPT_SUBST
