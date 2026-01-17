@@ -9,4 +9,5 @@ prepend_keymap = [
   { on = ["g", "k"], run = "cd ~/Desktop", desc = "Go ~/Desktop" },
   { on = ["g", "p"], run = "cd ~/Projects", desc = "Go ~/Projects" },
   { on = ["g", "o"], run = "cd ~/Documents", desc = "Go ~/Documents" },
+  { on = ["g", "r"], run = "cd ~/.local/state/rclone/mnt", desc = "Go remote" },
 ]
