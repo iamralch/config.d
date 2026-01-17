@@ -51,46 +51,37 @@ local parse_args = function(args)
   return { mode = mode }, nil
 end
 
-local get_fzf_config = function(mode)
+local get_fzf_env = function(mode)
+  local config = {}
+
   if mode == "file" then
-    return {
+    config = {
       commands = os.getenv("FZF_CTRL_T_COMMAND") or "",
-      defaults = os.getenv("FZF_DEFAULT_OPTS") or "",
       options = os.getenv("FZF_CTRL_T_OPTS") or "",
+      cwd = os.getenv("FZF_CWD") or "",
     }
   end
 
   if mode == "dir" then
-    return {
+    config = {
       commands = os.getenv("FZF_ALT_C_COMMAND") or "",
-      defaults = os.getenv("FZF_DEFAULT_OPTS") or "",
       options = os.getenv("FZF_ALT_C_OPTS") or "",
+      cwd = os.getenv("FZF_CWD") or "",
     }
   end
 
-  return nil
-end
-
--- Get the fzf environment variables
-local get_fzf_env = function(config)
   local cwd = tostring(get_cwd())
-  local options = config.options
-  local defaults = config.defaults
-  local commands = config.commands
+  local options = os.getenv("FZF_DEFAULT_OPTS") or ""
 
-  -- Make sure fzf starts in the correct directory
-  options = options:gsub(os.getenv("FZF_CWD"), cwd)
-  options = options .. " " .. defaults
-
+  -- Make sure it starts in the correct directory
+  config.options = config.options:gsub(config.cwd, cwd)
+  config.options = options .. " " .. config.options
   -- Make sure the command uses the correct base directory
-  if has_prefix(commands, "fd") then
-    commands = commands .. " --base-directory " .. cwd
+  if has_prefix(config.commands, "fd") then
+    config.commands = config.commands .. " --base-directory " .. cwd
   end
 
-  return {
-    FZF_DEFAULT_OPTS = options,
-    FZF_DEFAULT_COMMAND = commands,
-  }
+  return config
 end
 
 -- Main entry point
@@ -109,13 +100,11 @@ local function entry(_, job)
     return notify_error(err)
   end
 
-  local config = get_fzf_config(args.mode)
-  local environment = get_fzf_env(config)
-
-  -- Execute fzf via shell (needed to run FZF_DEFAULT_COMMAND)
+  local config = get_fzf_env(args.mode)
+  -- Execute the finder
   local child, err = Command("fzf")
-      :env("FZF_DEFAULT_COMMAND", environment.FZF_DEFAULT_COMMAND)
-      :env("FZF_DEFAULT_OPTS", environment.FZF_DEFAULT_OPTS)
+      :env("FZF_DEFAULT_COMMAND", config.commands)
+      :env("FZF_DEFAULT_OPTS", config.options)
       :stdin(Command.INHERIT)
       :stdout(Command.PIPED)
       :stderr(Command.INHERIT)
