@@ -332,5 +332,5 @@ ssh-docker() {
 
 	gum log --level info "Connecting to '$project_name'..."
 	# We use devpod ssh to connect to the pod
-	devpod ssh "$project_name"
+	devpod ssh --workdir /home/vscode/workspace "$project_name"
 }
