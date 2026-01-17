@@ -50,7 +50,8 @@ rclone-mount() {
 	mkdir -p "$RCLONE_PROC_DIR"
 
 	# Mount the remote
-	gum spin --title="Mounting $remote..." --show-error -- rclone mount "$remote" "$mount_dir" \
+	gum spin --title="Mounting $remote..." --show-error -- \
+		rclone mount "$remote" "$mount_dir" \
 		--daemon --umask 002 \
 		--cache-dir "$cache_dir" \
 		--vfs-cache-mode writes \
@@ -61,7 +62,8 @@ rclone-mount() {
 		--buffer-size 32M \
 		--allow-other
 
-	pgrep -f "rclone mount $remote $mount_dir" > "$pid_file"
+	pgrep -f "rclone mount $remote $mount_dir" >"$pid_file"
+	# DONE!
 	gum log --level info "Successfully mounted $remote at $mount_dir"
 }
 
@@ -96,6 +98,7 @@ rclone-unmount() {
 		pid=$(cat "$pid_file")
 		# Kill the rclone mount process
 		if gum spin --title="Unmounting $remote..." --show-error -- kill -SIGTERM "$pid"; then
+			# Clean up the PID file
 			rm "$pid_file"
 			# Report the success
 			gum log --level info "Successfully unmounted $remote"
@@ -108,6 +111,7 @@ rclone-unmount() {
 		return 1
 	fi
 }
+
 
 
 # main()
@@ -125,12 +129,13 @@ _rclone_main() {
 		shift
 		rclone-mount "$@"
 		;;
+
 	help | --help | -h | "")
 		_show_help
 		;;
 	*)
-		echo "Error: Unknown command '$command'" >&2
-		echo "Available commands: mount, unmount, help" >&2
+		gum log --level error "Unknown command '$command'"
+		gum log --level info "Available commands: mount, unmount, help"
 		exit 1
 		;;
 	esac
@@ -145,4 +150,3 @@ _rclone_main() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 	_rclone_main "$@"
 fi
-
