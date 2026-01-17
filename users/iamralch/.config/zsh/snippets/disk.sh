@@ -46,44 +46,52 @@ rclone-mount() {
 	# Validate input
 	if [[ -z "$remote" ]]; then
 		gum log --level error "Remote required"
-		gum log --level warn "Usage: disk.sh mount <REMOTE> [--print]"
+		gum log --level warn "Usage: disk.sh mount [--print] <REMOTE>"
 		return 1
 	fi
 
-	local mount_dir="$RCLONE_MOUNT_DIR/$remote"
-	local pid_file="$RCLONE_PROC_DIR/$remote.pid"
+	local mount_path="$RCLONE_MOUNT_DIR/$remote"
+	# Prepare mount directory
+	mkdir -p "$mount_path"
+
+	local cache_path="$RCLONE_CACHE_DIR/$remote"
+	# Prepare cache directory
+	mkdir -p "$cache_path"
+
+	local pid_file_path="$RCLONE_PROC_DIR/$remote.pid"
+	# Prepare process directory
+	mkdir -p "$RCLONE_PROC_DIR"
 
 	# Check if not mounted, then mount it
-	if [[ ! -f "$pid_file" ]]; then
-		# Not mounted, so mount it
-		mkdir -p "$mount_dir"
-
-		local cache_dir="$RCLONE_CACHE_DIR/$remote"
-		mkdir -p "$cache_dir"
-
-		mkdir -p "$RCLONE_PROC_DIR"
-
+	if [[ ! -f "$pid_file_path" ]]; then
 		gum spin --title="Mounting $remote..." --show-error -- \
-			rclone mount "$remote" "$mount_dir" \
-			--daemon --umask 002 \
-			--cache-dir "$cache_dir" \
+			rclone mount "$remote" "$mount_path" --daemon \
+			--cache-dir "$cache_path" \
 			--vfs-cache-mode writes \
 			--vfs-cache-max-age 24h \
 			--vfs-cache-max-size 5G \
 			--dir-cache-time 1h \
 			--poll-interval 1m \
 			--buffer-size 32M \
+			--umask 002 \
 			--allow-other
 
-		pgrep -f "rclone mount $remote $mount_dir" >"$pid_file"
-		
+		local pid
+		pid="$(pgrep -f "rclone mount $remote $mount_path")"
+		# Make sure we got a PID
+		if [[ -z "$pid" ]]; then
+			gum log --level error "Failed to mount $remote"
+			return 1
+		fi
+
+		echo -n "$pid" >"$pid_file_path"
 		# DONE!
-		gum log --level info "Successfully mounted $remote at $mount_dir"
+		gum log --level info "Successfully mounted $remote at $mount_path"
 	fi
 
 	# Print the mount path if requested
 	if [[ "$print_path" == true ]]; then
-		echo "$mount_dir"
+		echo "$mount_path"
 	fi
 }
 
