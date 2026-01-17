@@ -33,5 +33,9 @@ prepend_keymap = [
   { on = [
     "u",
     "p",
-  ], run = "plugin layout toggle preview", desc = "Toggle preview" },
+  ], run = "plugin layout toggle-parent", desc = "Toggle parent" },
+  { on = [
+    "u",
+    "w",
+  ], run = "plugin layout toggle-preview", desc = "Toggle preview" },
 ]

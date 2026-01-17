@@ -22,7 +22,7 @@ local function setup()
   end
 end
 
-local function entry(state)
+local function entry(state, job)
   local ratio = rt.mgr.ratio
 
   -- prepare the state
@@ -30,12 +30,9 @@ local function entry(state)
   state.current = state.current or ratio.current
   state.preview = state.preview or ratio.preview
 
-  -- toggle preview
-  if state.preview == 0 then
-    state.preview = 1
-  else
-    state.preview = 0
-  end
+  local _, pane = string.match(job.args[1] or "", "(.-)-(.+)")
+  -- Toggle the pane ratio
+  state[pane] = state[pane] == 0 and 1 or 0
 
   if not state.layout then
     state.layout = Tab.layout
