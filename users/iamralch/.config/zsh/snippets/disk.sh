@@ -8,7 +8,6 @@
 RCLONE_STATE_DIR="$HOME/.local/state/rclone"
 RCLONE_CACHE_DIR="$HOME/.cache/rclone"
 RCLONE_MOUNT_DIR="$RCLONE_STATE_DIR/mnt"
-RCLONE_PROC_DIR="$RCLONE_STATE_DIR/proc"
 
 # ------------------------------------------------------------------------------
 # rclone-mount
@@ -58,13 +57,12 @@ rclone-mount() {
 	# Prepare cache directory
 	mkdir -p "$cache_path"
 
-	local pid_file_path="$RCLONE_PROC_DIR/$remote.pid"
-	# Prepare process directory
-	mkdir -p "$RCLONE_PROC_DIR"
+	local pid
+	pid="$(pgrep -f "rclone mount $remote $mount_path")"
 
 	# Check if not mounted, then mount it
-	if [[ ! -f "$pid_file_path" ]]; then
-		gum spin --title="Mounting $remote..." --show-error -- \
+	if [[ -z "$pid" ]]; then
+		gum spin --title="Mounting $remote..." --show-output --show-error -- \
 			rclone mount "$remote" "$mount_path" --daemon \
 			--cache-dir "$cache_path" \
 			--vfs-cache-mode writes \
@@ -75,18 +73,8 @@ rclone-mount() {
 			--buffer-size 32M \
 			--umask 002 \
 			--allow-other
-
-		local pid
-		pid="$(pgrep -f "rclone mount $remote $mount_path")"
-		# Make sure we got a PID
-		if [[ -z "$pid" ]]; then
-			gum log --level error "Failed to mount $remote"
-			return 1
-		fi
-
-		echo -n "$pid" >"$pid_file_path"
-		# DONE!
-		gum log --level info "Successfully mounted $remote at $mount_path"
+	else
+		gum log --level debug "$remote is already mounted at $mount_path"
 	fi
 
 	# Print the mount path if requested
@@ -118,26 +106,9 @@ rclone-unmount() {
 		return 1
 	fi
 
-	# Prepare the PID file
-	local pid_file="$RCLONE_PROC_DIR/$remote.pid"
-
-	if [[ -f "$pid_file" ]]; then
-		local pid
-		pid=$(cat "$pid_file")
-		# Kill the rclone mount process
-		if gum spin --title="Unmounting $remote..." --show-error -- kill -SIGTERM "$pid"; then
-			# Clean up the PID file
-			rm "$pid_file"
-			# Report the success
-			gum log --level info "Successfully unmounted $remote"
-		else
-			gum log --level error "Failed to unmount $remote"
-			return 1
-		fi
-	else
-		gum log --level error "PID file not found for $remote"
-		return 1
-	fi
+	local mount_path="$RCLONE_MOUNT_DIR/$remote"
+	# Prepare mount directory
+	umount "$mount_path"
 }
 
 # main()
