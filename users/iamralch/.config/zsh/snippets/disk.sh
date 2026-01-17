@@ -30,7 +30,7 @@ rclone-mount() {
 	# Validate input
 	if [[ -z "$remote" ]]; then
 		gum log --level error "Remote required"
-		gum log --level warn "Usage: rclone-mount <REMOTE>"
+		gum log --level warn "Usage: disk.sh mount <REMOTE>"
 		return 1
 	fi
 
@@ -50,7 +50,7 @@ rclone-mount() {
 	mkdir -p "$RCLONE_PROC_DIR"
 
 	# Mount the remote
-	gum spin --title="Mounting $remote..." -- rclone mount "$remote" "$mount_dir" \
+	gum spin --title="Mounting $remote..." --show-error -- rclone mount "$remote" "$mount_dir" \
 		--daemon --umask 002 \
 		--cache-dir "$cache_dir" \
 		--vfs-cache-mode writes \
@@ -59,9 +59,9 @@ rclone-mount() {
 		--dir-cache-time 1h \
 		--poll-interval 1m \
 		--buffer-size 32M \
-		--allow-other &
-	echo $! >"$pid_file"
+		--allow-other
 
+	pgrep -f "rclone mount $remote $mount_dir" > "$pid_file"
 	gum log --level info "Successfully mounted $remote at $mount_dir"
 }
 
@@ -84,7 +84,7 @@ rclone-unmount() {
 	# Validate input
 	if [[ -z "$remote" ]]; then
 		gum log --level error "Remote required"
-		gum log --level warn "Usage: rclone-unmount <REMOTE>"
+		gum log --level warn "Usage: disk.sh unmount <REMOTE>"
 		return 1
 	fi
 
@@ -95,7 +95,7 @@ rclone-unmount() {
 		local pid
 		pid=$(cat "$pid_file")
 		# Kill the rclone mount process
-		if gum spin --title="Unmounting $remote..." -- kill -SIGTERM "$pid"; then
+		if gum spin --title="Unmounting $remote..." --show-error -- kill -SIGTERM "$pid"; then
 			rm "$pid_file"
 			# Report the success
 			gum log --level info "Successfully unmounted $remote"
@@ -108,3 +108,41 @@ rclone-unmount() {
 		return 1
 	fi
 }
+
+
+# main()
+#
+# Main entry point
+_rclone_main() {
+	local command="${1:-}"
+	# Process command
+	case "$command" in
+	unmount)
+		shift
+		rclone-unmount "$@"
+		;;
+	mount)
+		shift
+		rclone-mount "$@"
+		;;
+	help | --help | -h | "")
+		_show_help
+		;;
+	*)
+		echo "Error: Unknown command '$command'" >&2
+		echo "Available commands: mount, unmount, help" >&2
+		exit 1
+		;;
+	esac
+}
+
+# ------------------------------------------------------------------------------
+# Direct Execution Support
+# ------------------------------------------------------------------------------
+# When run directly (not sourced), pass all arguments to hsdk-env.
+# This enables tmux integration and scripted usage.
+# ------------------------------------------------------------------------------
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+	_rclone_main "$@"
+fi
+
