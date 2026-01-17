@@ -310,12 +310,16 @@ ssh-docker() {
 	local project_path
 	project_path="$(git rev-parse --show-toplevel 2>/dev/null || echo "$PWD")"
 
+	if [[ -z "$project_name" ]]; then
+		project_name="$(basename "$project_path")"
+	fi
+
 	local project_state
 	project_state="$(devpod status --output json --silent "$project_name" | jq -r '.state')"
 
 	case "$project_state" in
 	NotFound | Stopped)
-		(cd "$project_path" && devpod up "$project_name")
+		devpod up "$project_path"
 		;;
 	Running)
 		gum log --level info "Container '$project_name' is already running."
