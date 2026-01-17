@@ -1,3 +1,5 @@
+# vim: ft=zsh
+
 # Allow parameter, command, and arithmetic expansion inside the prompt
 # Enables things like $(git_branch), $VAR, $((1+2)) in PROMPT/RPROMPT
 setopt PROMPT_SUBST
@@ -24,12 +26,6 @@ setopt INTERACTIVE_COMMENTS
 
 # Configure the language
 export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
-export LC_CTYPE="en_US.UTF-8"
-
-# shellcheck disable=SC2155
-export PYTHON_BIN="$(readlink -f /run/current-system/sw/bin/python3)"
-export PYTHONPATH="${PYTHON_BIN}/lib/python3.13/site-packages"
 
 # Configure the tail
 export LESS="-R -F -X -S -J"
@@ -105,13 +101,14 @@ for snippet in "$HOME/.config/zsh/snippets/"*.sh; do
   [ -r "$snippet" ] && source "$snippet"
 done
 
+
 # Load hsdk secrets from macOS Keychain (populated by hsdk)
 _export_hsdk_secrets
 # Load User secrets from macOS Keychain (populated by ssh-auth)
 _export_env_secrets
 
 # Load completions
-autoload -Uz compinit && compinit
+autoload -Uz compinit && compinit -C
 
 zinit cdreplay -q
 
