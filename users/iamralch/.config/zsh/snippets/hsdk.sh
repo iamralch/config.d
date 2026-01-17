@@ -296,7 +296,7 @@ hsdk-env() {
 		env_id="$(_hsdk_env_fzf)"
 		# Set the selected environment
 		if [[ -n "$env_id" ]]; then
-			_hsdk_set_env "$env_id"
+			_hsdk_env_auth "$env_id"
 		fi
 		;;
 	*)
