@@ -3,11 +3,35 @@
 [mgr]
 prepend_keymap = [
   # Search
-  { on = ["z"], run = "plugin finder file", desc = "Find Files" },
-  { on = ["Z"], run = "plugin finder dir", desc = "Find Directories" },
-  { on = ["B"], run = "plugin finder s3", desc = "Find AWS S3 Buckets" },
-  { on = ["g", "k"], run = "cd ~/Desktop", desc = "Go ~/Desktop" },
-  { on = ["g", "p"], run = "cd ~/Projects", desc = "Go ~/Projects" },
-  { on = ["g", "o"], run = "cd ~/Documents", desc = "Go ~/Documents" },
-  { on = ["g", "r"], run = "cd ~/.local/state/rclone/mnt", desc = "Go remote" },
+  { on = [
+    "z",
+  ], run = "plugin finder file", desc = "Find Files" },
+  { on = [
+    "Z",
+  ], run = "plugin finder dir", desc = "Find Directories" },
+  { on = [
+    "B",
+  ], run = "plugin finder s3", desc = "Find AWS S3 Buckets" },
+  { on = [
+    "g",
+    "k",
+  ], run = "cd ~/Desktop", desc = "Go ~/Desktop" },
+  # Navigation
+  { on = [
+    "g",
+    "p",
+  ], run = "cd ~/Projects", desc = "Go ~/Projects" },
+  { on = [
+    "g",
+    "o",
+  ], run = "cd ~/Documents", desc = "Go ~/Documents" },
+  { on = [
+    "g",
+    "r",
+  ], run = "cd ~/.local/state/rclone/mnt", desc = "Go remote" },
+  # Layout
+  { on = [
+    "u",
+    "p",
+  ], run = "plugin layout toggle preview", desc = "Toggle preview" },
 ]
