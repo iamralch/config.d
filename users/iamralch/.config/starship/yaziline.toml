@@ -11,15 +11,6 @@ tag_disabled = false
 
 [git_status]
 format = '[$all_status$ahead_behind]($style) '
-conflicted = " "
-untracked = ""
-stashed = " "
-modified = " "
-staged = " "
-renamed = " "
-deleted = " "
-typechanged = " "
-
 
 [aws]
 symbol = " "

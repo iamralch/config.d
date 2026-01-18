@@ -46,8 +46,7 @@ denied_msg = " "
 symbol = ' '
 
 [gcloud]
-symbol = ' '
-style = 'bright-cyan'
+symbol = " "
 
 [git_branch]
 symbol = ' '
