@@ -45,7 +45,13 @@ local parse_args = function(args)
   local mode = args[1]
   -- Check for valid mode
   if mode ~= "file" and mode ~= "dir" and mode ~= "s3" then
-    return nil, string.format("Invalid mode '%s'. Use 'file' or 'dir' or 's3'", mode)
+    return nil, string.format("Invalid mode '%s'. Use 'file' or 'dir' or 's3'.", mode)
+  end
+
+  if mode == "s3" then
+    if os.getenv("AWS_PROFILE") == nil then
+      return nil, string.format("AWS_PROFILE environment variable is not set.")
+    end
   end
 
   return { mode = mode }, nil
@@ -57,7 +63,7 @@ local get_fzf_disk = function(config)
 
   -- Make sure it starts in the correct directory
   config.environment.FZF_DEFAULT_OPTS = config.environment.FZF_DEFAULT_OPTS:gsub(config.environment.FZF_CMD, cwd)
-  config.environment.FZF_DEFAULT_OPTS = options .. " " .. config.environment.FZF_DEFAULT_OPTS
+  config.environment.FZF_DEFAULT_OPTS = options .. " " .. config.environment.FZF_DEFAULT_OPTS .. " --tmux"
   -- Make sure the command uses the correct base directory
   if has_prefix(config.environment.FZF_DEFAULT_COMMAND, "fd") then
     config.environment.FZF_DEFAULT_COMMAND = config.environment.FZF_DEFAULT_COMMAND .. " --base-directory " .. cwd
@@ -131,8 +137,6 @@ end
 
 -- Main entry point
 local function entry(_, job)
-  local _permit = ui.hide()
-
   local ok, tool, _ = check_deps()
   -- Check dependencies
   if not ok then
@@ -145,17 +149,26 @@ local function entry(_, job)
     return notify_error(err)
   end
 
+  local tmux = false
   local config = get_fzf_env(args.mode)
   local command = Command(config.cmd):stdin(Command.INHERIT):stdout(Command.PIPED):stderr(Command.INHERIT)
 
   -- Prepare the command arguments
   for _, v in ipairs(config.arguments) do
     command = command:arg(v)
+    -- keep track if tmux is used
+    tmux = tmux or string.find(v, "--tmux")
   end
 
   -- Prepare the command environment variables
   for k, v in pairs(config.environment) do
     command = command:env(k, v)
+    -- keep track if tmux is used
+    tmux = tmux or string.find(v, "--tmux")
+  end
+
+  if not tmux then
+    ui.hide()
   end
 
   -- Execute the command
