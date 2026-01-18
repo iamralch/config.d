@@ -106,6 +106,7 @@
       terraform
       terraform-docs
       tig
+      tldr
       tmux
       tree
       typescript

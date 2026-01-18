@@ -8,6 +8,7 @@ return {
 
   -- Editing Support
   { import = "astrocommunity.editing-support.refactoring-nvim" },
+  { import = "astrocommunity.editing-support.todo-comments-nvim" },
 
   -- Code Runner
   { import = "astrocommunity.code-runner.overseer-nvim" },

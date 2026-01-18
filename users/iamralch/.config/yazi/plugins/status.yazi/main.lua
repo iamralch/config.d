@@ -112,6 +112,7 @@ return {
 		-- Emit state on cwd/tab change
 		ps.sub("cd", handle)
 		ps.sub("tab", handle)
+		ps.sub("hover", handle)
 	end,
 	entry = function(_, job)
 		local cwd = job.args[1]
