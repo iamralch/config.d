@@ -158,8 +158,10 @@ bind generic @k :?^@@
 bind generic @- :toggle diff-context -1
 bind generic @+ :toggle diff-context +1
 
-# Status view: view all staged changes
-bind status @s !sh -c 'git diff --staged'
+# Status view: view all staged/unstaged/all changes in diff pager
+bind status @s !git diff --staged  # View staged changes
+bind status @u !git diff           # View unstaged changes
+bind status @d !git diff HEAD      # View all changes
 
 # ==============================================================================
 # Git Operations
