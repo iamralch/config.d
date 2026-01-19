@@ -76,6 +76,7 @@
       nodePackages.neovim
       nodejs
       openssl
+      openpomodoro-cli
       perl
       perlPackages.NeovimExt
       php
