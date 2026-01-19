@@ -14,7 +14,6 @@ return {
         "terraform-ls",
         "shellcheck",
         "superhtml",
-        "harper-ls",
         "gofumpt",
         "gopls",
         "zls",

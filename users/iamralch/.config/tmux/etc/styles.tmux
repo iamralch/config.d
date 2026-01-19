@@ -37,4 +37,4 @@ set -gF mode-style "fg=#{@thm_bg},bg=#{@thm_yellow}"
 # Colors for focused panes
 set-hook -g pane-focus-in 'select-pane -P "bg=#{@thm_bg}"'
 # Colors for unfocused panes
-set-hook -g pane-focus-out 'select-pane -P "bg=#{@thm_mantle}"'
+set-hook -g pane-focus-out 'select-pane -P "bg=#{@thm_crust}"'

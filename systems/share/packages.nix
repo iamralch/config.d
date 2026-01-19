@@ -54,6 +54,7 @@
       imagemagick
       jdk
       jjui
+      jc
       jq
       jujutsu
       julia-bin
