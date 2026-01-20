@@ -73,9 +73,6 @@ export PATH="$PATH:$HOME/.cargo/bin"
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.orbstack/bin"
 
-# Pomodoro alias
-alias pomodoro="pomodoro --directory $HOME/.config/pomodoro"
-
 # limit how much of history to download
 zinit ice depth=1
 

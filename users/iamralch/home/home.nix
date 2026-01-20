@@ -9,6 +9,7 @@ in
     packages = [ ];
 
     activation = {
+      # Copy list
       claude = mkCopy "users/iamralch/.config/claude/settings.json" "$HOME/.claude/settings.json";
       gemini = mkCopy "users/iamralch/.config/gemini/settings.json" "$HOME/.gemini/settings.json";
     };
