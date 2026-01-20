@@ -81,6 +81,33 @@ _export_hsdk_secrets() {
 	fi
 }
 
+# ------------------------------------------------------------------------------
+# hsdk-sync
+# ------------------------------------------------------------------------------
+# Syncs HSDK SSO environment profiles to AWS CLI configuration for fzf integration.
+#
+# This function exports the list of HSDK environments and transforms them into
+# AWS CLI profile configurations that can be used with fzf-based tooling. It
+# creates a JSON configuration file containing profile information including
+# SSO account ID, role name, region, and start URL for each environment.
+#
+# The generated profiles follow the naming convention: {EnvironmentName}-{RoleName}
+#
+# Globals:
+#   - HSDK_ROLE_NAME: IAM role name to use (default: AdministratorAccess)
+#   - HSDK_DEFAULT_OUTPUT: Output format for HSDK commands (set to json)
+#
+# Output:
+#   - Creates directory ~/.aws/cli/fzf if it doesn't exist
+#   - Writes profile configuration to ~/.aws/cli/fzf/config.json
+#
+# Dependencies:
+#   - hsdk: Required for listing environments (hsdk lse)
+#   - jq: Required for JSON transformation
+#
+# Example:
+#   hsdk-sync
+# ------------------------------------------------------------------------------
 hsdk-sync() {
 	(
 		export HSDK_ROLE_NAME="${HSDK_ROLE_NAME:-AdministratorAccess}"
@@ -99,6 +126,53 @@ hsdk-sync() {
 	)
 }
 
+# ------------------------------------------------------------------------------
+# hsdk-exec
+# ------------------------------------------------------------------------------
+# Executes a command in a specific HSDK environment context.
+#
+# This function configures the shell environment for a specific AWS/HSDK profile
+# and then executes the provided command within that context. It handles:
+#   1. Validating the command usage
+#   2. Retrieving AWS SSO configuration from the specified profile
+#   3. Setting up HSDK environment variables using 'hsdk setenv'
+#   4. Caching environment variables (HSDK_*, TF_*) to keychain for future shells
+#   5. Updating AWS config with account type information for tmux-aws styling
+#   6. Replacing the current process with the specified command using exec
+#
+# The environment variables are cached to macOS Keychain, allowing future shell
+# sessions to quickly restore the environment without re-authenticating.
+#
+# Parameters:
+#   $1 - Must be the literal string "exec"
+#   $2 - AWS profile name (from ~/.aws/config)
+#   $3 - Must be the literal string "--"
+#   $@ (remaining) - The command and arguments to execute
+#
+# Globals:
+#   - AWS_PROFILE: Set to the specified profile name for AWS CLI compatibility
+#   - HSDK_*: Environment variables set by 'hsdk setenv'
+#   - TF_*: Terraform variables set by 'hsdk setenv'
+#   - TF_VAR_account_type: Used to tag the AWS profile environment type
+#
+# Output:
+#   - Writes environment variables to macOS Keychain
+#   - Updates ~/.aws/config with environment metadata
+#   - Replaces current process with the specified command (via exec)
+#
+# Dependencies:
+#   - hsdk: Required for environment setup (hsdk setenv)
+#   - aws: Required for reading profile configuration
+#   - security: Required for keychain access
+#
+# Exit Behavior:
+#   - Exits with status 1 if usage is incorrect
+#   - Replaces current process with exec, so does not return
+#
+# Example:
+#   hsdk-exec exec my-profile-AdministratorAccess -- zsh
+#   hsdk-exec exec prod-dev-AdministratorAccess -- terraform plan
+# ------------------------------------------------------------------------------
 hsdk-exec() {
 	local command="$1"
 
