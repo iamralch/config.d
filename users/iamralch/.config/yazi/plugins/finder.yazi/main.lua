@@ -105,8 +105,8 @@ local get_fzf_s3 = function()
     cmd = "aws",
     arguments = {
       "fzf",
-      "--bind=enter:become(~/.config/zsh/snippets/disk.sh mount --print s3:{1})",
-      "--bind=alt-u:execute-silent(~/.config/zsh/snippets/disk.sh unmount s3:{1})",
+      "--bind=enter:become(~/.config/yazi/scripts/rclone.sh mount --print s3:{1})",
+      "--bind=alt-u:execute-silent(~/.config/yazi/scripts/rclone.sh unmount s3:{1})",
       "s3",
       "bucket",
       "list",
