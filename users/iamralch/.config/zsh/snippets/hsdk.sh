@@ -3,88 +3,6 @@
 [ -z "$DEBUG" ] || set -x
 
 # ------------------------------------------------------------------------------
-# Global Configuration
-# ------------------------------------------------------------------------------
-# _fzf_icon: AWS cloud icon (󰸏) used in fzf prompt footers for visual context
-# _fzf_options: Shared fzf configuration array for consistent UI across all
-#               interactive selections. Key settings:
-#   --tmux='100%,100%': Run fzf in tmux popup (full screen)
-#   --border='none': No outer border (tmux popup provides border)
-#   --layout='reverse-list': List items top-to-bottom with prompt at bottom
-#   --header-lines='1': Treat first line as column headers
-#   Various --*-border and --color options for styled appearance
-# ------------------------------------------------------------------------------
-
-_fzf_icon=" "
-
-_fzf_options=(
-	--ansi
-	--tmux
-	--border='sharp'
-	--color='header:cyan'
-	--color='footer:cyan'
-	--header-lines='1'
-	--header-border='sharp'
-	--footer-border='sharp'
-	--input-border='sharp'
-	--layout='reverse-list'
-)
-
-HSDK_ROLE_NAME="${HSDK_ROLE_NAME:-AdministratorAccess}"
-
-# ------------------------------------------------------------------------------
-# _hsdk_env_fzf (private)
-# ------------------------------------------------------------------------------
-# Interactively select an HSDK environment using fzf with AWS console URLs.
-#
-# This function queries HSDK for available environments and presents them in
-# an interactive fuzzy finder. Each environment entry includes:
-#   - Environment ID
-#   - Environment Name
-#   - AWS SSO Console URL (hidden in display, accessible via ctrl-o)
-#
-# Keybindings:
-#   - Enter: Select environment and return the ID for setting in the current
-#            shell or for further processing.
-#   - ctrl-o: Open the AWS console URL in the default browser without selecting
-#            the environment. Useful for quickly checking the console.
-#   - alt-n: Create a new tmux window with the selected environment already
-#            configured. The window is automatically named with the environment
-#            ID. A new shell is started in the window with the environment
-#            credentials loaded.
-#   - Esc: Cancel selection and return without setting any environment.
-#
-# Output:
-#   The selected environment ID (stdout).
-# ------------------------------------------------------------------------------
-_hsdk_env_fzf() {
-	local hsdk_env_list
-	local hsdk_env_list_columns
-
-	# Query HSDK for environments and format as tab-separated values:
-	# Column 1: Environment ID
-	# Column 2: Environment Name
-	# Column 3: Description
-	# Column 4: AWS Console URL (SSO URL + account info)
-	hsdk_env_list_columns='(["ID", "NAME", "ACCOUNT", "REGION", "URL", "DESCRIPTION"] | @tsv),
-	                       (.[] | [.Id, .Name, .AWSAccountId, .AWSSsoRegion, .AWSSsoUrl, .Description] | @tsv)'
-
-	# Get the environment list
-	hsdk_env_list=$(HSDK_DEFAULT_OUTPUT=json hsdk lse | jq -r "$hsdk_env_list_columns" | column -t -s $'\t')
-
-	# Display in fzf with:
-	# --with-nth=1..-2: Show all columns except the last (hide URL)
-	# --accept-nth=1: Return Environment ID on selection
-	# --bind 'ctrl-o:...': Open browser with URL on ctrl-o
-	# --bind 'ctrl-n:...': Open new tmux window with selected environment
-	echo "$hsdk_env_list" | fzf "${_fzf_options[@]}" \
-		--accept-nth 1 --with-nth 1,2,6.. \
-		--footer "$_fzf_icon Environment" \
-		--bind "ctrl-o:execute(open {5}/\#/console\?account_id={3}\&role_name=$HSDK_ROLE_NAME)+abort" \
-		--bind "alt-enter:become(tmux new-window -n {1} $HOME/.config/zsh/snippets/hsdk.sh auth {1})+abort"
-}
-
-# ------------------------------------------------------------------------------
 # HSDK Keychain Configuration
 # ------------------------------------------------------------------------------
 HSDK_SECRETS_VAULT="hsdk-secrets"
@@ -133,92 +51,6 @@ _hsdk_write_env_to_keychain() {
 }
 
 # ------------------------------------------------------------------------------
-# _hsdk_set_env (private)
-# ------------------------------------------------------------------------------
-# Sets the HSDK environment by fetching and caching credentials.
-#
-# This function handles the logic of retrieving and storing HSDK environment
-# variables. It performs the following steps:
-#   1. Fetches new credentials and environment variables using `hsdk setenv`.
-#   2. Exports the `AWS_PROFILE` variable based on the environment alias.
-#   3. Gathers all relevant environment variables (HSDK, TF, AWS_VAULT).
-#   4. Caches these variables in the macOS Keychain for later use by
-#      `_export_hsdk_secrets`.
-#
-# This function always fetches fresh credentials and overwrites any existing
-# cached entry.
-#
-# Parameters:
-#   $1 - Environment ID
-#
-# Returns:
-#   0 on success, assuming `hsdk setenv` is successful.
-# ------------------------------------------------------------------------------
-_hsdk_set_env() {
-	local env_id="$1"
-
-	# Get the HSDK Credentials
-	# shellcheck disable=SC2016
-	eval "$(unset AWS_VAULT && hsdk setenv "$env_id")"
-	# We assume success if we reach this point
-	export AWS_PROFILE="${HSDK_ENV_ALIAS}-${HSDK_ROLE_NAME}"
-
-	local env_config
-	env_config=$(env | grep -E 'HSDK|TF' | awk '{print "export " $0}')
-	# Write the hsdk env to the keychain
-	_hsdk_write_env_to_keychain "$AWS_PROFILE" "$env_config"
-}
-
-# ------------------------------------------------------------------------------
-# _hsdk_env_auth (private)
-# ------------------------------------------------------------------------------
-# Authenticates and configures a new tmux window for a given HSDK environment.
-#
-# This function is designed to be called when creating a new tmux window for a
-# specific environment. It performs the following steps:
-#   1. Sets the HSDK environment using `_hsdk_set_env`, which handles credential
-#      fetching and caching.
-#   2. If inside a tmux session, it configures the AWS profile with the
-#      environment type (e.g., 'dev', 'stage', 'prod').
-#   3. Updates the tmux status bar to display the current AWS profile using a
-#      tmux plugin.
-#   4. Replaces the current shell with a new login shell, ensuring the
-#      environment is fully loaded.
-#
-# This function is primarily used by the `_hsdk_env_fzf`'s `ctrl-n` keybinding.
-#
-# Parameters:
-#   $1 - The HSDK environment ID to authenticate with.
-#
-# Returns:
-#   This function typically replaces the current process and does not return.
-#   If not in a tmux session or if `_hsdk_set_env` fails, it will do nothing
-#   and return.
-# ------------------------------------------------------------------------------
-_hsdk_env_auth() {
-	local env_id="$1"
-
-	# Set the HSDK environment for the new tmux window
-	if [[ -n "$TMUX" ]]; then
-		local tmux_window_id
-		tmux_window_id="$(tmux display -p '#{session_name}:#{window_index}')"
-
-		if _hsdk_set_env "$env_id"; then
-			# Set the environment profile type
-			# shellcheck disable=SC2154
-			aws configure set environment "${TF_VAR_account_type}" --profile "$AWS_PROFILE"
-			# Create a new tmux window with the selected environment
-			"$TMUX_PLUGIN_MANAGER_PATH/tmux-aws/scripts/tmux-aws.sh" --profile "$AWS_PROFILE" --target "$tmux_window_id"
-			# Start a new shell in the tmux window
-			"$SHELL" --login
-		fi
-	else
-		_hsdk_set_env "$env_id"
-	fi
-
-}
-
-# ------------------------------------------------------------------------------
 # _export_hsdk_secrets (private)
 # ------------------------------------------------------------------------------
 # Loads HSDK environment variables and aliases for an already configured shell.
@@ -240,69 +72,73 @@ _hsdk_env_auth() {
 # ------------------------------------------------------------------------------
 _export_hsdk_secrets() {
 	if [[ -n "$AWS_PROFILE" ]]; then
-		# Read from environment variables if set
+		# Read cached environment variables from keychain
 		eval "$(_hsdk_read_env_from_keychain "$AWS_PROFILE")"
-		# Export AWS_VAULT for aws-vault compatibility
-		export AWS_VAULT="$HSDK_ENV_ID"
 		# Read from hsdk alias tools if available
-		eval "$(hsdk alias-tools)"
+		if command -v hsdk &>/dev/null; then
+			eval "$(hsdk alias-tools 2>/dev/null || true)"
+		fi
 	fi
 }
 
-# ------------------------------------------------------------------------------
-# hsdk-env
-# ------------------------------------------------------------------------------
-# Manages HSDK environments, supporting interactive selection and tmux integration.
-#
-# This script provides two main modes of operation:
-#
-# 1. Interactive Environment Selection (default):
-#    When run without arguments, it launches an fzf-based interactive menu
-#    to select an HSDK environment. Upon selection, it fetches credentials
-#    for that environment using `hsdk setenv`, caches them in the macOS
-#    Keychain, and loads them into the current shell.
-#
-# 2. Tmux Authentication (`auth` subcommand):
-#    This mode is intended for internal use, specifically with tmux. It's
-#    triggered by the `ctrl-n` binding in the fzf menu. It sets up a new
-#    tmux window for the selected environment, complete with AWS profile
-#    configuration and a custom status bar.
-#
-# The script leverages the macOS Keychain to cache credentials, allowing for
-# quick re-sourcing of environments in new shell sessions via the `_export_hsdk_secrets`
-# function (which should be added to a shell rc file).
-#
-# Usage:
-#   hsdk-env              # Interactively select and set environment in the current shell.
-#   hsdk-env auth <id>    # (Internal) Authenticate and configure a new tmux window.
-#
-# Examples:
-#   hsdk-env              # Launch fzf to choose an environment.
-#
-# Direct execution:
-#   If this script is executed directly (not sourced), it passes all arguments
-#   to the `hsdk-env` function, enabling its use in contexts like tmux keybindings.
-# ------------------------------------------------------------------------------
-hsdk-env() {
-	local command="${1:-}"
+hsdk-sync() {
+	(
+		export HSDK_ROLE_NAME="${HSDK_ROLE_NAME:-AdministratorAccess}"
+		export HSDK_DEFAULT_OUTPUT=json
 
-	case "$command" in
-	auth)
-		shift
-		_hsdk_env_auth "$1"
-		;;
-	"")
-		local env_id
-		env_id="$(_hsdk_env_fzf)"
-		# Set the selected environment
-		if [[ -n "$env_id" ]]; then
-			_hsdk_env_auth "$env_id"
-		fi
-		;;
-	*)
-		return 1
-		;;
-	esac
+		# Make sure the sso directory exists
+		mkdir -p ~/.aws/cli/fzf
+		# Export the sso config
+		hsdk lse | jq '{profiles: [.[] | {
+    profile: (.Name + "-" + env.HSDK_ROLE_NAME),
+    sso_account_id: .AWSAccountId,
+    sso_role_name: env.HSDK_ROLE_NAME,
+    sso_region: .AWSSsoRegion,
+    sso_start_url: .AWSSsoUrl
+  }]}' >~/.aws/cli/fzf/config.json
+	)
+}
+
+hsdk-exec() {
+	local command="$1"
+
+	if [[ "$command" != "exec" ]]; then
+		echo "Usage: hsdk.sh exec <profile> -- <command...>" >&2
+		exit 1
+	fi
+
+	local aws_profile="$2"
+
+	# Get AWS config from profile
+	local aws_account_id
+	aws_account_id="$(aws configure get sso_account_id --profile "$aws_profile")"
+
+	local aws_region
+	aws_region="$(aws configure get sso_region --profile "$aws_profile")"
+
+	# Build HSDK environment ID (format: accountId-region)
+	local hsdk_env_id="$aws_account_id-$aws_region"
+
+	# Set the environment using HSDK
+	eval "$(hsdk setenv "$hsdk_env_id")"
+
+	# Export AWS_PROFILE for compatibility
+	export AWS_PROFILE="$aws_profile"
+
+	# Cache environment variables for future shells
+	local env_config
+	env_config=$(env | grep -E 'HSDK_|TF_' | awk '{print "export " $0}')
+
+	# Write to keychain
+	_hsdk_write_env_to_keychain "$aws_profile" "$env_config"
+
+	# Set the account type in AWS config for tmux-aws styling
+	aws configure set environment "${TF_VAR_account_type:-none}" --profile "$aws_profile"
+
+	# Skip 'exec', profile, and '--'
+	shift 3
+	# Execute the command
+	exec "$@"
 }
 
 # ------------------------------------------------------------------------------
@@ -312,5 +148,5 @@ hsdk-env() {
 # This enables tmux integration and scripted usage.
 # ------------------------------------------------------------------------------
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-	hsdk-env "$@"
+	hsdk-exec "$@"
 fi

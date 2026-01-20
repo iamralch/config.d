@@ -11,12 +11,10 @@ setw -g mode-keys vi
 bind r source-file ~/.config/tmux/tmux.conf
 
 # edit configuration
-bind e new-window "sh -c 'nvim ~/.config/tmux/tmux.conf'"
+bind e new-window 'sh -c "nvim ~/.config/tmux/tmux.conf"'
 
 # window navigation
 bind W last-window
 
 # github fzf repo search
-bind -T fzf-menu g run-shell "gh fzf --tmux search repos > /dev/null || true"
-# hsdk environment selection
-bind -T fzf-menu e run-shell "~/.config/zsh/snippets/hsdk.sh > /dev/null || true"
+bind -T fzf-menu g run-shell 'gh fzf --tmux search repos > /dev/null || true'
