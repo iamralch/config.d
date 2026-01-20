@@ -96,12 +96,19 @@ zinit snippet OMZP::git
 zinit snippet OMZP::git-commit
 zinit snippet OMZP::golang
 
-# Load Local snippets
-for snippet in "$HOME/.config/zsh/snippets/"*.sh; do
-  # shellcheck disable=SC1090
-  [ -r "$snippet" ] && source "$snippet"
-done
+script_dirs=(
+  "$HOME/.config/zsh/snippets"
+  "$HOME/.config/yazi/scripts"
+  "$HOME/.config/tmux/scripts"
+)
 
+# Load local scripts
+for scripts_dir in "${script_dirs[@]}"; do
+  for script in "$scripts_dir"/*.sh; do
+    # shellcheck disable=SC1090
+    [ -r "$script" ] && source "$script"
+  done
+done
 
 # Load hsdk secrets from macOS Keychain (populated by hsdk)
 _export_hsdk_secrets
