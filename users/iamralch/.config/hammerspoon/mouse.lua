@@ -2,7 +2,21 @@ local M = {}
 
 -- Mouse set position
 function M.focus(window)
-	window = window or hs.window.focusedWindow()
+	if not window then
+		hs.timer.doAfter(0.1, function()
+			local app = hs.application.frontmostApplication()
+			if app then
+				window = app:mainWindow() or app:focusedWindow()
+			end
+			-- when the window is found, call focus again
+			if window then
+				M.focus(window)
+			end
+		end)
+		-- stop if no window is found
+		return false
+	end
+
 	local current_pos = hs.geometry(hs.mouse.absolutePosition())
 	local frame = window:frame()
 
