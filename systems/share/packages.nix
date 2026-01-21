@@ -90,6 +90,7 @@
         ps: with ps; [
           pip
           pipx
+          pyyaml
           pynvim
         ]
       ))

@@ -83,11 +83,12 @@ zinit light zsh-users/zsh-autosuggestions
 zinit light jeffreytse/zsh-vi-mode
 zinit light Aloxaf/fzf-tab
 # Add personal plugins
-zinit load zsh-contrib/zsh-fzf
-zinit load zsh-contrib/zsh-aws
+zinit light zsh-contrib/zsh-op
+zinit light zsh-contrib/zsh-aws
+zinit light zsh-contrib/zsh-fzf
 
 if [[ "$TERM" != "tmux-256color" ]]; then
-  zinit load zsh-contrib/zsh-vivid
+  zinit light zsh-contrib/zsh-vivid
 fi
 
 # Add in snippets
@@ -112,8 +113,6 @@ done
 
 # Load hsdk secrets from macOS Keychain (populated by hsdk)
 _export_hsdk_secrets
-# Load User secrets from macOS Keychain (populated by ssh-auth)
-_export_env_secrets
 
 # Load completions
 autoload -Uz compinit && compinit -C

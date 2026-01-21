@@ -1,0 +1,20 @@
+version: 1
+accounts:
+  - name: personal
+    account: my.1password.com
+    secrets:
+      - kind: env
+        name: GITHUB_TOKEN
+        path: op://Personal/GitHub/Secrets/GITHUB_TOKEN
+      - kind: ssh
+        name: GITHUB_PRIVATE_KEY
+        path: op://Personal/GitHub SSH Key/private key?ssh-format=openssh
+      - kind: env
+        name: CLAUDE_CODE_OAUTH_TOKEN
+        path: op://Personal/Anthropic/Secrets/CLAUDE_CODE_OAUTH_TOKEN
+  - name: workspace
+    account: team-em.1password.com
+    secrets:
+      - kind: env
+        name: CLAUDE_CODE_OAUTH_TOKEN
+        path: op://Personal/Anthropic/Secrets/CLAUDE_CODE_OAUTH_TOKEN
