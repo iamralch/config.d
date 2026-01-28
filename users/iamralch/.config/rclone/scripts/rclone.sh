@@ -9,7 +9,7 @@ _rclone_source_dir="$HOME/.config/rclone/scripts"
 # ------------------------------------------------------------------------------
 
 _fzf_s3_opts=(
-	"--bind 'alt-enter:execute-silent($_rclone_source_dir/rclone.sh mount --print s3:{1})'"
+	"--bind 'enter:become($_rclone_source_dir/rclone.sh mount --print s3:{1})'"
 	"--bind 'alt-m:execute-silent($_rclone_source_dir/rclone.sh mount s3:{1})'"
 	"--bind 'alt-u:execute-silent($_rclone_source_dir/rclone.sh unmount s3:{1})'"
 )
