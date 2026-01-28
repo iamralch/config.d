@@ -49,7 +49,6 @@
       google-cloud-sdk
       graphviz
       gum
-      btop
       hurl
       imagemagick
       jdk
