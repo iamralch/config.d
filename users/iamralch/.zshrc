@@ -99,8 +99,8 @@ zinit snippet OMZP::golang
 
 script_dirs=(
   "$HOME/.config/zsh/snippets"
-  "$HOME/.config/yazi/scripts"
   "$HOME/.config/tmux/scripts"
+  "$HOME/.config/rclone/scripts"
 )
 
 # Load local scripts
@@ -132,11 +132,11 @@ zstyle ':fzf-tab:complete:cd:*' fzf-command fzf-tmux
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always --icons $realpath'
 
 eval "$(fzf --zsh)"
-eval "$(direnv hook zsh)"
-eval "$(starship init zsh)"
-eval "$(zoxide init --cmd cd zsh)"
-eval "$(batman --export-env)"
 eval "$(atuin init zsh)"
+eval "$(direnv hook zsh)"
+eval "$(zoxide init zsh)"
+eval "$(starship init zsh)"
+eval "$(batman --export-env)"
 
 function zvm_after_init() {
   zvm_bindkey viins '^R' atuin-search

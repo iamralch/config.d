@@ -2,12 +2,56 @@
 
 [ -z "$DEBUG" ] || set -x
 
+_rclone_source_dir="$HOME/.config/rclone/scripts"
+
+# ------------------------------------------------------------------------------
+# FZF AWS S3 Bucket Configuration
+# ------------------------------------------------------------------------------
+
+_fzf_s3_opts=(
+	"--bind 'alt-enter:execute-silent($_rclone_source_dir/rclone.sh mount --print s3:{1})'"
+	"--bind 'alt-m:execute-silent($_rclone_source_dir/rclone.sh mount s3:{1})'"
+	"--bind 'alt-u:execute-silent($_rclone_source_dir/rclone.sh unmount s3:{1})'"
+)
+
+# Combine options into a single string
+export FZF_AWS_S3_BUCKET_OPTS="${_fzf_s3_opts[*]}"
+
 # ------------------------------------------------------------------------------
 # Rclone Mount Configuration
 # ------------------------------------------------------------------------------
 RCLONE_STATE_DIR="$HOME/.local/state/rclone"
 RCLONE_CACHE_DIR="$HOME/.cache/rclone"
 RCLONE_MOUNT_DIR="$RCLONE_STATE_DIR/mnt"
+
+# ------------------------------------------------------------------------------
+# _rclone_path
+# ------------------------------------------------------------------------------
+# Determines the mount path for a remote based on its naming pattern.
+# For remotes with schema:resource pattern (e.g., s3:bucket), organizes them
+# under schema/ subdirectory. Otherwise uses the remote name directly.
+#
+# Parameters:
+#   $1 - The remote name (e.g., "s3:bucket" or "myremote")
+#   $2 - The base directory (e.g., RCLONE_MOUNT_DIR or RCLONE_CACHE_DIR)
+#
+# Returns:
+#   The full path where the remote should be mounted or cached
+# ------------------------------------------------------------------------------
+_rclone_path() {
+	local remote="$1"
+	local base_dir="$2"
+
+	if [[ "$remote" == *:* ]]; then
+		# For remotes with schema:resource pattern, organize under schema/ subdirectory
+		local schema="${remote%%:*}"
+		local resource="${remote#*:}"
+		echo "$base_dir/$schema/$resource"
+	else
+		# For other remotes, use the remote name directly
+		echo "$base_dir/$remote"
+	fi
+}
 
 # ------------------------------------------------------------------------------
 # rclone-mount
@@ -49,11 +93,15 @@ rclone-mount() {
 		return 1
 	fi
 
-	local mount_path="$RCLONE_MOUNT_DIR/$remote"
+	# Determine mount and cache paths
+	local mount_path
+	local cache_path
+	mount_path="$(_rclone_path "$remote" "$RCLONE_MOUNT_DIR")"
+	cache_path="$(_rclone_path "$remote" "$RCLONE_CACHE_DIR")"
+
 	# Prepare mount directory
 	mkdir -p "$mount_path"
 
-	local cache_path="$RCLONE_CACHE_DIR/$remote"
 	# Prepare cache directory
 	mkdir -p "$cache_path"
 
@@ -106,8 +154,11 @@ rclone-unmount() {
 		return 1
 	fi
 
-	local mount_path="$RCLONE_MOUNT_DIR/$remote"
-	# Prepare mount directory
+	# Determine mount path
+	local mount_path
+	mount_path="$(_rclone_path "$remote" "$RCLONE_MOUNT_DIR")"
+
+	# Unmount the directory
 	umount "$mount_path"
 }
 
