@@ -3,44 +3,8 @@
 scan_timeout = 30
 command_timeout = 1000
 
-[jobs]
-symbol = ''
-number_threshold = 4
-disabled = false
-
-[time]
-disabled = false
-time_format = '%r'
-
-[battery]
-full_symbol = '󰁹'
-charging_symbol = '󰂄'
-discharging_symbol = '󰂌'
-unknown_symbol = '󰂑'
-empty_symbol = '󰂎'
-
-[character]
-success_symbol = '[󰘳](bold green) '
-error_symbol = '[󰘳](bold red) '
-vimcmd_symbol = '[](bold green) '
-vimcmd_visual_symbol = '[](bold yellow) '
-vimcmd_replace_symbol = '[](bold purple) '
-vimcmd_replace_one_symbol = '[](bold purple) '
-
 [directory]
 home_symbol = '󰋞'
-
-[docker_context]
-symbol = ' '
-only_with_files = true
-disabled = false
-
-[direnv]
-disabled = false
-format = '[$symbol$allowed]($style) '
-symbol = ''
-allowed_msg = " "
-denied_msg = " "
 
 [aws]
 symbol = ' '
@@ -50,9 +14,6 @@ symbol = " "
 
 [git_branch]
 symbol = ' '
-
-[git_commit]
-tag_disabled = false
 
 [git_status]
 format = '[$all_status$ahead_behind]($style) '
