@@ -27,18 +27,18 @@
     }@inputs:
     let
       # System Constants
-      inherit (import ./modules/const.nix) systems;
+      inherit (import ./lib/const.nix) systems;
 
       # Overlays is the list of overlays we want to apply from flake inputs.
       overlays = import ./overlays/default.nix;
 
       # Make host function to create a nix Darwin host configuration
-      mkHost = import ./packages/mkhost.nix {
+      mkHost = import ./lib/mkhost.nix {
         inherit overlays nixpkgs nixpkgs-unstable inputs;
       };
 
       # Make Shell function to create a development shell
-      mkShell = import ./packages/mkshell.nix {
+      mkShell = import ./lib/mkshell.nix {
         inherit overlays nixpkgs nixpkgs-unstable;
       };
 

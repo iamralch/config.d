@@ -1,7 +1,7 @@
 { lib, ... }:
 
 let
-  mkCopy = import ../../../modules/mkcopy.nix { inherit lib; };
+  mkCopy = import ../../../lib/mkcopy.nix { inherit lib; };
 in
 {
   home = {

@@ -1,7 +1,7 @@
 { lib, ... }:
 
 let
-  mkSymlink = import ../../../modules/mksymlink.nix { inherit lib; };
+  mkSymlink = import ../../../lib/mksymlink.nix { inherit lib; };
 in
 {
   imports = [ ./home.nix ];
