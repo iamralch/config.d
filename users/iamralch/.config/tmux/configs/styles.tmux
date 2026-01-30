@@ -18,8 +18,8 @@ set -gF window-status-bell-style "fg=#{@thm_yellow},bg=#{@thm_bg}"
 set -gF window-status-style "fg=#{@thm_fg},bg=#{@thm_bg}"
 set -gF window-status-current-style "fg=#{@thm_mauve},bg=#{@thm_bg},bold"
 # Window Formats
-set -g window-status-format " #I: #W #{?@aws_profile_window,  ,}#F "
-set -g window-status-current-format " #I: #W #[fg=#{@thm_yellow}]#{?@aws_profile_window,  ,}#[fg=default]#F "
+set -g window-status-format " #I: #W #F "
+set -g window-status-current-format "#{?@aws_profile_window,#[fg=#{@thm_yellow}],} #I: #W #F "
 # Window Status Separator
 set -gF window-status-separator "#{@separator}"
 
