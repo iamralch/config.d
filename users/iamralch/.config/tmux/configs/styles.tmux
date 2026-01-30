@@ -6,7 +6,7 @@ set -g @separator ""
 # Status Style
 set -g status-style "fg=#{@thm_fg},bg=#{@thm_bg}"
 # Status Left Format and Styles
-set -g status-left "#[fg=#{@thm_blue}] #{keyboard_layout} #[fg=#{@thm_fg}]#{@separator} #{?@is_upterm_session,#[fg=#{@thm_red}],#[fg=#{@thm_blue}]}#S #[fg=#{@thm_fg}]#{@separator}"
+set -g status-left "#[fg=#{@thm_blue}] #{keyboard_layout} #[fg=#{@thm_fg}]#{@separator} #{?@is_upterm_session,#[fg=#{@thm_red}],#[fg=#{@thm_blue}]}#S #{?@aws_profile_session,  ,}#[fg=#{@thm_fg}]#{@separator}"
 set -g status-left-length 100
 # Status Right Format and Styles
 set -g status-right "#{@separator}#[fg=#{@thm_yellow}]   #{cpu_percentage} #[fg=#{@thm_fg}]#{@separator} #[fg=#{@thm_peach}]#{battery_icon} #{battery_percentage} #{battery_remain} #[fg=#{@thm_fg}]#{@separator} #{pomodoro_status} #[fg=#{@thm_fg}]#{@separator} 󰚭 #{uptime} #[fg=#{@thm_fg},nobold,noitalics,nounderscore]#{@separator} #{world_clock_status} #[fg=#{@thm_fg},nobold,noitalics,nounderscore]#{@separator} #[fg=#{@thm_maroon}]  %H:%M:%S "
@@ -18,8 +18,8 @@ set -gF window-status-bell-style "fg=#{@thm_yellow},bg=#{@thm_bg}"
 set -gF window-status-style "fg=#{@thm_fg},bg=#{@thm_bg}"
 set -gF window-status-current-style "fg=#{@thm_mauve},bg=#{@thm_bg},bold"
 # Window Formats
-set -g window-status-format " #I: #W #F "
-set -g window-status-current-format " #I: #W #F "
+set -g window-status-format " #I: #W #{?@aws_profile_window,  ,}#F "
+set -g window-status-current-format " #I: #W #{?@aws_profile_window,  ,}#F "
 # Window Status Separator
 set -gF window-status-separator "#{@separator}"
 
