@@ -129,6 +129,11 @@ function M.launchOrFocus(appName)
 		return false
 	end
 
+	-- After activate, give it a moment to potentially switch Spaces
+	-- 100ms
+	hs.timer.usleep(100000)
+
+	-- Get the window first to check if it's fullscreen
 	local window = app:mainWindow() or app:focusedWindow()
 	if not window then
 		return false
