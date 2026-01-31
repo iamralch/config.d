@@ -12,14 +12,12 @@ end)
 
 local emit_state = function(state)
 	local cwd = cx.active.current.cwd
-	if state.cwd ~= cwd then
-		state.cwd = cwd
-		-- refresh the state
-		ya.emit("plugin", {
-			state._id,
-			ya.quote(tostring(cwd), true),
-		})
-	end
+	state.cwd = cwd
+	-- refresh the state
+	ya.emit("plugin", {
+		state._id,
+		ya.quote(tostring(cwd), true),
+	})
 end
 
 local load_state = function(cwd)
