@@ -8,7 +8,7 @@ home_symbol = '󰋞'
 
 [aws]
 symbol = ' '
-format = 'on [$symbol($profile-$region)( · $duration) ]($style)'
+format = 'on [$symbol($profile)( · $region)( · $duration) ]($style)'
 
 [gcloud]
 symbol = " "

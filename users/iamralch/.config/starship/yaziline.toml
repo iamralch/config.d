@@ -14,7 +14,7 @@ format = '[$all_status$ahead_behind]($style) '
 
 [aws]
 symbol = " "
-format = ' [$symbol($profile-$region)( · $duration) ]($style)'
+format = ' [$symbol($profile)( · $region)( · $duration) ]($style)'
 
 [gcloud]
 symbol = " "
