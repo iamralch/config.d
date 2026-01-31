@@ -14,7 +14,11 @@ format = '[$all_status$ahead_behind]($style) '
 
 [aws]
 symbol = " "
-format = ' [$symbol($profile )(\($region\) )(\[$duration\] )]($style)'
+format = ' [$symbol($profile-$region)( · $duration) ]($style)'
+
+[aws.profile_aliases]
+development-AdministratorAccess = '655141976367'
+staging-AdministratorAccess = '256675650074'
 
 [gcloud]
 symbol = " "

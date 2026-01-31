@@ -195,14 +195,19 @@ hsdk-exec() {
 
 	# Set the environment using HSDK
 	eval "$(hsdk setenv "$hsdk_env_id")"
+	# Export AWS_PROFILE for compatibility
+	export AWS_PROFILE="$aws_profile"
+
 	# Get AWS credential expiration time
 	export aws_credential_expiration
 	aws_credential_expiration=$(aws-vault exec "$aws_profile" -- env | grep -E '^AWS_CREDENTIAL_EXPIRATION=' | cut -d'=' -f2)
-
-	# Export AWS_PROFILE for compatibility
-	export AWS_PROFILE="$aws_profile"
 	# Export AWS_CREDENTIAL_EXPIRATION for tmux-aws styling
 	export AWS_CREDENTIAL_EXPIRATION="$aws_credential_expiration"
+
+	export aws_account_id
+	aws_account_id=$(aws configure get sso_account_id --profile "$aws_profile")
+	# Export AWS_ACCOUNT_ID for compatibility
+	export AWS_ACCOUNT_ID="$aws_account_id"
 
 	# Cache environment variables for future shells
 	local env_config
