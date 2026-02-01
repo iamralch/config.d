@@ -10,8 +10,7 @@ prepend_keymap = [
     "Z",
   ], run = "plugin finder dir", desc = "Find Directories" },
   { on = [
-    "F",
-    "a",
+    "A",
   ], run = "plugin finder s3", desc = "Find AWS S3 Buckets" },
   { on = [
     "g",
@@ -30,10 +29,6 @@ prepend_keymap = [
     "g",
     "r",
   ], run = "cd ~/.local/state/rclone/mnt", desc = "Go remote" },
-  { on = [
-    "G",
-    "a",
-  ], run = "cd ~/.local/state/rclone/mnt/s3", desc = "Go AWS S3 Buckets" },
   # Layout
   { on = [
     "u",
