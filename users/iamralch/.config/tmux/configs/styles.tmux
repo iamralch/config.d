@@ -34,8 +34,3 @@ set -gF popup-style "fg=#{@thm_fg},bg=#{@thm_bg}"
 # Misc Styles
 set -gF message-style "fg=#{@thm_bg},bg=#{@thm_yellow}"
 set -gF mode-style "fg=#{@thm_bg},bg=#{@thm_yellow}"
-
-# Colors for focused panes
-set-hook -g pane-focus-in 'select-pane -P "bg=#{@thm_bg}"'
-# Colors for unfocused panes
-set-hook -g pane-focus-out 'select-pane -P "bg=#{@thm_crust}"'
