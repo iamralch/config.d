@@ -28,7 +28,6 @@
       direnv
       entr
       exiftool
-      extract_url
       eza
       fastfetch
       fd
