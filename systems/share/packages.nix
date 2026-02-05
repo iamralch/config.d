@@ -128,6 +128,7 @@
       zig
       zinit
       zip
+      xurls
       zoxide
       zsh
     ])
