@@ -19,6 +19,7 @@
       bun
       cfssl
       cmatrix
+      clipboard-jh
       curl
       d2
       deadnix
@@ -51,6 +52,7 @@
       hurl
       imagemagick
       jdk
+      just
       jjui
       jc
       jq
@@ -82,6 +84,7 @@
       pnpm
       protobuf
       pspg
+      procs
       pstree
       pwgen
       (python313.withPackages (
@@ -100,6 +103,7 @@
       rustup
       rclone
       sd
+      serpl
       silver-searcher
       sqlc
       starship

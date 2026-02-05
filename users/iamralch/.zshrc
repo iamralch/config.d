@@ -59,6 +59,7 @@ export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.ini"
 export NPM_PATH="$HOME/.local/share/npm"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
 export MATPLOTLIBRC="$XDG_CONFIG_HOME/matplotlib"
+export EZA_CONFIG_DIR="$XDG_CONFIG_HOME/eza"
 
 # Set up MacOS tools
 if [ "$(uname)" = "Darwin" ]; then
@@ -90,6 +91,13 @@ zinit light zsh-contrib/zsh-fzf
 if [[ "$TERM" != "tmux-256color" ]]; then
   zinit light zsh-contrib/zsh-vivid
 fi
+
+# EZA plugin configuration
+zstyle ':omz:plugins:eza' 'icons' yes
+zstyle ':omz:plugins:eza' 'header' yes
+zstyle ':omz:plugins:eza' 'dirs-first' yes
+zstyle ':omz:plugins:eza' 'git-status' yes
+zstyle ':omz:plugins:eza' 'show-group' yes
 
 # Add in snippets
 zinit snippet OMZP::eza
