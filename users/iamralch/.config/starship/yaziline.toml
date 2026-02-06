@@ -9,9 +9,6 @@ format = ' [$symbol$branch(:$remote_branch)]($style) '
 [git_commit]
 tag_disabled = false
 
-[git_status]
-format = '[$all_status$ahead_behind]($style) '
-
 [aws]
 symbol = " "
 format = ' [$symbol($profile)( · $region)( · $duration) ]($style)'
