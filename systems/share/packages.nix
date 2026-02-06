@@ -67,6 +67,7 @@
       lua51Packages.luarocks
       mdq
       mupdf
+      mdbook
       mermaid-cli
       moreutils
       neovim
