@@ -59,7 +59,6 @@ export GIT_CONFIG_GLOBAL="$XDG_CONFIG_HOME/git/config.ini"
 export NPM_PATH="$HOME/.local/share/npm"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/config"
 export MATPLOTLIBRC="$XDG_CONFIG_HOME/matplotlib"
-export EZA_CONFIG_DIR="$XDG_CONFIG_HOME/eza"
 
 # Set up MacOS tools
 if [ "$(uname)" = "Darwin" ]; then
@@ -77,6 +76,12 @@ export PATH="$PATH:$HOME/.orbstack/bin"
 # limit how much of history to download
 zinit ice depth=1
 
+# EZA plugin configuration
+zstyle ':zsh-eza' 'icons' always
+zstyle ':zsh-eza' 'dirs-first' yes
+zstyle ':zsh-eza' 'git-status' yes
+zstyle ':zsh-eza' 'show-group' yes
+
 # Add community plugins
 zinit light zsh-users/zsh-syntax-highlighting
 zinit light zsh-users/zsh-completions
@@ -85,21 +90,15 @@ zinit light jeffreytse/zsh-vi-mode
 zinit light Aloxaf/fzf-tab
 # Add personal plugins
 zinit light zsh-contrib/zsh-op
-zinit light zsh-contrib/zsh-aws
+zinit light zsh-contrib/zsh-eza
 zinit light zsh-contrib/zsh-fzf
+zinit light zsh-contrib/zsh-aws
 
 if [[ "$TERM" != "tmux-256color" ]]; then
   zinit light zsh-contrib/zsh-vivid
 fi
 
-# EZA plugin configuration
-zstyle ':omz:plugins:eza' 'icons' yes
-zstyle ':omz:plugins:eza' 'dirs-first' yes
-zstyle ':omz:plugins:eza' 'git-status' yes
-zstyle ':omz:plugins:eza' 'show-group' yes
-
 # Add in snippets
-zinit snippet OMZP::eza
 zinit snippet OMZP::git
 zinit snippet OMZP::git-commit
 zinit snippet OMZP::golang
